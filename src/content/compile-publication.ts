@@ -3,7 +3,13 @@ import { z } from "zod";
 const sourceSnapshotSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
-  url: z.url(),
+  url: z.url().refine(
+    (value) => {
+      const protocol = new URL(value).protocol;
+      return protocol === "http:" || protocol === "https:";
+    },
+    { message: "Source URL must use HTTP or HTTPS" },
+  ),
   publisher: z.string().min(1),
   publishedAt: z.iso.date(),
   retrievedAt: z.iso.date(),
@@ -25,22 +31,62 @@ const trailSchema = z.object({
   name: z.string().min(1),
 });
 
-const claimSchema = z.object({
+const claimBase = {
   id: z.string().min(1),
   trailId: z.string().min(1),
-  field: z.enum([
-    "difficulty",
-    "lengthM",
-    "averageWidthM",
-    "summitElevationM",
-    "averageSlopeDegrees",
-    "maximumSlopeDegrees",
-  ]),
-  value: z.union([z.string(), z.number()]),
-  unit: z.string().min(1).optional(),
   sourceSnapshotId: z.string().min(1),
   verificationState: z.enum(["verified", "unverified", "stale", "link_only"]),
-});
+};
+
+const claimSchema = z.discriminatedUnion("field", [
+  z
+    .object({
+      ...claimBase,
+      field: z.literal("difficulty"),
+      value: z.enum(["beginner", "intermediate", "advanced"]),
+    })
+    .strict(),
+  z
+    .object({
+      ...claimBase,
+      field: z.literal("lengthM"),
+      value: z.number().nonnegative(),
+      unit: z.literal("m"),
+    })
+    .strict(),
+  z
+    .object({
+      ...claimBase,
+      field: z.literal("averageWidthM"),
+      value: z.number().nonnegative(),
+      unit: z.literal("m"),
+    })
+    .strict(),
+  z
+    .object({
+      ...claimBase,
+      field: z.literal("summitElevationM"),
+      value: z.number().nonnegative(),
+      unit: z.literal("m"),
+    })
+    .strict(),
+  z
+    .object({
+      ...claimBase,
+      field: z.literal("averageSlopeDegrees"),
+      value: z.number().min(0).max(90),
+      unit: z.literal("degree"),
+    })
+    .strict(),
+  z
+    .object({
+      ...claimBase,
+      field: z.literal("maximumSlopeDegrees"),
+      value: z.number().min(0).max(90),
+      unit: z.literal("degree"),
+    })
+    .strict(),
+]);
 
 const researchPackageSchema = z.object({
   schemaVersion: z.literal("1.0.0"),
@@ -121,7 +167,7 @@ export function compilePublication(input: unknown) {
 
         publishedFields[claim.field] = {
           value: claim.value,
-          ...(claim.unit ? { unit: claim.unit } : {}),
+          ...("unit" in claim ? { unit: claim.unit } : {}),
           verificationState: claim.verificationState,
           source,
         };

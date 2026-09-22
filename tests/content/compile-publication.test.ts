@@ -178,6 +178,7 @@ describe("compilePublication", () => {
           trailId: "fulong-a1",
           field: "averageSlopeDegrees",
           value: 7,
+          unit: "degree",
           sourceSnapshotId: "source-1",
           verificationState: "unverified",
         },
@@ -186,6 +187,7 @@ describe("compilePublication", () => {
           trailId: "fulong-a1",
           field: "averageSlopeDegrees",
           value: 8,
+          unit: "degree",
           sourceSnapshotId: "source-1",
           verificationState: "unverified",
         },
@@ -193,5 +195,67 @@ describe("compilePublication", () => {
     };
 
     expect(() => compilePublication(ambiguousField)).toThrow(/multiple Claims/i);
+  });
+
+  it("rejects a value whose type does not match its Claim field", () => {
+    const invalidSlope = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-22",
+      sourceSnapshots: [
+        {
+          id: "source-1",
+          title: "Source",
+          url: "https://example.com/source",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-22",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
+      claims: [
+        {
+          id: "invalid-slope",
+          trailId: "fulong-a1",
+          field: "averageSlopeDegrees",
+          value: "steep",
+          unit: "degree",
+          sourceSnapshotId: "source-1",
+          verificationState: "unverified",
+        },
+      ],
+    };
+
+    expect(() => compilePublication(invalidSlope)).toThrow();
+  });
+
+  it("rejects non-HTTP source URLs", () => {
+    const unsafeSource = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-22",
+      sourceSnapshots: [
+        {
+          id: "source-1",
+          title: "Unsafe source",
+          url: "javascript:alert(document.domain)",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-22",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [],
+      claims: [],
+    };
+
+    expect(() => compilePublication(unsafeSource)).toThrow(/HTTP/i);
   });
 });

@@ -155,7 +155,7 @@ a {
 
 .eyebrow.dark {
   margin-bottom: 9px;
-  color: #73817c;
+  color: #4f5e59;
 }
 
 h1,
@@ -278,7 +278,7 @@ h2 {
 .source-count {
   padding: 7px 10px;
   background: #edf1e9;
-  color: #65736e;
+  color: #4f5e59;
   font-size: 10px;
   white-space: nowrap;
 }
@@ -303,7 +303,7 @@ h2 {
 
 .metric dt {
   margin-bottom: 16px;
-  color: #6e7a76;
+  color: #4f5e59;
   font-size: 11px;
 }
 
@@ -315,7 +315,7 @@ h2 {
 }
 
 .metric dd.missing {
-  color: #8e9994;
+  color: #4f5e59;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0;
@@ -325,7 +325,7 @@ h2 {
   display: flex;
   gap: 12px;
   margin-top: 23px;
-  color: #677570;
+  color: #4f5e59;
   font-size: 11px;
   line-height: 1.7;
 }
@@ -358,7 +358,7 @@ h2 {
 
 .source-label {
   margin-bottom: 10px;
-  color: #74807c;
+  color: #4f5e59;
   font-size: 10px;
 }
 
@@ -380,7 +380,7 @@ h2 {
 
 .source-card > p {
   margin: 8px 0 18px;
-  color: #71807a;
+  color: #4f5e59;
   font-size: 11px;
 }
 
@@ -399,7 +399,7 @@ h2 {
 }
 
 .source-card dt {
-  color: #7b8782;
+  color: #4f5e59;
   font-size: 9px;
 }
 
@@ -429,7 +429,7 @@ h2 {
 
 .verification-line p {
   margin-bottom: 0;
-  color: #72807b;
+  color: #4f5e59;
   font-size: 10px;
   line-height: 1.6;
 }
@@ -439,10 +439,47 @@ footer {
   display: flex;
   justify-content: space-between;
   gap: 18px;
-  color: #6e7b76;
+  color: #4f5e59;
   background: #e3e7df;
   border-top: 1px solid #d1d7cf;
   font-size: 10px;
+}
+
+.not-found {
+  width: min(660px, calc(100% - 44px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.not-found .brand {
+  margin-bottom: 84px;
+}
+
+.not-found h1 {
+  margin-bottom: 20px;
+  color: #123d34;
+  font-size: clamp(48px, 8vw, 82px);
+}
+
+.not-found > p:not(.eyebrow) {
+  max-width: 440px;
+  color: #52635d;
+  line-height: 1.8;
+}
+
+.home-link {
+  margin-top: 22px;
+  padding: 12px 18px;
+  border-radius: 2px;
+  background: #123d34;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
 }
 
 @media (max-width: 900px) {

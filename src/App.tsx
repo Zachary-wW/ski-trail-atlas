@@ -17,8 +17,41 @@ function formatSeason(season: string) {
   return `${season.replace("-", "–")} 雪季`;
 }
 
+function requestedTrailId(pathname: string) {
+  if (pathname === "/" || pathname === "") {
+    return publication.trails[0]?.id;
+  }
+
+  return pathname.match(/^\/trails\/([^/]+)\/?$/)?.[1];
+}
+
+function NotFound() {
+  return (
+    <main className="not-found">
+      <a className="brand" href="/" aria-label="返回富龙雪道图鉴首页">
+        <span className="brand-mark" aria-hidden="true">F</span>
+        <span>
+          <strong>富龙雪道图鉴</strong>
+          <small>FULONG TRAIL ATLAS</small>
+        </span>
+      </a>
+      <p className="eyebrow dark">404 · TRAIL NOT FOUND</p>
+      <h1>页面不存在</h1>
+      <p>没有找到这条雪道。请返回当前已发布的 A1「蓝调」档案。</p>
+      <a className="home-link" href="/trails/fulong-a1">查看 A1 · 蓝调</a>
+    </main>
+  );
+}
+
 function App() {
-  const trail = publication.trails[0];
+  const trail = publication.trails.find(
+    (candidate) => candidate.id === requestedTrailId(window.location.pathname),
+  );
+
+  if (!trail) {
+    return <NotFound />;
+  }
+
   const fields = trail.publishedFields;
   const difficulty = fields.difficulty;
   const primarySource = fields.averageSlopeDegrees?.source ?? difficulty?.source;
