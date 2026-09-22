@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0.0",
+  "resort": {
+    "id": "fulong",
+    "name": "富龙滑雪场"
+  },
+  "season": "2025-2026",
+  "lastVerifiedAt": "2026-09-22",
+  "sourceSnapshots": [
+    {
+      "id": "chonglihuaxue-167-2026-09-22",
+      "title": "崇礼富龙滑雪场雪道参数及雪道总览图",
+      "url": "https://www.chonglihuaxue.cn/info.asp?id=167",
+      "publisher": "张家口帝和旅游有限公司",
+      "publishedAt": "2026-06-11",
+      "retrievedAt": "2026-09-22",
+      "season": "2025-2026",
+      "sourceClass": "secondary_commercial",
+      "permittedUse": "reference_only"
+    }
+  ],
+  "trails": [
+    {
+      "id": "fulong-a1",
+      "code": "A1",
+      "name": "蓝调"
+    }
+  ],
+  "claims": [
+    {
+      "id": "fulong-a1-difficulty",
+      "trailId": "fulong-a1",
+      "field": "difficulty",
+      "value": "beginner",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a1-length",
+      "trailId": "fulong-a1",
+      "field": "lengthM",
+      "value": 173,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a1-average-width",
+      "trailId": "fulong-a1",
+      "field": "averageWidthM",
+      "value": 20,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a1-summit-elevation",
+      "trailId": "fulong-a1",
+      "field": "summitElevationM",
+      "value": 1309,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a1-average-slope",
+      "trailId": "fulong-a1",
+      "field": "averageSlopeDegrees",
+      "value": 7,
+      "unit": "degree",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    }
+  ]
+}

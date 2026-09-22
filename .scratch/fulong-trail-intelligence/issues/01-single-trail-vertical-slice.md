@@ -4,12 +4,12 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The site builds and runs as a React and TypeScript application.
-- [ ] The project README describes the Fulong product goal, local commands, evidence boundary, and current implementation status.
-- [ ] One Fulong Trail is loaded from versioned, build-validated content.
-- [ ] The Trail detail shows identity, available attributes, Season, verification state, and source.
-- [ ] Missing optional attributes remain valid and render explicitly.
-- [ ] Invalid provenance or duplicate identifiers fail the content build.
-- [ ] A browser test proves the Trail can be opened from the running site.
+- [x] The site builds and runs as a React and TypeScript application.
+- [x] The project README describes the Fulong product goal, local commands, evidence boundary, and current implementation status.
+- [x] One Fulong Trail is loaded from versioned, build-validated content.
+- [x] The Trail detail shows identity, available attributes, Season, verification state, and source.
+- [x] Missing optional attributes remain valid and render explicitly.
+- [x] Invalid provenance or duplicate identifiers fail the content build.
+- [x] A browser test proves the Trail can be opened from the running site.
