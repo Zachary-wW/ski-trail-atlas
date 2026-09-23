@@ -98,7 +98,7 @@ const topologyByCode: Record<string, TopologyRow> = {
   A1: { fromNodeId: "beginner-top", toNodeId: "fulong-base", bendX: 88, labelDx: 42, labelDy: 10 },
   A2: { fromNodeId: "beginner-top", toNodeId: "fulong-base", bendX: 126, labelDx: 96, labelDy: 38 },
   A3: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: 26, labelDx: 28, labelDy: -8 },
-  A5: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: -12, labelDx: -12, labelDy: 12 },
+  A5: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: -12, labelDx: -4, labelDy: 35 },
   A6: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: -42, labelDx: -60, labelDy: 45 },
   C3: { fromNodeId: "ridge-west-high", toNodeId: "fulong-base", bendX: -100, bendY: 35, labelDx: -56, labelDy: 18 },
   D1: { fromNodeId: "west-upper", toNodeId: "west-base", bendX: -24, labelDx: -18, labelDy: 18 },

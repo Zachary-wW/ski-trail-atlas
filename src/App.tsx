@@ -99,6 +99,7 @@ function App() {
 
   return (
     <div className="atlas-shell">
+      <a className="skip-link" href="#main-content">{text.skipToContent}</a>
       <header className="atlas-topbar">
         <a className="wordmark" href={appHref("/")} aria-label={text.homeAria}>SKI TRAIL ATLAS</a>
         <div className="atlas-context">
@@ -108,7 +109,8 @@ function App() {
         </div>
       </header>
 
-      <main className="atlas-stage">
+      <main id="main-content" className="atlas-stage" tabIndex={-1}>
+        <h1 className="sr-only">{text.siteName}</h1>
         <div className="atlas-toolbar">
           <TrailCatalog language={language} selectedTrailId={trail.id} />
           <RoutePlanner language={language} selectedTrailId={trail.id} onPlanChange={setRoutePlan} />
@@ -128,7 +130,7 @@ function App() {
               <span aria-hidden="true">·</span>
               <span>{text.verification[verificationState]}</span>
             </div>
-            <h1 id="trail-title">{trail.code} · {trail.name}</h1>
+            <h2 id="trail-title">{trail.code} · {trail.name}</h2>
             <p className="data-note">{text.sourceValueNote}</p>
           </header>
           <dl className="inspector-metrics">

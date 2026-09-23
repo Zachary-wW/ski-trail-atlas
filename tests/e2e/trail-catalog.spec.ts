@@ -5,7 +5,7 @@ test("defaults to English and can switch the interface to Chinese", async ({ pag
 
   await expect(page.getByRole("searchbox", { name: "Search trails" })).toHaveAttribute(
     "placeholder",
-    "Search by name or code, e.g. B1",
+    "Search by name or code, e.g. B1…",
   );
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
@@ -13,7 +13,7 @@ test("defaults to English and can switch the interface to Chinese", async ({ pag
 
   await expect(page.getByRole("searchbox", { name: "搜索雪道" })).toHaveAttribute(
     "placeholder",
-    "输入名称或编号，例如 B1",
+    "输入名称或编号，例如 B1…",
   );
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
 });
