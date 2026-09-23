@@ -31,13 +31,13 @@ test("opens the evidence-backed A1 Trail detail from a direct URL", async ({ pag
   await page.goto("/trails/fulong-a1");
 
   await expect(page.getByRole("heading", { name: "A1 · 蓝调" })).toBeVisible();
-  await expect(page.getByText("初级道", { exact: true })).toBeVisible();
+  await expect(page.getByText("Beginner", { exact: true })).toBeVisible();
   await expect(page.getByText("7°", { exact: true })).toBeVisible();
-  await expect(page.getByText("最大坡度").locator("..")).toContainText("暂无数据");
+  await expect(page.getByText("Maximum slope").locator("..")).toContainText("Unavailable");
   await expect(
-    page.getByRole("banner").getByText("2025–2026 雪季", { exact: true }),
+    page.getByRole("banner").getByText("2025–2026 season", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("资料待交叉验证", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Awaiting cross-check", { exact: true }).first()).toBeVisible();
 
   const source = page.getByRole("link", {
     name: "崇礼富龙滑雪场雪道参数及雪道总览图",
@@ -51,7 +51,7 @@ test("opens the evidence-backed A1 Trail detail from a direct URL", async ({ pag
 test("does not render A1 for an unknown Trail route", async ({ page }) => {
   await page.goto("/trails/not-a-real-trail");
 
-  await expect(page.getByRole("heading", { name: "页面不存在" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "A1 · 蓝调" })).toHaveCount(0);
 });
 
@@ -59,7 +59,7 @@ test("renders missing data with WCAG AA text contrast", async ({ page }) => {
   await page.goto("/trails/fulong-a1");
 
   const foreground = await page
-    .getByText("暂无数据", { exact: true })
+    .getByText("Unavailable", { exact: true })
     .evaluate((element) => getComputedStyle(element).color);
   const background = await page
     .locator(".metrics-panel")

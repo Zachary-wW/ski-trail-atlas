@@ -39,6 +39,31 @@ a {
   border-bottom: 1px solid #d8ddd4;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.language-toggle {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid #cbd3c9;
+  border-radius: 999px;
+  background: #fff;
+  color: #123d34;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.language-toggle:hover,
+.language-toggle:focus-visible {
+  border-color: #6d8178;
+  outline: none;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -637,6 +662,10 @@ footer {
 
   .season-pill {
     display: none;
+  }
+
+  .language-toggle {
+    min-height: 40px;
   }
 
   .hero {

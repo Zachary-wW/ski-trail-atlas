@@ -1,98 +1,123 @@
+import { useEffect, useState } from "react";
+
+import { appHref, routePathFromLocation } from "./app-paths";
 import { publication } from "./data/publication";
+import { copy, languageFromStorage, type Language } from "./i18n";
 import { TrailCatalog } from "./TrailCatalog";
 import { difficultyLabels } from "./trail-labels";
 
-const verificationLabels: Record<string, string> = {
-  verified: "资料已验证",
-  unverified: "资料待交叉验证",
-  stale: "资料可能已过期",
-  link_only: "仅提供来源链接",
-};
-
-function formatSeason(season: string) {
-  return `${season.replace("-", "–")} 雪季`;
+function formatSeason(season: string, language: Language) {
+  return `${season.replace("-", "–")}${copy[language].seasonSuffix}`;
 }
 
-function requestedTrailId(pathname: string) {
-  if (pathname === "/" || pathname === "") {
+function requestedTrailId(routePath: string) {
+  if (routePath === "/" || routePath === "") {
     return publication.trails[0]?.id;
   }
 
-  return pathname.match(/^\/trails\/([^/]+)\/?$/)?.[1];
+  return routePath.match(/^\/trails\/([^/]+)\/?$/)?.[1];
 }
 
-function NotFound() {
+function NotFound({ language }: { language: Language }) {
+  const text = copy[language];
+
   return (
     <main className="not-found">
-      <a className="brand" href="/" aria-label="返回富龙雪道图鉴首页">
+      <a className="brand" href={appHref("/")} aria-label={text.homeAria}>
         <span className="brand-mark" aria-hidden="true">F</span>
         <span>
-          <strong>富龙雪道图鉴</strong>
-          <small>FULONG TRAIL ATLAS</small>
+          <strong>{text.siteName}</strong>
+          <small>{text.siteTagline}</small>
         </span>
       </a>
-      <p className="eyebrow dark">404 · TRAIL NOT FOUND</p>
-      <h1>页面不存在</h1>
-      <p>没有找到这条雪道。请返回当前已发布的 A1「蓝调」档案。</p>
-      <a className="home-link" href="/trails/fulong-a1">查看 A1 · 蓝调</a>
+      <p className="eyebrow dark">{text.notFoundEyebrow}</p>
+      <h1>{text.notFoundTitle}</h1>
+      <p>{text.notFoundBody}</p>
+      <a className="home-link" href={appHref("/trails/fulong-a1")}>{text.notFoundLink}</a>
     </main>
   );
 }
 
 function App() {
+  const [language, setLanguage] = useState<Language>(languageFromStorage);
+  const text = copy[language];
+  const routePath = routePathFromLocation(window.location.pathname, window.location.search);
   const trail = publication.trails.find(
-    (candidate) => candidate.id === requestedTrailId(window.location.pathname),
+    (candidate) => candidate.id === requestedTrailId(routePath),
   );
 
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = language === "en" ? "Fulong Trail Atlas" : "富龙雪道图鉴";
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute(
+        "content",
+        language === "en"
+          ? "Evidence-backed trail information for Fulong Ski Resort"
+          : "富龙滑雪场雪道资料与来源证据",
+      );
+    window.localStorage.setItem("ski-trail-atlas-language", language);
+  }, [language]);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has("route")) {
+      window.history.replaceState(null, "", appHref(routePath));
+    }
+  }, [routePath]);
+
+  const toggleLanguage = () => {
+    setLanguage((current) => (current === "en" ? "zh-CN" : "en"));
+  };
+
   if (!trail) {
-    return <NotFound />;
+    return <NotFound language={language} />;
   }
 
   const fields = trail.publishedFields;
   const difficulty = fields.difficulty;
+  const verificationState = difficulty?.verificationState ?? "unverified";
   const primarySource = fields.averageSlopeDegrees?.source ?? difficulty?.source;
-
   const metrics = [
-    { label: "雪道长度", value: fields.lengthM ? `${fields.lengthM.value} m` : undefined },
+    { label: text.length, value: fields.lengthM ? `${fields.lengthM.value} m` : undefined },
     {
-      label: "平均宽度",
+      label: text.averageWidth,
       value: fields.averageWidthM ? `${fields.averageWidthM.value} m` : undefined,
     },
     {
-      label: "起点海拔",
+      label: text.summitElevation,
       value: fields.summitElevationM ? `${fields.summitElevationM.value} m` : undefined,
     },
     {
-      label: "平均坡度",
-      value: fields.averageSlopeDegrees
-        ? `${fields.averageSlopeDegrees.value}°`
-        : undefined,
+      label: text.averageSlope,
+      value: fields.averageSlopeDegrees ? `${fields.averageSlopeDegrees.value}°` : undefined,
       featured: true,
     },
     {
-      label: "最大坡度",
-      value: fields.maximumSlopeDegrees
-        ? `${fields.maximumSlopeDegrees.value}°`
-        : undefined,
+      label: text.maximumSlope,
+      value: fields.maximumSlopeDegrees ? `${fields.maximumSlopeDegrees.value}°` : undefined,
     },
   ];
 
   return (
     <div className="site-shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="富龙雪道图鉴首页">
-          <span className="brand-mark" aria-hidden="true">
-            F
-          </span>
+        <a className="brand" href={appHref("/")} aria-label={text.homeAria}>
+          <span className="brand-mark" aria-hidden="true">F</span>
           <span>
-            <strong>富龙雪道图鉴</strong>
-            <small>FULONG TRAIL ATLAS</small>
+            <strong>{text.siteName}</strong>
+            <small>{text.siteTagline}</small>
           </span>
         </a>
-        <span className="season-pill">{formatSeason(publication.season)}</span>
+        <div className="topbar-actions">
+          <span className="season-pill">{formatSeason(publication.season, language)}</span>
+          <button className="language-toggle" type="button" onClick={toggleLanguage}>
+            {text.switchLanguage}
+          </button>
+        </div>
       </header>
 
-      <TrailCatalog selectedTrailId={trail.id} />
+      <TrailCatalog language={language} selectedTrailId={trail.id} />
 
       <main>
         <section className="hero" aria-labelledby="trail-title">
@@ -105,33 +130,33 @@ function App() {
             </svg>
           </div>
 
-          <nav className="breadcrumb" aria-label="面包屑">
-            <a href="/">富龙滑雪场</a>
+          <nav className="breadcrumb" aria-label="Breadcrumb">
+            <a href={appHref("/")}>{text.breadcrumbResort}</a>
             <span aria-hidden="true">/</span>
-            <span>雪道详情</span>
+            <span>{text.breadcrumbDetail}</span>
           </nav>
 
           <div className="hero-content">
             <div>
-              <p className="eyebrow">TRAIL PROFILE · 雪道档案</p>
+              <p className="eyebrow">{text.profileEyebrow}</p>
               <h1 id="trail-title">
                 {trail.code} <span>·</span> {trail.name}
               </h1>
               <div className="status-row">
                 <span className="difficulty-badge">
-                  {difficultyLabels[String(difficulty?.value)] ?? "难度暂无数据"}
+                  {difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty}
                 </span>
                 <span className="verification-badge">
                   <span className="status-dot" aria-hidden="true" />
-                  {verificationLabels[difficulty?.verificationState ?? "unverified"]}
+                  {text.verification[verificationState]}
                 </span>
               </div>
             </div>
 
-            <aside className="quick-read" aria-label="快速了解">
-              <span>快速了解</span>
-              <strong>来源参数 · 证据可追溯</strong>
-              <p>页面只展示来源报告的雪道参数；现场开放情况请以雪场当日公告为准。</p>
+            <aside className="quick-read" aria-label={text.quickReadLabel}>
+              <span>{text.quickReadLabel}</span>
+              <strong>{text.quickReadTitle}</strong>
+              <p>{text.quickReadBody}</p>
             </aside>
           </div>
         </section>
@@ -140,41 +165,39 @@ function App() {
           <article className="panel metrics-panel" aria-labelledby="metrics-title">
             <div className="section-heading">
               <div>
-                <p className="eyebrow dark">TRAIL DATA</p>
-                <h2 id="metrics-title">雪道参数</h2>
+                <p className="eyebrow dark">{text.trailDataEyebrow}</p>
+                <h2 id="metrics-title">{text.trailDataTitle}</h2>
               </div>
-              <span className="data-note">来源原值 · 未自行推算</span>
+              <span className="data-note">{text.sourceValueNote}</span>
             </div>
 
             <dl className="metric-grid">
               {metrics.map((metric) => (
                 <div className={metric.featured ? "metric featured" : "metric"} key={metric.label}>
                   <dt>{metric.label}</dt>
-                  <dd className={metric.value ? "" : "missing"}>{metric.value ?? "暂无数据"}</dd>
+                  <dd className={metric.value ? "" : "missing"}>{metric.value ?? text.missing}</dd>
                 </div>
               ))}
             </dl>
 
             <div className="context-note">
               <span className="note-icon" aria-hidden="true">i</span>
-              <p>
-                坡度为来源页面报告的平均值，不代表雪道任意位置的实时坡度；本页不用于导航或安全判断。
-              </p>
+              <p>{text.slopeDisclaimer}</p>
             </div>
           </article>
 
           <article className="panel evidence-panel" aria-labelledby="evidence-title">
             <div className="section-heading compact">
               <div>
-                <p className="eyebrow dark">EVIDENCE</p>
-                <h2 id="evidence-title">资料依据</h2>
+                <p className="eyebrow dark">{text.evidenceEyebrow}</p>
+                <h2 id="evidence-title">{text.evidenceTitle}</h2>
               </div>
-              <span className="source-count">1 条来源</span>
+              <span className="source-count">{text.oneSource}</span>
             </div>
 
             {primarySource && (
               <div className="source-card">
-                <div className="source-label">参考来源</div>
+                <div className="source-label">{text.referenceSource}</div>
                 <a href={primarySource.url} target="_blank" rel="noreferrer">
                   {primarySource.title}
                   <span aria-hidden="true">↗</span>
@@ -182,11 +205,11 @@ function App() {
                 <p>{primarySource.publisher}</p>
                 <dl>
                   <div>
-                    <dt>适用雪季</dt>
-                    <dd>{formatSeason(primarySource.season)}</dd>
+                    <dt>{text.applicableSeason}</dt>
+                    <dd>{formatSeason(primarySource.season, language)}</dd>
                   </div>
                   <div>
-                    <dt>最近核验</dt>
+                    <dt>{text.lastVerified}</dt>
                     <dd>{publication.lastVerifiedAt}</dd>
                   </div>
                 </dl>
@@ -196,8 +219,8 @@ function App() {
             <div className="verification-line">
               <span className="status-dot" aria-hidden="true" />
               <div>
-                <strong>{verificationLabels[difficulty?.verificationState ?? "unverified"]}</strong>
-                <p>当前为单一公开来源快照，等待官方材料进一步确认。</p>
+                <strong>{text.verification[verificationState]}</strong>
+                <p>{text.verificationBody}</p>
               </div>
             </div>
           </article>
@@ -205,8 +228,8 @@ function App() {
       </main>
 
       <footer>
-        <span>独立雪道资料项目 · 非富龙滑雪场官方网站</span>
-        <span>出行前请核对雪场当日公告</span>
+        <span>{text.footerIndependent}</span>
+        <span>{text.footerCheck}</span>
       </footer>
     </div>
   );

@@ -1,16 +1,32 @@
-# 富龙雪道图鉴
+# Ski Trail Atlas
 
-一个以证据为先的富龙滑雪场雪道查询网站。首个版本帮助雪友按雪道查看坡度、长度、宽度、海拔、难度、视频与来源；全景图会在后续阶段基于公开或官方雪道图进行结构化原创重绘，而不是直接复制原图。
+**English** | [简体中文](README.zh-CN.md)
 
-## 当前状态
+An evidence-first trail lookup experience for Fulong Ski Resort. The current release lets skiers browse and search a small representative Trail Catalog, open stable direct links, and inspect source-reported difficulty, slope, length, width, elevation, verification state, and evidence.
 
-Ticket 01 已完成首条真实雪道的纵向切片：A1「蓝调」从版本化 JSON 经过 Zod 校验和 Claim 编译，进入 React 详情页。页面展示可用参数、明确的缺失值、适用雪季、核验状态和来源快照。
+The longer-term product is designed to expand beyond Fulong. Its Panorama Map will be an original, structurally accurate redraw based on corroborated public or official material rather than a republished source map.
 
-目前不是完整雪道目录，也不提供实时开放状态、GPS 导航、安全判断或个性化推荐。
+## Live site
 
-## 本地运行
+GitHub Pages: <https://zachary-ww.github.io/ski-trail-atlas/>
 
-需要 Node.js 24（仓库包含 `.nvmrc`）。
+The website defaults to English and includes an in-page switch to Simplified Chinese. Source-native trail names and source titles remain in their original language.
+
+## Current status
+
+Tickets 01 and 02 are complete:
+
+- one evidence-backed Trail was implemented end to end through versioned JSON, Zod validation, Claim compilation, and React rendering;
+- the Trail Catalog now contains five representative Fulong Trails across different difficulty and completeness states;
+- search supports Trail names and codes;
+- every published Trail has a stable direct URL such as `/trails/fulong-a1`;
+- missing values are rendered explicitly rather than inferred.
+
+The product does **not** currently provide real-time operating status, GPS navigation, safety judgement, or personalized recommendations.
+
+## Local development
+
+Node.js 24 is required (`.nvmrc` is included).
 
 ```bash
 nvm use
@@ -18,9 +34,9 @@ npm install
 npm run dev
 ```
 
-开发服务器默认位于 `http://127.0.0.1:4173`，A1 详情可直接通过 `/trails/fulong-a1` 打开。
+The development server runs at `http://127.0.0.1:4173` by default.
 
-## 验证命令
+## Validation
 
 ```bash
 npm run typecheck
@@ -29,15 +45,14 @@ npm run test:e2e
 npm run build
 ```
 
-端到端测试使用本机 Google Chrome。内容测试会阻止以下数据进入发布层：
+Content validation rejects duplicate Source Snapshot, Trail, or Claim identifiers; Claims that reference missing Trails or Source Snapshots; unresolved multiple Claims for one published field; and values that do not match the versioned schema.
 
-- 重复的 Source Snapshot、Trail 或 Claim 标识符；
-- 指向不存在 Trail 或 Source Snapshot 的 Claim；
-- 同一雪道字段存在尚未解决的多条 Claim；
-- 不符合版本化 schema 的日期、枚举或字段。
+## Evidence boundary
 
-## 证据边界
+`src/data/fulong-v1.json` stores research inputs: Trails, immutable Source Snapshots, and field-level Claims. `compilePublication` produces browser-safe Published Fields at build time while preserving source provenance and verification state.
 
-`src/data/fulong-v1.json` 保存研究输入：Trail、不可变 Source Snapshot 和字段级 Claim。`compilePublication` 在构建时生成页面可消费的 Published Field，并保留每个字段的来源和核验状态。
+The current parameters are sourced from the public page “崇礼富龙滑雪场雪道参数及雪道总览图” and marked `reference_only`. The site publishes textual parameters and an outbound source link only; it does not bundle or republish that source's trail map. Unsupported values remain unavailable rather than being derived.
 
-当前 A1 参数来自公开页面「崇礼富龙滑雪场雪道参数及雪道总览图」，许可边界记录为 `reference_only`。网站只发布文字参数和外链，不打包或重新发布该站雪道图。最大坡度没有可靠来源，因此显示“暂无数据”，不会自行推算。
+## Deployment
+
+Pushes to `main` deploy the Vite production build to GitHub Pages through `.github/workflows/deploy-pages.yml`. The production build uses the `/ski-trail-atlas/` base path, and a lightweight `404.html` fallback preserves stable SPA Trail URLs on GitHub Pages.
