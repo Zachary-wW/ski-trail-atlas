@@ -98,12 +98,18 @@ describe("compilePublication", () => {
       ],
       trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
       claims: [],
+      mapNodes: [
+        { id: "trail-top", kind: "junction", x: 100, y: 80, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "trail-bottom", kind: "junction", x: 100, y: 200, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
       trailLocations: [
         {
           trailId: "fulong-a1",
           sourceSnapshotId: "map-source",
           verificationState: "unverified",
           path: "M 100 200 C 140 160 170 120 200 80",
+          fromNodeId: "trail-top",
+          toNodeId: "trail-bottom",
           label: { x: 160, y: 130 },
         },
       ],
@@ -114,6 +120,8 @@ describe("compilePublication", () => {
         trailId: "fulong-a1",
         verificationState: "unverified",
         path: "M 100 200 C 140 160 170 120 200 80",
+        fromNodeId: "trail-top",
+        toNodeId: "trail-bottom",
         source: expect.objectContaining({ id: "map-source" }),
       }),
     ]);
@@ -180,6 +188,8 @@ describe("compilePublication", () => {
   it("rejects duplicate Trail Locations for the same Trail", () => {
     const location = {
       trailId: "fulong-a1",
+      fromNodeId: "top",
+      toNodeId: "bottom",
       sourceSnapshotId: "map-source",
       verificationState: "unverified",
       path: "M 0 0 L 10 10",
@@ -206,6 +216,10 @@ describe("compilePublication", () => {
       trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
       claims: [],
       trailLocations: [location, { ...location, path: "M 1 1 L 9 9" }],
+      mapNodes: [
+        { id: "top", kind: "junction", x: 0, y: 0, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "bottom", kind: "junction", x: 10, y: 10, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
     };
 
     expect(() => compilePublication(input)).toThrow(/Duplicate Trail Location/i);
@@ -454,6 +468,114 @@ describe("compilePublication", () => {
     };
 
     expect(() => compilePublication(invalidSlope)).toThrow();
+  });
+
+  it("preserves source-reported mixed and park difficulty categories", () => {
+    const base = {
+      schemaVersion: "1.0.0" as const,
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-23",
+      sourceSnapshots: [{
+        id: "source-1",
+        title: "Source",
+        url: "https://example.com/source",
+        publisher: "Publisher",
+        publishedAt: "2026-01-01",
+        retrievedAt: "2026-09-23",
+        season: "2025-2026",
+        sourceClass: "secondary_commercial" as const,
+        permittedUse: "reference_only" as const,
+      }],
+      claims: [],
+    };
+
+    for (const difficulty of ["beginner_intermediate", "park", "intermediate_advanced"] as const) {
+      const publication = compilePublication({
+        ...base,
+        trails: [{ id: `trail-${difficulty}`, code: difficulty, name: difficulty }],
+        claims: [{
+          id: `claim-${difficulty}`,
+          trailId: `trail-${difficulty}`,
+          field: "difficulty",
+          value: difficulty,
+          sourceSnapshotId: "source-1",
+          verificationState: "unverified",
+        }],
+      });
+      expect(publication.trails[0]?.publishedFields.difficulty?.value).toBe(difficulty);
+    }
+  });
+
+  it("rejects a Trail Location without routable topology endpoints", () => {
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-23",
+      sourceSnapshots: [{
+        id: "map-source",
+        title: "Map source",
+        url: "https://example.com/map",
+        publisher: "Publisher",
+        publishedAt: "2026-01-01",
+        retrievedAt: "2026-09-23",
+        season: "2025-2026",
+        sourceClass: "secondary_commercial",
+        permittedUse: "reference_only",
+      }],
+      trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
+      claims: [],
+      mapNodes: [
+        { id: "top", kind: "junction", x: 0, y: 0, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "bottom", kind: "junction", x: 10, y: 10, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
+      trailLocations: [{
+        trailId: "fulong-a1",
+        sourceSnapshotId: "map-source",
+        verificationState: "unverified",
+        path: "M 0 0 L 10 10",
+        label: { x: 5, y: 5 },
+      }],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/fromNodeId|toNodeId|endpoint/i);
+  });
+
+  it("rejects a Trail Location whose endpoint node is missing", () => {
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-23",
+      sourceSnapshots: [{
+        id: "map-source",
+        title: "Map source",
+        url: "https://example.com/map",
+        publisher: "Publisher",
+        publishedAt: "2026-01-01",
+        retrievedAt: "2026-09-23",
+        season: "2025-2026",
+        sourceClass: "secondary_commercial",
+        permittedUse: "reference_only",
+      }],
+      trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
+      claims: [],
+      mapNodes: [
+        { id: "top", kind: "junction", x: 0, y: 0, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
+      trailLocations: [{
+        trailId: "fulong-a1",
+        fromNodeId: "top",
+        toNodeId: "missing-bottom",
+        sourceSnapshotId: "map-source",
+        verificationState: "unverified",
+        path: "M 0 0 L 10 10",
+        label: { x: 5, y: 5 },
+      }],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/Trail Location.*missing topology node/i);
   });
 
   it("rejects non-HTTP source URLs", () => {

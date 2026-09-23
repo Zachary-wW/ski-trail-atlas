@@ -49,6 +49,20 @@ test("opens the selected Trail on its stable direct URL", async ({ page }) => {
   await expect(page.getByText("22°", { exact: true })).toBeVisible();
 });
 
+test("preserves mixed and park difficulty labels from the source", async ({ page }) => {
+  await page.goto("/trails/fulong-b2");
+  await expect(page.getByRole("heading", { name: "B2 · 交响" })).toBeVisible();
+  await expect(page.getByText("Beginner–Intermediate", { exact: true })).toBeVisible();
+
+  await page.goto("/trails/fulong-a9");
+  await expect(page.getByRole("heading", { name: "A9 · 嘻哈" })).toBeVisible();
+  await expect(page.getByText("Terrain park", { exact: true })).toBeVisible();
+
+  await page.goto("/trails/fulong-b6");
+  await expect(page.getByRole("heading", { name: "B6 · 乡村" })).toBeVisible();
+  await expect(page.getByText("Intermediate–Advanced", { exact: true })).toBeVisible();
+});
+
 test("shows an explicit empty state for an unknown Trail query", async ({ page }) => {
   await page.goto("/");
 

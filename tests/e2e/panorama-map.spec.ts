@@ -7,7 +7,7 @@ test("selects and highlights Trails through the Panorama Map", async ({ page }) 
   await expect(map).toBeVisible();
   await expect(map.getByRole("link", { name: "A1 · 蓝调" })).toHaveAttribute("aria-current", "page");
 
-  await map.getByRole("link", { name: "B1 · 摇滚" }).click();
+  await map.getByRole("link", { name: "B1 · 摇滚" }).locator(".trail-label").click();
 
   await expect(page).toHaveURL(/\/trails\/fulong-b1$/);
   await expect(page.getByRole("heading", { name: "B1 · 摇滚" })).toBeVisible();
@@ -43,9 +43,11 @@ test("supports keyboard zoom and pan plus pointer panning", async ({ page }) => 
   const box = await svg.boundingBox();
   if (!box) throw new Error("Map SVG has no bounding box");
 
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  const dragX = box.x + box.width * 0.08;
+  const dragY = box.y + box.height * 0.12;
+  await page.mouse.move(dragX, dragY);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width / 2 + 80, box.y + box.height / 2, { steps: 5 });
+  await page.mouse.move(dragX + 80, dragY, { steps: 5 });
   await page.mouse.up();
 
   expect(await svg.getAttribute("viewBox")).not.toBe(beforeDrag);
@@ -71,16 +73,20 @@ test("renders the evidence-backed major lift skeleton and topology anchors", asy
   await page.goto("/");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
-  for (const code of ["L3", "L2", "L5", "L1"]) {
+  for (const code of ["L3", "L2", "L5", "L1", "L7"]) {
     await expect(map.locator(`[data-lift-code="${code}"]`)).toBeVisible();
   }
 
-  await expect(map.locator('[data-topology-node="fulong-summit"]')).toBeVisible();
+  await expect(map.locator('[data-topology-node="summit-main"]')).toBeVisible();
   await expect(map.locator('[data-topology-node="fulong-base"]')).toBeVisible();
   await expect(map.locator('[data-lift-code="L3"]')).toHaveAttribute(
     "data-topology-source",
     "chonglihuaxue-map-2026-09-23",
   );
+  await expect(map.locator("[data-trail-id]")).toHaveCount(33);
+  for (const plannedCode of ["C11", "C12", "E1"]) {
+    await expect(map.getByRole("link", { name: new RegExp(`^${plannedCode} ·`) })).toHaveCount(0);
+  }
 });
 
 test("keeps compact search above a dominant map and Trail details below it", async ({ page }) => {

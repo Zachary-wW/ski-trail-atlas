@@ -142,3 +142,13 @@ A second follow-up was able to fetch the Chonglihuaxue Fulong panorama resource 
 - The public SVG remains an original editorial redraw. The Chonglihuaxue raster, its icons, labels, decorative artwork, and typography are not shipped in the product.
 - The redraw intentionally preserves only structural relationships that can be supported at this stage. It does not claim exact coordinates, scale, lift station survey positions, or safe ski navigation.
 - Expanding from five interactive Trails to the full 33-row parameter inventory still requires Trail-by-Trail topology review and should not be inferred from background decoration.
+
+## 2026-09-23 high-resolution global-map follow-up
+
+The user supplied a substantially higher-resolution Fulong panorama in the working conversation. It was used as **reference-only visual evidence** to review the whole named network, junction families, and the visible L1/L2/L3/L5/L7 lift structure. The raster itself is not part of the repository or public build.
+
+- The published Trail Catalog now matches the 33 rows on the current Chonglihuaxue parameter page. Source-specific categories (`初级道`, `初中级道`, `公园`, `中级道`, `中高级道`, `高级道`) are preserved instead of being collapsed into three generic levels.
+- All 33 published Trails have one evidence-backed, `unverified` Trail Location with directed topology endpoints. Missing endpoints or missing Map Nodes fail publication validation.
+- Planned/reference-only labels visible on the panorama but absent from the 33-row parameter inventory (including C11, C12, and E1) are intentionally excluded from the Trail Catalog and routing graph.
+- The original SVG redraw uses a central-summit / west / central / east structural composition and independent curves. It does not reproduce the uploaded raster's artwork, icons, decorative layout, or exact geometry.
+- The five major visible lifts L1, L2, L3, L5, and L7 are present as source-backed Lift records. Geometry remains relative and non-navigational.

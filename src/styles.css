@@ -328,7 +328,7 @@ a {
 .trail-hit-target {
   fill: none;
   stroke: transparent;
-  stroke-width: 30;
+  stroke-width: 14;
   stroke-linecap: round;
   pointer-events: stroke;
 }
@@ -1015,14 +1015,21 @@ footer {
 .atlas-stage .topology-node text { fill:#394840; font-size:7px; font-weight:800; letter-spacing:.12em; paint-order:stroke; stroke:#edf0e9; stroke-width:4px; stroke-linejoin:round; }
 .atlas-stage .trail-line { stroke-width:6; filter:none; }
 .atlas-stage .map-trail .difficulty-beginner,.difficulty-beginner { color:var(--beginner); }
+.atlas-stage .map-trail .difficulty-beginner_intermediate,.difficulty-beginner_intermediate { color:#258ca3; }
+.atlas-stage .map-trail .difficulty-park,.difficulty-park { color:#8b5d94; }
 .atlas-stage .map-trail .difficulty-intermediate,.difficulty-intermediate { color:var(--intermediate); }
+.atlas-stage .map-trail .difficulty-intermediate_advanced,.difficulty-intermediate_advanced { color:#314b63; }
 .atlas-stage .map-trail .difficulty-advanced,.difficulty-advanced { color:var(--advanced); }
 .atlas-stage .map-trail:hover .trail-line,.atlas-stage .map-trail:focus .trail-line,.atlas-stage .map-trail.selected .trail-line { stroke-width:10; }
 .atlas-stage .map-trail.selected .trail-line { filter:none; }
 .atlas-stage .trail-label rect { fill:var(--surface); stroke:rgba(25,37,31,.45); stroke-width:1.2; }
 .atlas-stage .trail-label text { fill:var(--ink); font-size:11px; }
+.atlas-stage .trail-label { pointer-events:all; cursor:pointer; }
 .atlas-stage .map-trail.selected .trail-label rect { fill:var(--ink); stroke:var(--ink); }
 .atlas-stage .map-trail.selected .trail-label text { fill:var(--surface); }
+.atlas-stage .map-trail:not(.selected) .trail-label rect { fill:rgba(247,245,237,.88); }
+.atlas-stage .map-trail:not(.selected) .trail-label text { font-size:9px; font-weight:800; }
+.atlas-stage .map-trail.selected .trail-label rect { transform:scale(1.12); transform-box:fill-box; transform-origin:center; }
 .atlas-stage .panorama-meta { gap:14px; margin:0; padding:9px 2px 0; color:var(--muted); font-size:8px; letter-spacing:.06em; text-transform:uppercase; }
 .atlas-stage .panorama-meta span,.atlas-stage .panorama-meta a { padding:0; border:0; border-radius:0; background:transparent; color:inherit; }
 .atlas-stage .map-disclaimer { margin:7px 2px 0; color:var(--muted); font-size:8px; }

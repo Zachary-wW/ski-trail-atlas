@@ -175,30 +175,30 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
             </linearGradient>
           </defs>
           <rect width="1000" height="650" className="map-sky" />
-          <circle cx="126" cy="112" r="50" className="map-sun" />
+          <circle cx="128" cy="105" r="48" className="map-sun" />
           <path
             className="mountain back"
-            d="M0 486 C112 444 198 397 280 350 C370 298 456 262 536 218 C620 172 684 119 744 55 C790 108 833 150 876 197 C923 247 959 309 1000 376 L1000 650 L0 650 Z"
+            d="M0 474 C118 438 225 386 322 304 C404 235 474 137 525 58 C585 112 650 157 714 207 C806 278 897 345 1000 391 L1000 650 L0 650 Z"
           />
           <path
             className="terrain-face terrain-west"
-            d="M0 520 C137 493 260 443 365 369 C463 301 578 218 744 55 C674 205 604 310 520 393 C419 492 271 552 0 604 Z"
+            d="M0 525 C132 492 256 425 352 332 C427 260 487 167 525 58 C495 226 445 349 366 444 C282 545 162 590 0 614 Z"
           />
           <path
             className="terrain-face terrain-central"
-            d="M744 55 C710 204 698 337 695 525 C626 504 565 469 520 393 C604 310 674 205 744 55 Z"
+            d="M525 58 C579 170 614 293 600 590 C519 565 441 518 366 444 C445 349 495 226 525 58 Z"
           />
           <path
             className="terrain-face terrain-east"
-            d="M744 55 C790 108 833 150 876 197 C923 247 959 309 1000 376 L1000 602 C928 551 823 531 695 525 C698 337 710 204 744 55 Z"
+            d="M525 58 C606 118 702 175 790 245 C878 316 943 361 1000 391 L1000 614 C872 575 735 574 600 590 C614 293 579 170 525 58 Z"
           />
-          <path className="ridge-line primary" d="M145 514 C318 451 475 354 602 245 C660 195 706 139 744 55" />
-          <path className="ridge-line" d="M744 55 C789 113 823 164 852 225 C886 297 917 375 972 461" />
-          <path className="ridge-line secondary" d="M480 409 C572 385 657 342 718 300 C775 261 819 223 852 188" />
+          <path className="ridge-line primary" d="M104 563 C214 451 320 352 406 249 C464 180 503 111 525 58" />
+          <path className="ridge-line" d="M525 58 C632 132 731 199 817 286 C878 347 928 409 966 479" />
+          <path className="ridge-line secondary" d="M258 342 C359 300 446 272 526 253 C614 232 701 221 800 244" />
           <g className="base-village" aria-hidden="true">
-            <rect x="602" y="587" width="68" height="27" />
-            <rect x="681" y="577" width="84" height="36" />
-            <rect x="777" y="588" width="72" height="25" />
+            <rect x="520" y="590" width="62" height="24" />
+            <rect x="592" y="579" width="82" height="35" />
+            <rect x="684" y="588" width="64" height="26" />
           </g>
 
           <g className="lift-system" aria-label="Major lift skeleton">
@@ -257,7 +257,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
                   d={location.path}
                 />
                 <g className="trail-label" transform={`translate(${location.label.x} ${location.label.y})`}>
-                  <rect x="-26" y="-14" width="52" height="28" rx="14" />
+                  <rect x="-21" y="-12" width="42" height="24" rx="6" />
                   <text textAnchor="middle" dominantBaseline="central">{trail.code}</text>
                 </g>
               </a>

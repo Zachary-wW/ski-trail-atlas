@@ -62,6 +62,8 @@ const liftSchema = z.object({
 
 const trailLocationSchema = z.object({
   trailId: z.string().min(1),
+  fromNodeId: z.string().min(1).optional(),
+  toNodeId: z.string().min(1).optional(),
   ...evidenceReferenceFields,
   path: z.string().min(1),
   label: z.object({
@@ -82,7 +84,14 @@ const claimSchema = z.discriminatedUnion("field", [
     .object({
       ...claimBase,
       field: z.literal("difficulty"),
-      value: z.enum(["beginner", "intermediate", "advanced"]),
+      value: z.enum([
+        "beginner",
+        "beginner_intermediate",
+        "park",
+        "intermediate",
+        "intermediate_advanced",
+        "advanced",
+      ]),
     })
     .strict(),
   z
@@ -203,6 +212,14 @@ export function compilePublication(input: unknown) {
     }
 
     locatedTrailIds.add(location.trailId);
+
+    if (!location.fromNodeId || !location.toNodeId) {
+      throw new Error(`Trail Location for ${location.trailId} requires fromNodeId and toNodeId endpoints`);
+    }
+
+    if (!mapNodeIds.has(location.fromNodeId) || !mapNodeIds.has(location.toNodeId)) {
+      throw new Error(`Trail Location for ${location.trailId} references missing topology node`);
+    }
   }
 
   for (const node of researchPackage.mapNodes) {
@@ -245,8 +262,14 @@ export function compilePublication(input: unknown) {
         );
       }
 
+      if (!location.fromNodeId || !location.toNodeId) {
+        throw new Error(`Trail Location for ${location.trailId} requires topology endpoints`);
+      }
+
       return {
         trailId: location.trailId,
+        fromNodeId: location.fromNodeId,
+        toNodeId: location.toNodeId,
         verificationState: location.verificationState,
         path: location.path,
         label: location.label,
