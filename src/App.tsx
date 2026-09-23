@@ -4,6 +4,8 @@ import { appHref, routePathFromLocation } from "./app-paths";
 import { publication } from "./data/publication";
 import { copy, languageFromStorage, type Language } from "./i18n";
 import { PanoramaMap } from "./PanoramaMap";
+import { RoutePlanPanel, RoutePlanner } from "./RoutePlanner";
+import type { RoutePlan } from "./routing/plan-trail-route";
 import { TrailCatalog } from "./TrailCatalog";
 import { difficultyLabels } from "./trail-labels";
 
@@ -35,6 +37,7 @@ function NotFound({ language }: { language: Language }) {
 
 function App() {
   const [language, setLanguage] = useState<Language>(languageFromStorage);
+  const [routePlan, setRoutePlan] = useState<RoutePlan | null>(null);
   const text = copy[language];
   const routePath = routePathFromLocation(window.location.pathname, window.location.search);
   const trail = publication.trails.find(
@@ -108,12 +111,15 @@ function App() {
       <main className="atlas-stage">
         <div className="atlas-toolbar">
           <TrailCatalog language={language} selectedTrailId={trail.id} />
+          <RoutePlanner language={language} selectedTrailId={trail.id} onPlanChange={setRoutePlan} />
         </div>
         <PanoramaMap
           language={language}
           selectedTrailId={trail.id}
           autoFocusSelected={routePath !== "/" && routePath !== ""}
+          routePlan={routePlan}
         />
+        <RoutePlanPanel language={language} plan={routePlan} />
         <aside className="trail-inspector metrics-panel" aria-labelledby="trail-title">
           <header className="inspector-heading">
             <div className="inspector-kicker">

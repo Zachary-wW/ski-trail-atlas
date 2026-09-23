@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { appHref } from "./app-paths";
 import { publication } from "./data/publication";
 import { copy, type Language } from "./i18n";
+import type { RoutePlan } from "./routing/plan-trail-route";
 
 const MAP_WIDTH = 1000;
 const MAP_HEIGHT = 650;
@@ -13,6 +14,7 @@ type PanoramaMapProps = {
   language: Language;
   selectedTrailId: string;
   autoFocusSelected?: boolean;
+  routePlan?: RoutePlan | null;
 };
 type DragState = {
   pointerId: number;
@@ -36,13 +38,20 @@ function clampView(view: ViewBox): ViewBox {
   };
 }
 
-export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = false }: PanoramaMapProps) {
+export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = false, routePlan = null }: PanoramaMapProps) {
   const text = copy[language];
   const [view, setView] = useState<ViewBox>(initialView);
   const dragRef = useRef<DragState | null>(null);
   const trailPathRefs = useRef(new Map<string, SVGPathElement>());
+  const routeTrailIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "trail").map((segment) => segment.id) ?? []);
+  const routeLiftIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "lift").map((segment) => segment.id) ?? []);
 
   useEffect(() => {
+    if (routePlan) {
+      setView(initialView);
+      return;
+    }
+
     if (!autoFocusSelected) {
       setView(initialView);
       return;
@@ -71,7 +80,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
         height,
       }),
     );
-  }, [autoFocusSelected, selectedTrailId]);
+  }, [autoFocusSelected, routePlan, selectedTrailId]);
 
   const zoom = (factor: number) => {
     setView((current) => {
@@ -138,7 +147,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
   );
 
   return (
-    <section className="panorama-panel" role="region" aria-label={text.mapRegionAria}>
+    <section className={routePlan ? "panorama-panel route-mode" : "panorama-panel"} role="region" aria-label={text.mapRegionAria}>
       <header className="panorama-header">
         <div>
           <p className="eyebrow dark">{text.mapEyebrow}</p>
@@ -203,12 +212,13 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
 
           <g className="lift-system" aria-label="Major lift skeleton">
             {publication.lifts.map((lift) => (
-              <g key={lift.id} className="map-lift">
+              <g key={lift.id} className={routeLiftIds.has(lift.id) ? "map-lift route-active" : "map-lift"}>
                 <path
                   className="lift-line"
                   d={lift.path}
                   data-lift-code={lift.code}
                   data-topology-source={lift.source.id}
+                  data-route-active={routeLiftIds.has(lift.id) ? "true" : undefined}
                 />
                 <g className="lift-label" transform={`translate(${lift.label.x} ${lift.label.y})`}>
                   <rect x="-16" y="-10" width="32" height="20" />
@@ -237,15 +247,18 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
             if (!trail) return null;
             const difficulty = String(trail.publishedFields.difficulty?.value ?? "unknown");
             const selected = trail.id === selectedTrailId;
+            const routeActive = routeTrailIds.has(trail.id);
+            const className = ["map-trail", selected ? "selected" : "", routeActive ? "route-active" : ""].filter(Boolean).join(" ");
             return (
               <a
                 key={trail.id}
                 href={appHref(`/trails/${trail.id}`)}
                 aria-label={`${trail.code} · ${trail.name}`}
                 aria-current={selected ? "page" : undefined}
-                className={selected ? "map-trail selected" : "map-trail"}
+                className={className}
                 data-trail-id={trail.id}
                 data-topology-source={location.source.id}
+                data-route-active={routeActive ? "true" : undefined}
               >
                 <path className="trail-hit-target" d={location.path} />
                 <path

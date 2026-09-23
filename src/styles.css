@@ -1192,3 +1192,53 @@ footer {
   .inspector-evidence { display:flex; padding:16px 18px; border-left:0; }
   .atlas-footer { min-height:68px; padding:13px 14px; font-size:10px; }
 }
+
+/* Schematic route planner */
+.atlas-toolbar { gap:10px; }
+.route-planner-control { position:relative; flex:0 0 auto; }
+.route-toggle { height:48px; display:inline-flex; align-items:center; gap:8px; padding:0 16px; border:1px solid var(--hairline-strong); background:var(--paper); color:var(--ink); font:600 12px/1 "Avenir Next",system-ui,sans-serif; letter-spacing:.04em; cursor:pointer; }
+.route-toggle:hover { background:#eef1ea; }
+.route-toggle:focus-visible,.route-popover button:focus-visible,.route-popover select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.route-popover { position:absolute; z-index:60; top:56px; right:0; width:360px; padding:18px; display:grid; gap:14px; border:1px solid var(--hairline-strong); background:var(--paper); box-shadow:0 20px 52px rgba(25,37,31,.16); }
+.route-popover-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.route-popover-heading strong { font:400 20px/1.1 Georgia,"Songti SC",serif; }
+.route-popover-heading button { width:32px; height:32px; border:0; background:transparent; color:var(--muted); font-size:22px; cursor:pointer; }
+.route-popover label { display:grid; gap:6px; color:#53605a; font-size:11px; letter-spacing:.05em; text-transform:uppercase; }
+.route-popover select { width:100%; min-height:44px; padding:0 36px 0 11px; border:1px solid var(--hairline-strong); border-radius:0; background:var(--surface); color:var(--ink); font-size:14px; }
+.route-build { min-height:44px; border:1px solid var(--ink); background:var(--ink); color:var(--surface); font-size:13px; font-weight:700; cursor:pointer; }
+.route-build:disabled { opacity:.4; cursor:not-allowed; }
+.route-no-result { margin:0; padding:11px 12px; border-left:3px solid var(--accent); background:#f1eee5; color:#4a554f; font-size:12px; line-height:1.45; }
+.route-popover-note { margin:0; color:#59645e; font-size:11px; line-height:1.5; }
+.route-plan-sheet { width:100%; margin:0 0 12px; border:1px solid var(--hairline-strong); background:var(--paper); }
+.route-plan-heading { display:grid; grid-template-columns:minmax(180px,.55fr) minmax(320px,1fr); gap:28px; align-items:end; padding:20px 24px; border-bottom:1px solid var(--hairline); }
+.route-plan-heading .eyebrow { margin:0 0 5px; color:var(--muted); font-size:10px; }
+.route-plan-heading h2 { margin:0; font:400 31px/1 Georgia,"Songti SC",serif; letter-spacing:-.035em; }
+.route-plan-heading > p { margin:0; color:#4f5a54; font-size:12px; line-height:1.55; }
+.route-steps { margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); list-style:none; }
+.route-step { min-height:92px; display:grid; grid-template-columns:24px 24px 1fr; gap:8px; align-items:center; padding:14px 16px; border-right:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
+.route-step-index { color:#7a847e; font:500 10px/1 "Avenir Next",sans-serif; }
+.route-step-mode { width:22px; height:22px; display:grid; place-items:center; border:1px solid var(--hairline-strong); font-size:12px; }
+.route-lift .route-step-mode { background:#b34e3e; border-color:#b34e3e; color:#fff; }
+.route-trail .route-step-mode { background:#eef1ea; color:var(--ink); }
+.route-step-copy { min-width:0; display:grid; gap:5px; }
+.route-step-copy strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+.route-step-copy small { color:#59645e; font-size:11px; }
+.panorama-panel.route-mode .map-trail:not(.route-active) .trail-line { opacity:.22; }
+.panorama-panel.route-mode .map-lift:not(.route-active) .lift-line { opacity:.16; }
+.panorama-panel.route-mode .map-trail.route-active .trail-line { stroke-width:9; opacity:1; }
+.panorama-panel.route-mode .map-lift.route-active .lift-line { stroke-width:4; opacity:1; stroke-dasharray:5 4; }
+.panorama-panel.route-mode .map-trail.route-active .trail-label rect { stroke-width:2; stroke:var(--ink); }
+
+@media (max-width:620px) {
+  .atlas-toolbar { align-items:center; }
+  .atlas-stage .catalog-section { flex:1 1 auto; min-width:0; }
+  .route-toggle { width:46px; padding:0; justify-content:center; font-size:0; }
+  .route-toggle span { font-size:18px; }
+  .route-popover { position:absolute; top:54px; right:0; width:min(360px,calc(100vw - 24px)); padding:16px; }
+  .route-plan-sheet { order:3; }
+  .trail-inspector { order:4; }
+  .route-plan-heading { grid-template-columns:1fr; gap:10px; padding:18px; }
+  .route-plan-heading h2 { font-size:27px; }
+  .route-steps { grid-template-columns:1fr; }
+  .route-step { min-height:72px; border-right:0; }
+}

@@ -21,9 +21,10 @@ The current map-first release includes:
 - compact Trail search by name or code, stable direct URLs, and automatic map focus;
 - a global original SVG topology with 33 clickable Trail Locations and the major visible L1/L2/L3/L5/L7 lifts;
 - directed Trail topology endpoints that are validated against evidence-backed Map Nodes;
+- a schematic Route Planner that chains published downhill Trail edges and uphill Lift edges, highlights the full sequence, and reports unsupported connections instead of guessing;
 - explicit missing values rather than inferred parameters, plus season, evidence, and non-navigation disclosures.
 
-The product does **not** currently provide the planned multi-Trail Route Planner, real-time operating status, GPS navigation, safety judgement, or personalized recommendations.
+Route Plans are schematic and season-scoped; they are not GPS navigation and do not reflect live lift/trail operating status or safety conditions. The product does **not** provide personalized ability-based route recommendations.
 
 ## Local development
 
