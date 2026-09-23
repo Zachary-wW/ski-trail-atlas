@@ -24,24 +24,31 @@ export function TrailCatalog({ language, selectedTrailId }: TrailCatalogProps) {
 
   return (
     <section className="catalog-section" aria-labelledby="catalog-title">
-      <div className="catalog-heading">
+      <header className="catalog-heading">
         <div>
-          <p className="eyebrow dark">{text.catalogEyebrow}</p>
+          <p className="eyebrow">{text.catalogEyebrow}</p>
           <h2 id="catalog-title">{text.catalogTitle}</h2>
         </div>
-        <label className="trail-search">
-          <span>{text.searchLabel}</span>
+        <span className="catalog-count">{publication.trails.length.toString().padStart(2, "0")}</span>
+      </header>
+
+      <label className="trail-search">
+        <span>{text.searchLabel}</span>
+        <div className="search-field">
+          <span className="search-glyph" aria-hidden="true">⌕</span>
           <input
             type="search"
+            name="trail-search"
+            autoComplete="off"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={text.searchPlaceholder}
           />
-        </label>
-      </div>
+        </div>
+      </label>
 
       {matchingTrails.length > 0 ? (
-        <div className="trail-list" aria-label={text.catalogAria}>
+        <nav className="trail-list" aria-label={text.catalogAria}>
           {matchingTrails.map((trail) => {
             const difficulty = trail.publishedFields.difficulty;
             const slope = trail.publishedFields.averageSlopeDegrees;
@@ -49,24 +56,26 @@ export function TrailCatalog({ language, selectedTrailId }: TrailCatalogProps) {
 
             return (
               <a
-                className={isSelected ? "trail-card selected" : "trail-card"}
+                className={isSelected ? "trail-row selected" : "trail-row"}
                 href={appHref(`/trails/${trail.id}`)}
+                aria-label={`${trail.code} · ${trail.name}`}
                 aria-current={isSelected ? "page" : undefined}
                 key={trail.id}
               >
-                <span className="trail-card-title">{trail.code} · {trail.name}</span>
-                <span className="trail-card-meta">
-                  {difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty}
-                  <span aria-hidden="true"> · </span>
-                  {slope ? `${text.averageSlopePrefix}${slope.value}°` : text.slopeUnavailable}
+                <span className={`trail-code difficulty-${String(difficulty?.value ?? "unknown")}`}>{trail.code}</span>
+                <span className="trail-name">
+                  <strong>{trail.name}</strong>
+                  <small>{difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty} · {slope ? `${slope.value}°` : text.slopeUnavailable}</small>
                 </span>
+                <span className="trail-slope">{slope ? `AVG ${slope.value}°` : "—"}</span>
               </a>
             );
           })}
-        </div>
+        </nav>
       ) : (
         <p className="catalog-empty">{text.noMatches}</p>
       )}
+      <p className="catalog-footnote">{text.mapDisclaimer}</p>
     </section>
   );
 }

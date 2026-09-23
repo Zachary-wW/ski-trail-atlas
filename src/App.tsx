@@ -24,14 +24,8 @@ function NotFound({ language }: { language: Language }) {
 
   return (
     <main className="not-found">
-      <a className="brand" href={appHref("/")} aria-label={text.homeAria}>
-        <span className="brand-mark" aria-hidden="true">F</span>
-        <span>
-          <strong>{text.siteName}</strong>
-          <small>{text.siteTagline}</small>
-        </span>
-      </a>
-      <p className="eyebrow dark">{text.notFoundEyebrow}</p>
+      <a className="wordmark" href={appHref("/")} aria-label={text.homeAria}>SKI TRAIL ATLAS</a>
+      <p className="eyebrow">{text.notFoundEyebrow}</p>
       <h1>{text.notFoundTitle}</h1>
       <p>{text.notFoundBody}</p>
       <a className="home-link" href={appHref("/trails/fulong-a1")}>{text.notFoundLink}</a>
@@ -101,137 +95,51 @@ function App() {
   ];
 
   return (
-    <div className="site-shell">
-      <header className="topbar">
-        <a className="brand" href={appHref("/")} aria-label={text.homeAria}>
-          <span className="brand-mark" aria-hidden="true">F</span>
-          <span>
-            <strong>{text.siteName}</strong>
-            <small>{text.siteTagline}</small>
-          </span>
-        </a>
-        <div className="topbar-actions">
-          <span className="season-pill">{formatSeason(publication.season, language)}</span>
-          <button className="language-toggle" type="button" onClick={toggleLanguage}>
-            {text.switchLanguage}
-          </button>
+    <div className="atlas-shell">
+      <header className="atlas-topbar">
+        <a className="wordmark" href={appHref("/")} aria-label={text.homeAria}>SKI TRAIL ATLAS</a>
+        <div className="atlas-context">
+          <span>Fulong · Chongli</span>
+          <span>{formatSeason(publication.season, language)}</span>
+          <button className="language-toggle" type="button" onClick={toggleLanguage}>{text.switchLanguage}</button>
         </div>
       </header>
 
-      <section className="explore-layout" aria-label="Trail explorer">
+      <main className="atlas-stage">
         <TrailCatalog language={language} selectedTrailId={trail.id} />
         <PanoramaMap language={language} selectedTrailId={trail.id} />
-      </section>
-
-      <main>
-        <section className="hero" aria-labelledby="trail-title">
-          <div className="contours" aria-hidden="true">
-            <svg viewBox="0 0 900 460" role="presentation">
-              <path d="M-50 390C110 280 205 342 320 255S520 150 670 203 820 161 940 48" />
-              <path d="M-35 432C120 316 220 385 344 292S542 193 687 236 839 199 959 82" />
-              <path d="M24 460C169 363 264 417 389 332S578 243 718 280 852 251 947 163" />
-              <path d="M376 460C441 401 488 385 543 342S665 301 733 320 846 298 928 240" />
-            </svg>
-          </div>
-
-          <nav className="breadcrumb" aria-label="Breadcrumb">
-            <a href={appHref("/")}>{text.breadcrumbResort}</a>
-            <span aria-hidden="true">/</span>
-            <span>{text.breadcrumbDetail}</span>
-          </nav>
-
-          <div className="hero-content">
-            <div>
-              <p className="eyebrow">{text.profileEyebrow}</p>
-              <h1 id="trail-title">
-                {trail.code} <span>·</span> {trail.name}
-              </h1>
-              <div className="status-row">
-                <span className="difficulty-badge">
-                  {difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty}
-                </span>
-                <span className="verification-badge">
-                  <span className="status-dot" aria-hidden="true" />
-                  {text.verification[verificationState]}
-                </span>
-              </div>
+        <aside className="trail-inspector metrics-panel" aria-labelledby="trail-title">
+          <header className="inspector-heading">
+            <div className="inspector-kicker">
+              <span className={`difficulty-key difficulty-${String(difficulty?.value ?? "unknown")}`} />
+              <span>{difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty}</span>
+              <span aria-hidden="true">·</span>
+              <span>{text.verification[verificationState]}</span>
             </div>
-
-            <aside className="quick-read" aria-label={text.quickReadLabel}>
-              <span>{text.quickReadLabel}</span>
-              <strong>{text.quickReadTitle}</strong>
-              <p>{text.quickReadBody}</p>
-            </aside>
-          </div>
-        </section>
-
-        <section className="content-grid">
-          <article className="panel metrics-panel" aria-labelledby="metrics-title">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow dark">{text.trailDataEyebrow}</p>
-                <h2 id="metrics-title">{text.trailDataTitle}</h2>
+            <h1 id="trail-title">{trail.code} · {trail.name}</h1>
+            <p className="data-note">{text.sourceValueNote}</p>
+          </header>
+          <dl className="inspector-metrics">
+            {metrics.map((metric) => (
+              <div className="inspector-metric metric" key={metric.label}>
+                <dt>{metric.label}</dt>
+                <dd className={metric.value ? "" : "missing"}>{metric.value ?? text.missing}</dd>
               </div>
-              <span className="data-note">{text.sourceValueNote}</span>
+            ))}
+          </dl>
+          <div className="inspector-note context-note verification-line"><span className="note-index">01</span><p>{text.slopeDisclaimer}</p></div>
+          {primarySource && (
+            <div className="inspector-evidence source-card">
+              <div><span className="source-label">{text.evidenceEyebrow}</span><strong>{primarySource.publisher}</strong><small>{publication.lastVerifiedAt}</small></div>
+              <p>{primarySource.title}</p>
+              <dl><div><dt>{text.lastVerified}</dt><dd>{publication.lastVerifiedAt}</dd></div></dl>
+              <a aria-label={primarySource.title} href={primarySource.url} target="_blank" rel="noreferrer">{text.referenceSource} ↗</a>
             </div>
-
-            <dl className="metric-grid">
-              {metrics.map((metric) => (
-                <div className={metric.featured ? "metric featured" : "metric"} key={metric.label}>
-                  <dt>{metric.label}</dt>
-                  <dd className={metric.value ? "" : "missing"}>{metric.value ?? text.missing}</dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="context-note">
-              <span className="note-icon" aria-hidden="true">i</span>
-              <p>{text.slopeDisclaimer}</p>
-            </div>
-          </article>
-
-          <article className="panel evidence-panel" aria-labelledby="evidence-title">
-            <div className="section-heading compact">
-              <div>
-                <p className="eyebrow dark">{text.evidenceEyebrow}</p>
-                <h2 id="evidence-title">{text.evidenceTitle}</h2>
-              </div>
-              <span className="source-count">{text.oneSource}</span>
-            </div>
-
-            {primarySource && (
-              <div className="source-card">
-                <div className="source-label">{text.referenceSource}</div>
-                <a href={primarySource.url} target="_blank" rel="noreferrer">
-                  {primarySource.title}
-                  <span aria-hidden="true">↗</span>
-                </a>
-                <p>{primarySource.publisher}</p>
-                <dl>
-                  <div>
-                    <dt>{text.applicableSeason}</dt>
-                    <dd>{formatSeason(primarySource.season, language)}</dd>
-                  </div>
-                  <div>
-                    <dt>{text.lastVerified}</dt>
-                    <dd>{publication.lastVerifiedAt}</dd>
-                  </div>
-                </dl>
-              </div>
-            )}
-
-            <div className="verification-line">
-              <span className="status-dot" aria-hidden="true" />
-              <div>
-                <strong>{text.verification[verificationState]}</strong>
-                <p>{text.verificationBody}</p>
-              </div>
-            </div>
-          </article>
-        </section>
+          )}
+        </aside>
       </main>
 
-      <footer>
+      <footer className="atlas-footer">
         <span>{text.footerIndependent}</span>
         <span>{text.footerCheck}</span>
       </footer>
