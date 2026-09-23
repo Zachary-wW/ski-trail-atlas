@@ -14,7 +14,7 @@ test("selects and highlights Trails through the Panorama Map", async ({ page }) 
   await expect(
     page.getByRole("region", { name: "Fulong Panorama Map" }).getByRole("link", { name: "B1 · 摇滚" }),
   ).toHaveAttribute("aria-current", "page");
-  await expect(page.locator(".panorama-viewport svg")).not.toHaveAttribute("viewBox", "0 0 1000 650");
+  await expect(page.locator(".panorama-map-canvas")).not.toHaveAttribute("viewBox", "0 0 1000 650");
 });
 
 test("supports keyboard zoom and pan plus pointer panning", async ({ page }) => {
@@ -22,7 +22,7 @@ test("supports keyboard zoom and pan plus pointer panning", async ({ page }) => 
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   const viewport = map.locator(".panorama-viewport");
-  const svg = viewport.locator("svg");
+  const svg = viewport.locator(".panorama-map-canvas");
 
   await expect(svg).toHaveAttribute("viewBox", "0 0 1000 650");
 
@@ -61,7 +61,7 @@ test("shows season, verification date, evidence, and a non-navigation disclaimer
   await expect(map.getByText("2026-09-23", { exact: true })).toBeVisible();
   await expect(map.getByText("Location evidence unverified", { exact: true })).toBeVisible();
   await expect(
-    map.getByText("Schematic relative topology only · Not for on-mountain navigation", { exact: true }),
+    map.getByText("Source panorama layout with schematic interactive overlay · Not for on-mountain navigation", { exact: true }),
   ).toBeVisible();
   await expect(map.getByRole("link", { name: /Topology evidence/ })).toHaveAttribute(
     "href",
@@ -102,7 +102,7 @@ test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", a
   await c8.locator(".trail-label").click();
   await expect(page).toHaveURL(/\/trails\/fulong-c8$/);
   await expect(c8).toHaveAttribute("aria-current", "page");
-  await expect(page.locator(".panorama-viewport svg")).not.toHaveAttribute("viewBox", "0 0 1000 650");
+  await expect(page.locator(".panorama-map-canvas")).not.toHaveAttribute("viewBox", "0 0 1000 650");
 });
 
 
@@ -122,14 +122,42 @@ test("uses the reference layout for every published Trail and major Uphill Trans
   }
 });
 
-test("keeps reference-calibrated Trail and transport labels from materially overlapping", async ({ page }) => {
+test("uses the source panorama as the visual layout truth with a light interactive overlay", async ({ page }) => {
+  await page.goto("/");
+
+  const map = page.getByRole("region", { name: "Fulong Panorama Map" });
+  const raster = map.locator('[data-reference-raster="fulong-source-panorama"]');
+  await expect(raster).toBeVisible();
+  await expect(raster).toHaveAttribute("href", /\/maps\/fulong-reference\.jpg$/);
+
+  const syntheticMountainOpacity = await map.locator(".mountain.back").evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element).opacity),
+  );
+  expect(syntheticMountainOpacity).toBe(0);
+
+  const unselected = map.getByRole("link", { name: "B1 · 摇滚" });
+  const unselectedOpacity = await unselected.locator(".trail-line").evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element).opacity),
+  );
+  expect(unselectedOpacity).toBe(0);
+
+  await unselected.locator(".trail-label").click();
+  const selectedOpacity = await map.getByRole("link", { name: "B1 · 摇滚" }).locator(".trail-line").evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element).opacity),
+  );
+  expect(selectedOpacity).toBeGreaterThanOrEqual(0.2);
+  expect(selectedOpacity).toBeLessThanOrEqual(0.4);
+});
+
+test("keeps visible reference-calibrated Trail and transport labels from materially overlapping", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/");
 
   const labels = page.getByRole("region", { name: "Fulong Panorama Map" }).locator(".trail-label, .lift-label");
-  const boxes = await labels.evaluateAll((elements) => elements.map((element) => {
+  const boxes = await labels.evaluateAll((elements) => elements.flatMap((element) => {
+    if (Number.parseFloat(getComputedStyle(element).opacity) <= 0.05) return [];
     const box = element.getBoundingClientRect();
-    return { label: element.textContent?.trim() ?? "", x: box.x, y: box.y, width: box.width, height: box.height };
+    return [{ label: element.textContent?.trim() ?? "", x: box.x, y: box.y, width: box.width, height: box.height }];
   }));
 
   const overlaps: string[] = [];

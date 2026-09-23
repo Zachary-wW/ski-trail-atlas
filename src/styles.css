@@ -1039,6 +1039,38 @@ footer {
 .atlas-stage .panorama-meta span,.atlas-stage .panorama-meta a { padding:0; border:0; border-radius:0; background:transparent; color:inherit; }
 .atlas-stage .map-disclaimer { margin:7px 2px 0; color:var(--muted); font-size:8px; }
 
+/* Layout-faithful reference panorama: the source raster owns the visual layout;
+   SVG geometry remains the interactive/highlight overlay. */
+.atlas-stage .reference-raster-layer { pointer-events:none; overflow:hidden; }
+.atlas-stage .reference-raster-layer image {
+  opacity:.96;
+  filter:saturate(.86) contrast(.98) brightness(1.02);
+  pointer-events:none;
+}
+.atlas-stage .reference-raster-mode .map-sky,
+.atlas-stage .reference-raster-mode .map-sun,
+.atlas-stage .reference-raster-mode .mountain,
+.atlas-stage .reference-raster-mode .terrain-face,
+.atlas-stage .reference-raster-mode .forest-mass,
+.atlas-stage .reference-raster-mode .ridge-line,
+.atlas-stage .reference-raster-mode .base-village { opacity:0; }
+.atlas-stage .reference-raster-mode .reference-features,
+.atlas-stage .reference-raster-mode .topology-nodes { opacity:0; }
+.atlas-stage .reference-raster-mode .map-transport .lift-line { opacity:0; }
+.atlas-stage .reference-raster-mode .map-transport .lift-label { opacity:0; }
+.atlas-stage .reference-raster-mode .map-trail .trail-line { opacity:0; }
+.atlas-stage .reference-raster-mode .map-trail:not(.selected):not(.route-active) .trail-label { opacity:0; }
+.atlas-stage .reference-raster-mode .map-trail:hover .trail-line,
+.atlas-stage .reference-raster-mode .map-trail:focus .trail-line { opacity:.16; stroke-width:16; }
+.atlas-stage .reference-raster-mode .map-trail.selected .trail-line { opacity:.28; stroke-width:18; }
+.atlas-stage .reference-raster-mode .map-trail.route-active .trail-line { opacity:.34; stroke-width:18; }
+.atlas-stage .reference-raster-mode .map-trail:hover .trail-label,
+.atlas-stage .reference-raster-mode .map-trail:focus .trail-label,
+.atlas-stage .reference-raster-mode .map-trail.selected .trail-label,
+.atlas-stage .reference-raster-mode .map-trail.route-active .trail-label { opacity:1; }
+.atlas-stage .reference-raster-mode .map-transport.route-active .lift-line { opacity:.42; stroke-width:9; }
+.atlas-stage .reference-raster-mode .map-transport.route-active .lift-label { opacity:1; }
+
 .trail-inspector { position:absolute; z-index:9; right:clamp(20px,3vw,44px); bottom:28px; width:320px; background:rgba(247,245,237,.95); border:1px solid var(--hairline-strong); box-shadow:0 22px 58px rgba(25,37,31,.1); backdrop-filter:blur(16px); pointer-events:none; }
 .inspector-heading { padding:20px 22px 17px; border-bottom:1px solid var(--hairline); }
 .inspector-kicker { display:flex; align-items:center; gap:7px; margin-bottom:8px; color:var(--muted); font-size:8px; letter-spacing:.08em; text-transform:uppercase; }

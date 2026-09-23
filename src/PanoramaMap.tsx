@@ -48,7 +48,6 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
   const text = copy[language];
   const [view, setView] = useState<ViewBox>(initialView);
   const dragRef = useRef<DragState | null>(null);
-  const trailPathRefs = useRef(new Map<string, SVGPathElement>());
   const routeTrailIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "trail").map((segment) => segment.id) ?? []);
   const routeTransportIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "transport").map((segment) => segment.id) ?? []);
 
@@ -63,20 +62,16 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
       return;
     }
 
-    const path = trailPathRefs.current.get(selectedTrailId);
-    if (!path) return;
+    const location = publication.trailLocations.find((candidate) => candidate.trailId === selectedTrailId);
+    if (!location) return;
 
-    const bounds = path.getBBox();
-    const padding = 72;
-    const aspect = MAP_HEIGHT / MAP_WIDTH;
-    const width = Math.max(
-      bounds.width + padding * 2,
-      (bounds.height + padding * 2) / aspect,
-      MIN_VIEW_WIDTH,
-    );
-    const height = width * aspect;
-    const centerX = bounds.x + bounds.width / 2;
-    const centerY = bounds.y + bounds.height / 2;
+    // The published panorama is the visual truth. Focus around its source-aligned
+    // Trail label rather than a schematic SVG path bounding box so a rough path
+    // cannot pull the camera away from the location users recognise on the map.
+    const width = 520;
+    const height = width * (MAP_HEIGHT / MAP_WIDTH);
+    const centerX = location.label.x;
+    const centerY = location.label.y;
 
     setView(
       clampView({
@@ -153,7 +148,11 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
   );
 
   return (
-    <section className={routePlan ? "panorama-panel route-mode" : "panorama-panel"} role="region" aria-label={text.mapRegionAria}>
+    <section
+      className={["panorama-panel", "reference-raster-mode", routePlan ? "route-mode" : ""].filter(Boolean).join(" ")}
+      role="region"
+      aria-label={text.mapRegionAria}
+    >
       <header className="panorama-header">
         <div>
           <p className="eyebrow dark">{text.mapEyebrow}</p>
@@ -168,6 +167,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
 
       <div className="panorama-viewport" tabIndex={0} onKeyDown={handleKeyDown} aria-label={text.mapKeyboardHint}>
         <svg
+          className="panorama-map-canvas"
           viewBox={`${view.x} ${view.y} ${view.width} ${view.height}`}
           aria-label={text.mapCanvasAria}
           data-reference-layout="fulong-highres-2026-09-23"
@@ -190,6 +190,26 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
               <stop offset="100%" stopColor="#6f8a7d" />
             </linearGradient>
           </defs>
+          <svg
+            className="reference-raster-layer"
+            x="0"
+            y="75"
+            width="1000"
+            height="500"
+            viewBox="44 35 1917 937"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <image
+              data-reference-raster="fulong-source-panorama"
+              href={appHref("/maps/fulong-reference.jpg")}
+              x="0"
+              y="0"
+              width="2000"
+              height="1379"
+              preserveAspectRatio="none"
+            />
+          </svg>
           <rect width="1000" height="650" className="map-sky" />
           <circle cx="128" cy="105" r="48" className="map-sun" />
           <path
@@ -295,10 +315,6 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
               >
                 <path className="trail-hit-target" d={location.path} />
                 <path
-                  ref={(node) => {
-                    if (node) trailPathRefs.current.set(trail.id, node);
-                    else trailPathRefs.current.delete(trail.id);
-                  }}
                   className={`trail-line difficulty-${difficulty}`}
                   d={location.path}
                 />

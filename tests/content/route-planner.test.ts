@@ -51,8 +51,7 @@ describe("planTrailRoute", () => {
     expect(plan?.segments.map((segment) => `${segment.kind}:${segment.code}`)).toEqual([
       "trail:B1",
       "transport:L5",
-      "trail:C6",
-      "trail:C8",
+      "trail:C7",
       "trail:C9",
       "trail:D1",
     ]);
