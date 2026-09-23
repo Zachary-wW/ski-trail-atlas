@@ -89,6 +89,22 @@ test("renders the evidence-backed major lift skeleton and topology anchors", asy
   }
 });
 
+test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", async ({ page }) => {
+  await page.goto("/");
+
+  const map = page.getByRole("region", { name: "Fulong Panorama Map" });
+  const c8 = map.getByRole("link", { name: "C8 · 约德尔" });
+  const l3 = map.locator('[data-lift-code="L3"]');
+
+  await expect(c8).toHaveAttribute("data-layout-fidelity", "reference-calibrated");
+  await expect(l3).toHaveAttribute("data-layout-fidelity", "reference-calibrated");
+
+  await c8.locator(".trail-label").click();
+  await expect(page).toHaveURL(/\/trails\/fulong-c8$/);
+  await expect(c8).toHaveAttribute("aria-current", "page");
+  await expect(page.locator(".panorama-viewport svg")).not.toHaveAttribute("viewBox", "0 0 1000 650");
+});
+
 test("keeps compact search above a dominant map and Trail details below it", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/");

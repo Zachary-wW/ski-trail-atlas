@@ -3,10 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { appHref } from "./app-paths";
 import { publication } from "./data/publication";
 import { copy, type Language } from "./i18n";
+import {
+  MAP_HEIGHT,
+  MAP_WIDTH,
+  referenceCalibratedLiftIds,
+  referenceCalibratedTrailIds,
+  referenceControlNodeIds,
+} from "./map/fulong-reference-frame";
 import type { RoutePlan } from "./routing/plan-trail-route";
 
-const MAP_WIDTH = 1000;
-const MAP_HEIGHT = 650;
 const MIN_VIEW_WIDTH = 420;
 
 type ViewBox = { x: number; y: number; width: number; height: number };
@@ -164,6 +169,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
         <svg
           viewBox={`${view.x} ${view.y} ${view.width} ${view.height}`}
           aria-label={text.mapCanvasAria}
+          data-reference-layout="fulong-highres-2026-09-23"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={stopDragging}
@@ -218,6 +224,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
                   d={lift.path}
                   data-lift-code={lift.code}
                   data-topology-source={lift.source.id}
+                  data-layout-fidelity={referenceCalibratedLiftIds.has(lift.id) ? "reference-calibrated" : "legacy-schematic"}
                   data-route-active={routeLiftIds.has(lift.id) ? "true" : undefined}
                 />
                 <g className="lift-label" transform={`translate(${lift.label.x} ${lift.label.y})`}>
@@ -234,6 +241,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
                 key={node.id}
                 className={`topology-node topology-${node.kind}`}
                 data-topology-node={node.id}
+                data-layout-fidelity={referenceControlNodeIds.has(node.id) ? "reference-calibrated" : "legacy-schematic"}
                 transform={`translate(${node.x} ${node.y})`}
               >
                 <circle r={node.kind === "junction" ? 4 : 5} />
@@ -258,6 +266,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
                 className={className}
                 data-trail-id={trail.id}
                 data-topology-source={location.source.id}
+                data-layout-fidelity={referenceCalibratedTrailIds.has(trail.id) ? "reference-calibrated" : "legacy-schematic"}
                 data-route-active={routeActive ? "true" : undefined}
               >
                 <path className="trail-hit-target" d={location.path} />

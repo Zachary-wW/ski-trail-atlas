@@ -1,3 +1,5 @@
+import { referencePixelToMap } from "../map/fulong-reference-frame";
+
 const PARAMETER_SOURCE_ID = "chonglihuaxue-167-2026-09-22";
 const TOPOLOGY_SOURCE_ID = "chonglihuaxue-map-2026-09-23";
 
@@ -36,6 +38,7 @@ type TopologyRow = {
   bendY?: number;
   labelDx?: number;
   labelDy?: number;
+  path?: string;
 };
 
 const trailRows: TrailRow[] = [
@@ -74,24 +77,36 @@ const trailRows: TrailRow[] = [
   { code: "C6", name: "迪斯科", difficulty: "advanced", lengthM: 577, averageWidthM: 30, summitElevationM: 1644, averageSlopeDegrees: 28 },
 ];
 
+const referenceControlPoints = {
+  summit: referencePixelToMap({ x: 1970, y: 180 }),
+  fulongBase: referencePixelToMap({ x: 2241, y: 1351 }),
+  l3Base: referencePixelToMap({ x: 431, y: 1266 }),
+  l3Top: referencePixelToMap({ x: 1455, y: 410 }),
+  c8Lower: referencePixelToMap({ x: 1691, y: 575 }),
+  centralTransportBase: referencePixelToMap({ x: 1886, y: 1304 }),
+  l7EastSector: referencePixelToMap({ x: 3389, y: 590 }),
+};
+
 const nodeRows: NodeRow[] = [
-  { id: "summit-main", kind: "zone_anchor", x: 525, y: 58, label: "SUMMIT" },
-  { id: "ridge-west-high", kind: "lift_station", x: 392, y: 128 },
-  { id: "ridge-west-mid", kind: "junction", x: 318, y: 205 },
-  { id: "west-upper", kind: "junction", x: 252, y: 302 },
-  { id: "west-base", kind: "base", x: 108, y: 565, label: "WEST BASE" },
+  { id: "summit-main", kind: "zone_anchor", ...referenceControlPoints.summit, label: "SUMMIT" },
+  { id: "ridge-west-high", kind: "lift_station", ...referenceControlPoints.l3Top },
+  { id: "ridge-west-mid", kind: "junction", ...referenceControlPoints.c8Lower },
+  { id: "west-upper", kind: "junction", x: 338, y: 319 },
+  { id: "west-base", kind: "base", ...referenceControlPoints.l3Base, label: "WEST BASE" },
   { id: "center-high", kind: "junction", x: 535, y: 150 },
   { id: "center-upper", kind: "junction", x: 520, y: 228 },
   { id: "center-mid", kind: "junction", x: 525, y: 332 },
   { id: "center-low", kind: "junction", x: 548, y: 445 },
   { id: "l2-top", kind: "lift_station", x: 430, y: 355, label: "PARK" },
-  { id: "fulong-base", kind: "base", x: 600, y: 590, label: "FULONG BASE" },
+  { id: "fulong-base", kind: "base", ...referenceControlPoints.fulongBase, label: "FULONG BASE" },
+  { id: "central-transport-base", kind: "zone_anchor", ...referenceControlPoints.centralTransportBase, label: "L2 / L5 BASE" },
   { id: "east-high", kind: "lift_station", x: 665, y: 152 },
   { id: "east-upper", kind: "junction", x: 705, y: 235 },
   { id: "east-mid", kind: "junction", x: 730, y: 342 },
   { id: "beginner-top", kind: "junction", x: 825, y: 455 },
   { id: "far-east-high", kind: "lift_station", x: 830, y: 185 },
   { id: "l7-base", kind: "lift_station", x: 960, y: 300, label: "L7 EAST" },
+  { id: "l7-east-sector", kind: "zone_anchor", ...referenceControlPoints.l7EastSector },
 ];
 
 const topologyByCode: Record<string, TopologyRow> = {
@@ -111,7 +126,13 @@ const topologyByCode: Record<string, TopologyRow> = {
   B9: { fromNodeId: "center-high", toNodeId: "east-mid", bendX: 36, labelDx: -72, labelDy: -14 },
   B10: { fromNodeId: "center-high", toNodeId: "east-mid", bendX: -12, labelDx: -6, labelDy: -36 },
   B11: { fromNodeId: "center-mid", toNodeId: "center-low", bendX: 28, labelDx: 32, labelDy: -2 },
-  C8: { fromNodeId: "ridge-west-high", toNodeId: "ridge-west-mid", bendX: 24, labelDx: 25, labelDy: -12 },
+  C8: {
+    fromNodeId: "ridge-west-high",
+    toNodeId: "ridge-west-mid",
+    path: "M 395 174 C 412 181 441 203 463 222",
+    labelDx: 10,
+    labelDy: -6,
+  },
   B6: { fromNodeId: "east-high", toNodeId: "fulong-base", bendX: 95, labelDx: 76, labelDy: 8 },
   B8: { fromNodeId: "east-high", toNodeId: "east-mid", bendX: -22, labelDx: 38, labelDy: 16 },
   C1: { fromNodeId: "summit-main", toNodeId: "center-upper", bendX: 28, labelDx: 28, labelDy: -6 },
@@ -140,6 +161,8 @@ function pathBetween(topology: TopologyRow) {
   const from = nodeById.get(topology.fromNodeId);
   const to = nodeById.get(topology.toNodeId);
   if (!from || !to) throw new Error(`Unknown topology node for ${topology.fromNodeId} -> ${topology.toNodeId}`);
+
+  if (topology.path) return topology.path;
 
   const dx = to.x - from.x;
   const dy = to.y - from.y;
@@ -180,7 +203,13 @@ function claimsFor(row: TrailRow) {
 }
 
 const liftRows = [
-  { code: "L3", fromNodeId: "west-base", toNodeId: "ridge-west-high", bendX: -8, label: { x: 230, y: 390 } },
+  {
+    code: "L3",
+    fromNodeId: "west-base",
+    toNodeId: "ridge-west-high",
+    path: "M 101 420 C 201 362 305 259 395 174",
+    label: { x: 114, y: 410 },
+  },
   { code: "L2", fromNodeId: "fulong-base", toNodeId: "l2-top", bendX: -18, label: { x: 518, y: 524 } },
   { code: "L5", fromNodeId: "fulong-base", toNodeId: "summit-main", bendX: 0, label: { x: 558, y: 325 } },
   { code: "L1", fromNodeId: "fulong-base", toNodeId: "east-high", bendX: 24, label: { x: 650, y: 360 } },

@@ -17,28 +17,44 @@ The season-aware collection of Trails known to the product. Its size does not im
 _Avoid_: Open trail list, canonical trail count
 
 **Panorama Map**:
-An original, structurally accurate illustration of a Resort showing relative Trail and lift relationships. It is not a navigation map and does not claim survey-grade scale or coordinates.
-_Avoid_: Official map, navigation map
+An original Resort illustration whose spatial layout preserves source-backed relative positions, Trail shapes, transport lines, stations, junctions, and major landmarks from an accepted reference layout. Decorative terrain, trees, buildings, icons, and typography may be redrawn, but the map must not invent a new mountain layout. It is not a navigation map and does not claim survey-grade scale or coordinates.
+_Avoid_: Official map, navigation map, approximate topology sketch
 
 **Trail Location**:
-The verified relative position and connections of a Trail on a Panorama Map. A Trail without sufficient topology evidence is Unlocated.
+The evidence-backed relative position and connections of a Trail on a Panorama Map, together with its Verification State. A Trail without sufficient topology evidence is Unlocated.
 _Avoid_: GPS track, exact route
 
 **Map Node**:
-A source-backed relative connection point on a Panorama Map, such as a lift station, Trail junction, base area, or zone anchor. A Map Node is topology, not a surveyed coordinate.
+A source-backed relative connection point on a Panorama Map, such as a Transport Station, Trail junction, Base, Summit, or zone anchor. A Map Node is topology, not a surveyed coordinate.
 _Avoid_: GPS point, waypoint
 
-**Lift**:
-An uphill transport connection between Map Nodes. A Lift may participate in a Route Plan only when its relative endpoints are supported by topology evidence.
-_Avoid_: route, trail
+**Uphill Transport**:
+A source-backed uphill conveyance connecting two Transport Stations. Its Transport Type distinguishes chairlift, gondola, magic carpet, or an explicitly unknown type. Only transports with supported endpoints may participate in a Route Plan.
+_Avoid_: Trail, Route, generic line
+
+**Transport Station**:
+A named or derived boarding/alighting endpoint of an Uphill Transport, bound to one Map Node. Top and bottom stations are distinct Route Endpoints even when they belong to the same transport.
+_Avoid_: Lift, route, waypoint
+
+**Place**:
+A named, routeable Resort location that resolves to one Map Node without implying movement, such as Fulong Base, West Base, Summit, or a supported park/zone anchor.
+_Avoid_: Trail, Transport Station
+
+**Route Endpoint**:
+A user-selectable start or destination for a Route Plan. A Route Endpoint may be a Trail, Transport Station, or Place and resolves to one or more precise graph nodes according to its endpoint semantics.
+_Avoid_: free-form coordinate, GPS point
 
 **Route Plan**:
-A derived, ordered sequence of Trails and Lifts connecting a chosen starting Trail to a destination Trail on the published topology graph. A Route Plan is schematic and season-aware; it does not assert live opening status, safety, travel time, or GPS navigation.
+A derived, ordered sequence of directed Trail and Uphill Transport segments connecting a chosen Route Endpoint to another Route Endpoint on the published topology graph. A Route Plan is schematic and season-aware; it does not assert live opening status, safety, travel time, or GPS navigation.
 _Avoid_: navigation route, safest route, shortest-distance route
 
 **Route Segment**:
-One directed Trail or Lift step inside a Route Plan. Trail segments travel downhill through the published topology; Lift segments travel uphill.
+One directed movement step inside a Route Plan. Trail segments travel downhill through the published topology; Uphill Transport segments travel uphill and retain their Transport Type so the UI can distinguish chairlift, gondola, and magic-carpet rides.
 _Avoid_: GPS segment
+
+**Map Reference Feature**:
+A line, label, landmark, or facility visible in a reference panorama whose public identity or publication status is not sufficiently supported for the Trail Catalog or routing graph. It may be retained as non-interactive map context with an explicit state, but cannot silently become a Trail or route edge.
+_Avoid_: Published Trail, confirmed Lift
 
 **Season**:
 The named snow season to which a Source Snapshot, Claim, Trail attribute, or Panorama Map applies.
