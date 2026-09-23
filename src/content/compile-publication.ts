@@ -33,10 +33,36 @@ const trailSchema = z.object({
 
 const verificationStateSchema = z.enum(["verified", "unverified", "stale", "link_only"]);
 
-const trailLocationSchema = z.object({
-  trailId: z.string().min(1),
+const evidenceReferenceFields = {
   sourceSnapshotId: z.string().min(1),
   verificationState: verificationStateSchema,
+};
+
+const mapNodeSchema = z.object({
+  id: z.string().min(1),
+  kind: z.enum(["lift_station", "junction", "base", "zone_anchor"]),
+  x: z.number(),
+  y: z.number(),
+  label: z.string().min(1).optional(),
+  ...evidenceReferenceFields,
+});
+
+const liftSchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  fromNodeId: z.string().min(1),
+  toNodeId: z.string().min(1),
+  path: z.string().min(1),
+  label: z.object({
+    x: z.number(),
+    y: z.number(),
+  }),
+  ...evidenceReferenceFields,
+});
+
+const trailLocationSchema = z.object({
+  trailId: z.string().min(1),
+  ...evidenceReferenceFields,
   path: z.string().min(1),
   label: z.object({
     x: z.number(),
@@ -113,6 +139,8 @@ const researchPackageSchema = z.object({
   trails: z.array(trailSchema),
   claims: z.array(claimSchema),
   trailLocations: z.array(trailLocationSchema).default([]),
+  mapNodes: z.array(mapNodeSchema).default([]),
+  lifts: z.array(liftSchema).default([]),
 });
 
 type PublishedField = {
@@ -140,11 +168,14 @@ export function compilePublication(input: unknown) {
   assertUniqueIds(researchPackage.sourceSnapshots, "Source Snapshot");
   assertUniqueIds(researchPackage.trails, "Trail");
   assertUniqueIds(researchPackage.claims, "Claim");
+  assertUniqueIds(researchPackage.mapNodes, "Map Node");
+  assertUniqueIds(researchPackage.lifts, "Lift");
 
   const sourceById = new Map(
     researchPackage.sourceSnapshots.map((source) => [source.id, source]),
   );
   const trailIds = new Set(researchPackage.trails.map((trail) => trail.id));
+  const mapNodeIds = new Set(researchPackage.mapNodes.map((node) => node.id));
 
   for (const claim of researchPackage.claims) {
     if (!trailIds.has(claim.trailId)) {
@@ -174,11 +205,37 @@ export function compilePublication(input: unknown) {
     locatedTrailIds.add(location.trailId);
   }
 
+  for (const node of researchPackage.mapNodes) {
+    if (!sourceById.has(node.sourceSnapshotId)) {
+      throw new Error(`Map Node ${node.id} references missing source ${node.sourceSnapshotId}`);
+    }
+  }
+
+  for (const lift of researchPackage.lifts) {
+    if (!sourceById.has(lift.sourceSnapshotId)) {
+      throw new Error(`Lift ${lift.id} references missing source ${lift.sourceSnapshotId}`);
+    }
+
+    if (!mapNodeIds.has(lift.fromNodeId) || !mapNodeIds.has(lift.toNodeId)) {
+      throw new Error(`Lift ${lift.id} references missing topology node`);
+    }
+  }
+
   return {
     schemaVersion: researchPackage.schemaVersion,
     resort: researchPackage.resort,
     season: researchPackage.season,
     lastVerifiedAt: researchPackage.lastVerifiedAt,
+    mapNodes: researchPackage.mapNodes.map((node) => {
+      const source = sourceById.get(node.sourceSnapshotId);
+      if (!source) throw new Error(`Map Node ${node.id} references missing source ${node.sourceSnapshotId}`);
+      return { ...node, source };
+    }),
+    lifts: researchPackage.lifts.map((lift) => {
+      const source = sourceById.get(lift.sourceSnapshotId);
+      if (!source) throw new Error(`Lift ${lift.id} references missing source ${lift.sourceSnapshotId}`);
+      return { ...lift, source };
+    }),
     trailLocations: researchPackage.trailLocations.map((location) => {
       const source = sourceById.get(location.sourceSnapshotId);
 

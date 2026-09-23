@@ -55,7 +55,7 @@ test("shows season, verification date, evidence, and a non-navigation disclaimer
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   await expect(map.getByText("2025–2026", { exact: true })).toBeVisible();
-  await expect(map.getByText("2026-09-22", { exact: true })).toBeVisible();
+  await expect(map.getByText("2026-09-23", { exact: true })).toBeVisible();
   await expect(map.getByText("Location evidence unverified", { exact: true })).toBeVisible();
   await expect(
     map.getByText("Schematic relative topology only · Not for on-mountain navigation", { exact: true }),
@@ -63,6 +63,22 @@ test("shows season, verification date, evidence, and a non-navigation disclaimer
   await expect(map.getByRole("link", { name: /Topology evidence/ })).toHaveAttribute(
     "href",
     "https://www.chonglihuaxue.cn/info.asp?id=167",
+  );
+});
+
+test("renders the evidence-backed major lift skeleton and topology anchors", async ({ page }) => {
+  await page.goto("/");
+
+  const map = page.getByRole("region", { name: "Fulong Panorama Map" });
+  for (const code of ["L3", "L2", "L5", "L1"]) {
+    await expect(map.locator(`[data-lift-code="${code}"]`)).toBeVisible();
+  }
+
+  await expect(map.locator('[data-topology-node="fulong-summit"]')).toBeVisible();
+  await expect(map.locator('[data-topology-node="fulong-base"]')).toBeVisible();
+  await expect(map.locator('[data-lift-code="L3"]')).toHaveAttribute(
+    "data-topology-source",
+    "chonglihuaxue-map-2026-09-23",
   );
 });
 

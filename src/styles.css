@@ -985,7 +985,7 @@ footer {
 .atlas-stage .catalog-empty { margin:0; padding:22px 0; border:0; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); background:transparent; color:var(--muted); text-align:left; font-size:11px; }
 .catalog-footnote { margin:16px 0 0; color:var(--muted); font-size:8px; line-height:1.5; }
 
-.atlas-stage .panorama-panel { position:absolute; inset:0; z-index:1; min-width:0; padding:20px 28px 22px 374px; display:grid; grid-template-rows:44px minmax(0,1fr) auto auto; background:radial-gradient(circle at 58% 25%,rgba(255,255,255,.75),transparent 35%),#e7ece7; }
+.atlas-stage .panorama-panel { position:absolute; inset:0; z-index:1; min-width:0; padding:20px 376px 22px 374px; display:grid; grid-template-rows:44px minmax(0,1fr) auto auto; background:radial-gradient(circle at 58% 25%,rgba(255,255,255,.75),transparent 35%),#e7ece7; }
 .atlas-stage .panorama-header { display:flex; align-items:start; justify-content:space-between; gap:20px; margin:0; padding-left:2px; }
 .atlas-stage .panorama-header .eyebrow { margin-bottom:4px; }
 .atlas-stage .panorama-header h2 { font-size:22px; }
@@ -998,8 +998,21 @@ footer {
 .atlas-stage .map-sun { fill:#efe5c9; opacity:.86; }
 .atlas-stage .mountain.back { fill:#d9e0d8; opacity:.98; }
 .atlas-stage .mountain.front { fill:#b8c6bb; }
-.atlas-stage .ridge-line { stroke:rgba(35,50,43,.24); stroke-width:2; }
+.atlas-stage .terrain-face { stroke:rgba(36,54,45,.09); stroke-width:1; }
+.atlas-stage .terrain-west { fill:#c9d4cb; }
+.atlas-stage .terrain-central { fill:#b7c7bb; }
+.atlas-stage .terrain-east { fill:#a9beb0; }
+.atlas-stage .ridge-line { fill:none; stroke:rgba(35,50,43,.24); stroke-width:2; stroke-dasharray:5 8; }
+.atlas-stage .ridge-line.primary { stroke:rgba(35,50,43,.34); stroke-dasharray:none; stroke-width:1.5; }
+.atlas-stage .ridge-line.secondary { stroke:rgba(35,50,43,.17); stroke-dasharray:3 7; }
 .atlas-stage .base-village rect { fill:#f5f2e8; stroke:rgba(31,43,38,.45); stroke-width:1.3; }
+.atlas-stage .lift-line { fill:none; stroke:#b34e3e; stroke-width:2.2; stroke-dasharray:7 6; stroke-linecap:round; opacity:.9; }
+.atlas-stage .lift-label rect { fill:#b34e3e; stroke:#f7f5ed; stroke-width:1; }
+.atlas-stage .lift-label text { fill:#fffaf0; font-size:8px; font-weight:800; letter-spacing:.04em; }
+.atlas-stage .topology-node circle { fill:#f7f5ed; stroke:#50635a; stroke-width:1.5; }
+.atlas-stage .topology-junction circle { fill:#50635a; stroke:#edf0e9; stroke-width:2; }
+.atlas-stage .topology-zone_anchor circle,.atlas-stage .topology-base circle { fill:#df644c; stroke:#f7f5ed; stroke-width:2; }
+.atlas-stage .topology-node text { fill:#394840; font-size:7px; font-weight:800; letter-spacing:.12em; paint-order:stroke; stroke:#edf0e9; stroke-width:4px; stroke-linejoin:round; }
 .atlas-stage .trail-line { stroke-width:6; filter:none; }
 .atlas-stage .map-trail .difficulty-beginner,.difficulty-beginner { color:var(--beginner); }
 .atlas-stage .map-trail .difficulty-intermediate,.difficulty-intermediate { color:var(--intermediate); }
@@ -1014,7 +1027,7 @@ footer {
 .atlas-stage .panorama-meta span,.atlas-stage .panorama-meta a { padding:0; border:0; border-radius:0; background:transparent; color:inherit; }
 .atlas-stage .map-disclaimer { margin:7px 2px 0; color:var(--muted); font-size:8px; }
 
-.trail-inspector { position:absolute; z-index:9; right:clamp(20px,3vw,44px); bottom:28px; width:348px; background:rgba(247,245,237,.95); border:1px solid var(--hairline-strong); box-shadow:0 22px 58px rgba(25,37,31,.1); backdrop-filter:blur(16px); pointer-events:none; }
+.trail-inspector { position:absolute; z-index:9; right:clamp(20px,3vw,44px); bottom:28px; width:320px; background:rgba(247,245,237,.95); border:1px solid var(--hairline-strong); box-shadow:0 22px 58px rgba(25,37,31,.1); backdrop-filter:blur(16px); pointer-events:none; }
 .inspector-heading { padding:20px 22px 17px; border-bottom:1px solid var(--hairline); }
 .inspector-kicker { display:flex; align-items:center; gap:7px; margin-bottom:8px; color:var(--muted); font-size:8px; letter-spacing:.08em; text-transform:uppercase; }
 .difficulty-key { width:18px; height:3px; display:inline-block; background:currentColor; }

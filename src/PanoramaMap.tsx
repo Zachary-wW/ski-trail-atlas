@@ -129,24 +129,71 @@ export function PanoramaMap({ language, selectedTrailId }: PanoramaMapProps) {
           }}
         >
           <defs>
-            <linearGradient id="mountain-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#dce9df" />
-              <stop offset="100%" stopColor="#8caa9e" />
+            <linearGradient id="mountain-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#dce5dd" />
+              <stop offset="100%" stopColor="#a8b9ad" />
             </linearGradient>
-            <linearGradient id="foreground-fill" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#183f36" />
-              <stop offset="100%" stopColor="#0d2e29" />
+            <linearGradient id="foreground-fill" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#8da196" />
+              <stop offset="100%" stopColor="#6f8a7d" />
             </linearGradient>
           </defs>
           <rect width="1000" height="650" className="map-sky" />
-          <circle cx="128" cy="116" r="55" className="map-sun" />
-          <path className="mountain back" d="M0 390 L160 208 L262 322 L430 138 L548 296 L706 102 L1000 365 L1000 650 L0 650 Z" />
-          <path className="mountain front" d="M0 476 L171 330 L300 420 L469 248 L603 399 L758 218 L1000 402 L1000 650 L0 650 Z" />
-          <path className="ridge-line" d="M70 442 C260 375 388 348 512 327 C658 301 786 275 944 230" />
+          <circle cx="126" cy="112" r="50" className="map-sun" />
+          <path
+            className="mountain back"
+            d="M0 486 C112 444 198 397 280 350 C370 298 456 262 536 218 C620 172 684 119 744 55 C790 108 833 150 876 197 C923 247 959 309 1000 376 L1000 650 L0 650 Z"
+          />
+          <path
+            className="terrain-face terrain-west"
+            d="M0 520 C137 493 260 443 365 369 C463 301 578 218 744 55 C674 205 604 310 520 393 C419 492 271 552 0 604 Z"
+          />
+          <path
+            className="terrain-face terrain-central"
+            d="M744 55 C710 204 698 337 695 525 C626 504 565 469 520 393 C604 310 674 205 744 55 Z"
+          />
+          <path
+            className="terrain-face terrain-east"
+            d="M744 55 C790 108 833 150 876 197 C923 247 959 309 1000 376 L1000 602 C928 551 823 531 695 525 C698 337 710 204 744 55 Z"
+          />
+          <path className="ridge-line primary" d="M145 514 C318 451 475 354 602 245 C660 195 706 139 744 55" />
+          <path className="ridge-line" d="M744 55 C789 113 823 164 852 225 C886 297 917 375 972 461" />
+          <path className="ridge-line secondary" d="M480 409 C572 385 657 342 718 300 C775 261 819 223 852 188" />
           <g className="base-village" aria-hidden="true">
-            <rect x="405" y="574" width="66" height="30" rx="4" />
-            <rect x="483" y="586" width="58" height="24" rx="4" />
-            <rect x="554" y="578" width="76" height="32" rx="4" />
+            <rect x="602" y="587" width="68" height="27" />
+            <rect x="681" y="577" width="84" height="36" />
+            <rect x="777" y="588" width="72" height="25" />
+          </g>
+
+          <g className="lift-system" aria-label="Major lift skeleton">
+            {publication.lifts.map((lift) => (
+              <g key={lift.id} className="map-lift">
+                <path
+                  className="lift-line"
+                  d={lift.path}
+                  data-lift-code={lift.code}
+                  data-topology-source={lift.source.id}
+                />
+                <g className="lift-label" transform={`translate(${lift.label.x} ${lift.label.y})`}>
+                  <rect x="-16" y="-10" width="32" height="20" />
+                  <text textAnchor="middle" dominantBaseline="central">{lift.code}</text>
+                </g>
+              </g>
+            ))}
+          </g>
+
+          <g className="topology-nodes" aria-hidden="true">
+            {publication.mapNodes.map((node) => (
+              <g
+                key={node.id}
+                className={`topology-node topology-${node.kind}`}
+                data-topology-node={node.id}
+                transform={`translate(${node.x} ${node.y})`}
+              >
+                <circle r={node.kind === "junction" ? 4 : 5} />
+                {node.label && <text x="9" y="-8">{node.label}</text>}
+              </g>
+            ))}
           </g>
 
           {publication.trailLocations.map((location) => {

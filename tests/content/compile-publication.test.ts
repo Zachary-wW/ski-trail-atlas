@@ -211,6 +211,95 @@ describe("compilePublication", () => {
     expect(() => compilePublication(input)).toThrow(/Duplicate Trail Location/i);
   });
 
+  it("publishes evidence-backed topology nodes and lifts", () => {
+    const publication = compilePublication({
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-23",
+      sourceSnapshots: [
+        {
+          id: "map-source",
+          title: "Fulong panorama",
+          url: "https://example.com/map",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-23",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [],
+      claims: [],
+      mapNodes: [
+        { id: "l3-base", kind: "lift_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "l3-top", kind: "lift_station", x: 690, y: 90, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
+      lifts: [
+        {
+          id: "fulong-l3",
+          code: "L3",
+          fromNodeId: "l3-base",
+          toNodeId: "l3-top",
+          path: "M 160 520 L 690 90",
+          label: { x: 330, y: 375 },
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+      ],
+    });
+
+    expect(publication.mapNodes).toEqual([
+      expect.objectContaining({ id: "l3-base", source: expect.objectContaining({ id: "map-source" }) }),
+      expect.objectContaining({ id: "l3-top", source: expect.objectContaining({ id: "map-source" }) }),
+    ]);
+    expect(publication.lifts).toEqual([
+      expect.objectContaining({ id: "fulong-l3", code: "L3", fromNodeId: "l3-base", toNodeId: "l3-top" }),
+    ]);
+  });
+
+  it("rejects a lift whose topology node is missing", () => {
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-23",
+      sourceSnapshots: [
+        {
+          id: "map-source",
+          title: "Map source",
+          url: "https://example.com/map",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-23",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [],
+      claims: [],
+      mapNodes: [
+        { id: "l3-base", kind: "lift_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
+      lifts: [
+        {
+          id: "fulong-l3",
+          code: "L3",
+          fromNodeId: "l3-base",
+          toNodeId: "missing-top",
+          path: "M 160 520 L 690 90",
+          label: { x: 330, y: 375 },
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+      ],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/Lift.*missing topology node/i);
+  });
+
   it("rejects duplicate Trail identifiers", () => {
     const duplicateTrails = {
       schemaVersion: "1.0.0",
