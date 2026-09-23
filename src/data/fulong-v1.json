@@ -24,6 +24,26 @@
       "id": "fulong-a1",
       "code": "A1",
       "name": "蓝调"
+    },
+    {
+      "id": "fulong-d1",
+      "code": "D1",
+      "name": "咏叹"
+    },
+    {
+      "id": "fulong-a7",
+      "code": "A7",
+      "name": "节奏布鲁斯"
+    },
+    {
+      "id": "fulong-b1",
+      "code": "B1",
+      "name": "摇滚"
+    },
+    {
+      "id": "fulong-b13",
+      "code": "B13",
+      "name": "打击乐"
     }
   ],
   "claims": [
@@ -67,6 +87,155 @@
       "trailId": "fulong-a1",
       "field": "averageSlopeDegrees",
       "value": 7,
+      "unit": "degree",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-d1-difficulty",
+      "trailId": "fulong-d1",
+      "field": "difficulty",
+      "value": "beginner",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-d1-summit-elevation",
+      "trailId": "fulong-d1",
+      "field": "summitElevationM",
+      "value": 1416,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a7-difficulty",
+      "trailId": "fulong-a7",
+      "field": "difficulty",
+      "value": "intermediate",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a7-length",
+      "trailId": "fulong-a7",
+      "field": "lengthM",
+      "value": 579,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a7-average-width",
+      "trailId": "fulong-a7",
+      "field": "averageWidthM",
+      "value": 30,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a7-summit-elevation",
+      "trailId": "fulong-a7",
+      "field": "summitElevationM",
+      "value": 1416,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-a7-average-slope",
+      "trailId": "fulong-a7",
+      "field": "averageSlopeDegrees",
+      "value": 19,
+      "unit": "degree",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b1-difficulty",
+      "trailId": "fulong-b1",
+      "field": "difficulty",
+      "value": "advanced",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b1-length",
+      "trailId": "fulong-b1",
+      "field": "lengthM",
+      "value": 1557,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b1-average-width",
+      "trailId": "fulong-b1",
+      "field": "averageWidthM",
+      "value": 30,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b1-summit-elevation",
+      "trailId": "fulong-b1",
+      "field": "summitElevationM",
+      "value": 1565,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b1-average-slope",
+      "trailId": "fulong-b1",
+      "field": "averageSlopeDegrees",
+      "value": 22,
+      "unit": "degree",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b13-difficulty",
+      "trailId": "fulong-b13",
+      "field": "difficulty",
+      "value": "advanced",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b13-length",
+      "trailId": "fulong-b13",
+      "field": "lengthM",
+      "value": 938,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b13-average-width",
+      "trailId": "fulong-b13",
+      "field": "averageWidthM",
+      "value": 30,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b13-summit-elevation",
+      "trailId": "fulong-b13",
+      "field": "summitElevationM",
+      "value": 1545,
+      "unit": "m",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified"
+    },
+    {
+      "id": "fulong-b13-average-slope",
+      "trailId": "fulong-b13",
+      "field": "averageSlopeDegrees",
+      "value": 30,
       "unit": "degree",
       "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
       "verificationState": "unverified"

@@ -1,10 +1,6 @@
 import { publication } from "./data/publication";
-
-const difficultyLabels: Record<string, string> = {
-  beginner: "初级道",
-  intermediate: "中级道",
-  advanced: "高级道",
-};
+import { TrailCatalog } from "./TrailCatalog";
+import { difficultyLabels } from "./trail-labels";
 
 const verificationLabels: Record<string, string> = {
   verified: "资料已验证",
@@ -96,6 +92,8 @@ function App() {
         <span className="season-pill">{formatSeason(publication.season)}</span>
       </header>
 
+      <TrailCatalog selectedTrailId={trail.id} />
+
       <main>
         <section className="hero" aria-labelledby="trail-title">
           <div className="contours" aria-hidden="true">
@@ -132,8 +130,8 @@ function App() {
 
             <aside className="quick-read" aria-label="快速了解">
               <span>快速了解</span>
-              <strong>短距离 · 舒缓坡面</strong>
-              <p>适合查看初级雪道的基础参数。现场开放情况请以雪场当日公告为准。</p>
+              <strong>来源参数 · 证据可追溯</strong>
+              <p>页面只展示来源报告的雪道参数；现场开放情况请以雪场当日公告为准。</p>
             </aside>
           </div>
         </section>

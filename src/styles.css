@@ -91,6 +91,104 @@ a {
   font-weight: 600;
 }
 
+.catalog-section {
+  padding: 28px clamp(22px, 5vw, 76px) 30px;
+  background: #f7f7f2;
+  border-bottom: 1px solid #d8ddd4;
+}
+
+.catalog-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.catalog-heading h2 {
+  font-size: 21px;
+}
+
+.trail-search {
+  width: min(390px, 100%);
+  display: grid;
+  gap: 7px;
+  color: #4f5e59;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.trail-search input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid #c8d0c6;
+  border-radius: 3px;
+  outline: none;
+  background: #fff;
+  color: #10231f;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.trail-search input:focus {
+  border-color: #43665c;
+  box-shadow: 0 0 0 3px rgba(67, 102, 92, 0.14);
+}
+
+.trail-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.trail-card {
+  min-height: 78px;
+  padding: 14px;
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  border: 1px solid #d8ddd4;
+  border-radius: 3px;
+  background: #fff;
+  text-decoration: none;
+}
+
+.trail-card:hover,
+.trail-card:focus-visible {
+  border-color: #8ba096;
+  outline: none;
+}
+
+.trail-card.selected {
+  border-color: #315b50;
+  background: #edf4df;
+  box-shadow: inset 0 0 0 1px #315b50;
+}
+
+.trail-card-title {
+  color: #123d34;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.trail-card-meta {
+  color: #4f5e59;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.catalog-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed #bdc8bf;
+  color: #4f5e59;
+  text-align: center;
+  font-size: 12px;
+}
+
 .hero {
   min-height: 440px;
   padding: 38px clamp(22px, 7vw, 108px) 68px;
@@ -482,6 +580,12 @@ footer {
   text-decoration: none;
 }
 
+@media (max-width: 1050px) {
+  .trail-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .hero-content {
     align-items: flex-start;
@@ -510,6 +614,23 @@ footer {
 }
 
 @media (max-width: 560px) {
+  .catalog-section {
+    padding: 22px 12px 24px;
+  }
+
+  .catalog-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .trail-search {
+    width: 100%;
+  }
+
+  .trail-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .topbar {
     height: 72px;
   }
