@@ -144,23 +144,24 @@ test("keeps reference-calibrated Trail and lift labels from materially overlappi
   expect(overlaps).toEqual([]);
 });
 
-test("keeps compact search above a dominant map and Trail details below it", async ({ page }) => {
+test("keeps compact controls above a dominant map with a non-overlapping desktop right inspector", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/");
 
   const search = page.getByRole("searchbox", { name: "Search trails" });
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
-  const detail = page.locator(".trail-inspector");
+  const inspector = page.locator(".atlas-inspector-column");
   const searchBox = await search.boundingBox();
   const mapBox = await map.boundingBox();
-  const detailBox = await detail.boundingBox();
+  const inspectorBox = await inspector.boundingBox();
 
   expect(searchBox).not.toBeNull();
   expect(mapBox).not.toBeNull();
-  expect(detailBox).not.toBeNull();
+  expect(inspectorBox).not.toBeNull();
   expect(searchBox!.width).toBeLessThanOrEqual(440);
-  expect(mapBox!.width).toBeGreaterThan(1100);
-  expect(detailBox!.y).toBeGreaterThanOrEqual(mapBox!.y + mapBox!.height - 2);
+  expect(mapBox!.width).toBeGreaterThan(inspectorBox!.width * 2);
+  expect(inspectorBox!.x).toBeGreaterThanOrEqual(mapBox!.x + mapBox!.width - 2);
+  expect(Math.abs(inspectorBox!.y - mapBox!.y)).toBeLessThanOrEqual(2);
 
   const searchFontSize = await search.evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
   expect(searchFontSize).toBeGreaterThanOrEqual(14);

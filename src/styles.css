@@ -1108,7 +1108,8 @@ footer {
 .wordmark { font-size:14px; }
 .atlas-context { gap:24px; font-size:12px; letter-spacing:.06em; }
 .atlas-topbar .language-toggle { font-size:12px; }
-.atlas-stage { position:relative; overflow:visible; display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto auto auto; padding:0 clamp(20px,3.3vw,48px) 28px; background:#e7ece7; }
+.atlas-stage { position:relative; overflow:visible; display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto auto; padding:0 clamp(20px,3.3vw,48px) 28px; background:#e7ece7; }
+.atlas-main-layout { min-width:0; display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,360px); gap:18px; align-items:start; }
 .atlas-toolbar { position:relative; z-index:30; display:flex; align-items:center; min-height:72px; padding:14px 0 10px; }
 .atlas-stage .catalog-section { position:relative; inset:auto; width:min(420px,100%); max-height:none; padding:0; display:block; background:transparent; border:0; box-shadow:none; backdrop-filter:none; }
 .atlas-stage .trail-search { display:block; margin:0; color:var(--ink); font-size:14px; letter-spacing:0; text-transform:none; }
@@ -1139,34 +1140,33 @@ footer {
 .atlas-stage .topology-node text { font-size:9px; }
 .atlas-stage .panorama-meta { gap:18px; padding:10px 2px 0; color:#4e5a54; font-size:11px; letter-spacing:.04em; }
 .atlas-stage .map-disclaimer { margin:8px 2px 14px; color:#4e5a54; font-size:12px; line-height:1.45; }
-.trail-inspector { position:relative; inset:auto; z-index:2; width:100%; margin:0; display:grid; grid-template-columns:minmax(250px,.9fr) minmax(500px,2fr) minmax(240px,.9fr); grid-template-rows:auto auto; background:var(--paper); border:1px solid var(--hairline-strong); box-shadow:none; backdrop-filter:none; pointer-events:auto; }
-.inspector-heading { grid-column:1; grid-row:1 / 3; padding:22px 24px; border-right:1px solid var(--hairline); border-bottom:0; }
+.atlas-inspector-column { min-width:0; display:grid; gap:12px; align-content:start; max-height:clamp(640px,78vh,860px); overflow:auto; overscroll-behavior:contain; }
+.trail-inspector { position:relative; inset:auto; z-index:2; width:100%; margin:0; display:block; background:var(--paper); border:1px solid var(--hairline-strong); box-shadow:none; backdrop-filter:none; pointer-events:auto; }
+.inspector-heading { padding:22px 22px 18px; border-right:0; border-bottom:1px solid var(--hairline); }
 .inspector-kicker { margin-bottom:10px; font-size:11px; line-height:1.4; }
 .inspector-heading h1 { margin-bottom:10px; font-size:32px; }
 .inspector-heading p { font-size:12px; }
-.inspector-metrics { grid-column:2; grid-row:1; grid-template-columns:repeat(5,minmax(92px,1fr)); align-self:stretch; }
-.inspector-metric { min-height:84px; padding:18px 16px; border-right:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
-.inspector-metric:nth-child(odd) { border-right:1px solid var(--hairline); }
-.inspector-metric:last-child { border-right:0; }
+.inspector-metrics { display:grid; grid-template-columns:1fr 1fr; }
+.inspector-metric { min-height:78px; padding:15px 16px; border-right:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
+.inspector-metric:nth-child(even) { border-right:0; }
+.inspector-metric:last-child { border-right:1px solid var(--hairline); }
 .inspector-metric dt { margin-bottom:8px; color:#58635d; font-size:11px; line-height:1.25; letter-spacing:.05em; }
 .inspector-metric dd { font-size:19px; }
 .inspector-metric dd.missing { font-size:12px; }
-.inspector-note { grid-column:2; grid-row:2; min-height:58px; padding:13px 16px; border-bottom:0; }
+.inspector-note { min-height:58px; padding:13px 16px; border-bottom:1px solid var(--hairline); }
 .note-index { font-size:12px; }
 .inspector-note p { color:#4f5a54; font-size:12px; line-height:1.55; }
-.inspector-evidence { grid-column:3; grid-row:1 / 3; align-items:center; padding:20px; border-left:1px solid var(--hairline); }
+.inspector-evidence { display:flex; align-items:center; padding:18px; border-left:0; }
 .inspector-evidence span { font-size:10px; }
 .inspector-evidence strong { max-width:190px; font-size:12px; line-height:1.35; white-space:normal; }
 .inspector-evidence small,.inspector-evidence a { font-size:11px; }
 .atlas-footer { min-height:46px; font-size:10px; }
 
-@media (max-width:1100px) {
+@media (max-width:980px) {
   .atlas-stage { padding-inline:20px; }
-  .trail-inspector { grid-template-columns:1fr 1fr; grid-template-rows:auto auto auto; }
-  .inspector-heading { grid-column:1; grid-row:1; border-right:1px solid var(--hairline); border-bottom:1px solid var(--hairline); }
-  .inspector-metrics { grid-column:1 / 3; grid-row:2; }
-  .inspector-note { grid-column:1 / 3; grid-row:3; }
-  .inspector-evidence { grid-column:2; grid-row:1; border-left:0; border-bottom:1px solid var(--hairline); }
+  .atlas-main-layout { grid-template-columns:1fr; gap:12px; }
+  .atlas-main-layout > .panorama-panel { order:1; }
+  .atlas-inspector-column { order:2; max-height:none; overflow:visible; }
 }
 
 @media (max-width:620px) {
@@ -1215,6 +1215,11 @@ footer {
 .route-no-result { margin:0; padding:11px 12px; border-left:3px solid var(--accent); background:#f1eee5; color:#4a554f; font-size:12px; line-height:1.45; }
 .route-popover-note { margin:0; color:#59645e; font-size:11px; line-height:1.5; }
 .route-plan-sheet { width:100%; margin:0 0 12px; border:1px solid var(--hairline-strong); background:var(--paper); }
+.atlas-inspector-column .route-plan-sheet { margin:0; }
+.atlas-inspector-column .route-plan-heading { grid-template-columns:1fr; gap:10px; align-items:start; padding:18px; }
+.atlas-inspector-column .route-plan-heading h2 { font-size:28px; }
+.atlas-inspector-column .route-steps { grid-template-columns:1fr; }
+.atlas-inspector-column .route-step { min-height:72px; border-right:0; }
 .route-plan-heading { display:grid; grid-template-columns:minmax(180px,.55fr) minmax(320px,1fr); gap:28px; align-items:end; padding:20px 24px; border-bottom:1px solid var(--hairline); }
 .route-plan-heading .eyebrow { margin:0 0 5px; color:var(--muted); font-size:10px; }
 .route-plan-heading h2 { margin:0; font:400 31px/1 Georgia,"Songti SC",serif; letter-spacing:-.035em; }

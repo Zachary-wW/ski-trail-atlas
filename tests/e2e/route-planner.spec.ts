@@ -22,6 +22,16 @@ test("plans and highlights a schematic route across Trails and a Lift", async ({
   await expect(map.locator('[data-trail-id="fulong-b1"]')).toHaveAttribute("data-route-active", "true");
   await expect(map.locator('[data-lift-code="L5"]')).toHaveAttribute("data-route-active", "true");
   await expect(map.locator('[data-trail-id="fulong-d1"]')).toHaveAttribute("data-route-active", "true");
+
+  const mapBox = await map.boundingBox();
+  const planBox = await plan.boundingBox();
+  const inspectorBox = await page.locator(".atlas-inspector-column").boundingBox();
+  expect(mapBox).not.toBeNull();
+  expect(planBox).not.toBeNull();
+  expect(inspectorBox).not.toBeNull();
+  expect(planBox!.x).toBeGreaterThanOrEqual(mapBox!.x + mapBox!.width - 2);
+  expect(planBox!.x).toBeGreaterThanOrEqual(inspectorBox!.x - 2);
+  expect(planBox!.x + planBox!.width).toBeLessThanOrEqual(inspectorBox!.x + inspectorBox!.width + 2);
 });
 
 

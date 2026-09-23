@@ -115,42 +115,46 @@ function App() {
           <TrailCatalog language={language} selectedTrailId={trail.id} />
           <RoutePlanner language={language} selectedTrailId={trail.id} onPlanChange={setRoutePlan} />
         </div>
-        <PanoramaMap
-          language={language}
-          selectedTrailId={trail.id}
-          autoFocusSelected={routePath !== "/" && routePath !== ""}
-          routePlan={routePlan}
-        />
-        <RoutePlanPanel language={language} plan={routePlan} />
-        <aside className="trail-inspector metrics-panel" aria-labelledby="trail-title">
-          <header className="inspector-heading">
-            <div className="inspector-kicker">
-              <span className={`difficulty-key difficulty-${String(difficulty?.value ?? "unknown")}`} />
-              <span>{difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty}</span>
-              <span aria-hidden="true">·</span>
-              <span>{text.verification[verificationState]}</span>
-            </div>
-            <h2 id="trail-title">{trail.code} · {trail.name}</h2>
-            <p className="data-note">{text.sourceValueNote}</p>
-          </header>
-          <dl className="inspector-metrics">
-            {metrics.map((metric) => (
-              <div className="inspector-metric metric" key={metric.label}>
-                <dt>{metric.label}</dt>
-                <dd className={metric.value ? "" : "missing"}>{metric.value ?? text.missing}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="inspector-note context-note verification-line"><span className="note-index">01</span><p>{text.slopeDisclaimer}</p></div>
-          {primarySource && (
-            <div className="inspector-evidence source-card">
-              <div><span className="source-label">{text.evidenceEyebrow}</span><strong>{primarySource.publisher}</strong><small>{publication.lastVerifiedAt}</small></div>
-              <p>{primarySource.title}</p>
-              <dl><div><dt>{text.lastVerified}</dt><dd>{publication.lastVerifiedAt}</dd></div></dl>
-              <a aria-label={primarySource.title} href={primarySource.url} target="_blank" rel="noreferrer">{text.referenceSource} ↗</a>
-            </div>
-          )}
-        </aside>
+        <div className="atlas-main-layout">
+          <PanoramaMap
+            language={language}
+            selectedTrailId={trail.id}
+            autoFocusSelected={routePath !== "/" && routePath !== ""}
+            routePlan={routePlan}
+          />
+          <div className="atlas-inspector-column">
+            <RoutePlanPanel language={language} plan={routePlan} />
+            <aside className="trail-inspector metrics-panel" aria-labelledby="trail-title">
+              <header className="inspector-heading">
+                <div className="inspector-kicker">
+                  <span className={`difficulty-key difficulty-${String(difficulty?.value ?? "unknown")}`} />
+                  <span>{difficultyLabels[language][String(difficulty?.value)] ?? text.unknownDifficulty}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{text.verification[verificationState]}</span>
+                </div>
+                <h2 id="trail-title">{trail.code} · {trail.name}</h2>
+                <p className="data-note">{text.sourceValueNote}</p>
+              </header>
+              <dl className="inspector-metrics">
+                {metrics.map((metric) => (
+                  <div className="inspector-metric metric" key={metric.label}>
+                    <dt>{metric.label}</dt>
+                    <dd className={metric.value ? "" : "missing"}>{metric.value ?? text.missing}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="inspector-note context-note verification-line"><span className="note-index">01</span><p>{text.slopeDisclaimer}</p></div>
+              {primarySource && (
+                <div className="inspector-evidence source-card">
+                  <div><span className="source-label">{text.evidenceEyebrow}</span><strong>{primarySource.publisher}</strong><small>{publication.lastVerifiedAt}</small></div>
+                  <p>{primarySource.title}</p>
+                  <dl><div><dt>{text.lastVerified}</dt><dd>{publication.lastVerifiedAt}</dd></div></dl>
+                  <a aria-label={primarySource.title} href={primarySource.url} target="_blank" rel="noreferrer">{text.referenceSource} ↗</a>
+                </div>
+              )}
+            </aside>
+          </div>
+        </div>
       </main>
 
       <footer className="atlas-footer">
