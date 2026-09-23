@@ -4,13 +4,13 @@
 
 **Blocked by:** 02: Add five-Trail search and direct links.
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] The map uses original SVG artwork rather than shipping a source raster map.
-- [ ] Every mapped path links to one Trail and its topology evidence.
-- [ ] Selecting a map path opens the same Trail state as catalog selection.
-- [ ] Selecting a Trail from search or catalog highlights and reveals it on the map.
-- [ ] Zoom and pan work with pointer and keyboard input.
-- [ ] Narrow paths have accessible interaction targets.
-- [ ] Desktop is map-forward and mobile is query-forward without horizontal overflow.
-- [ ] The map displays its Season, verification date, and non-navigation disclaimer.
+- [x] The map uses original SVG artwork rather than shipping a source raster map.
+- [x] Every mapped path links to one Trail and its topology evidence.
+- [x] Selecting a map path opens the same Trail state as catalog selection.
+- [x] Selecting a Trail from search or catalog highlights and reveals it on the map.
+- [x] Zoom and pan work with pointer and keyboard input.
+- [x] Narrow paths have accessible interaction targets.
+- [x] Desktop is map-forward and mobile is query-forward without horizontal overflow.
+- [x] The map displays its Season, verification date, and non-navigation disclaimer.

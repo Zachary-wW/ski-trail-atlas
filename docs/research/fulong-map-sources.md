@@ -127,6 +127,17 @@ The first production map is ready only when:
 - the map declares its season and verification date;
 - the interface states that it is not for on-mountain navigation.
 
-## Current limitation
+## Initial research limitation
 
-During this research pass, the Chonglihuaxue map image returned a 502 error in the live browser and the Skiresort map page timed out. Search indexing confirms that both map resources exist, but their full-resolution imagery was not available for visual, trail-by-trail inspection. Therefore this report establishes the source and validation strategy; it does not approve a final Fulong geometry.
+During the 2026-09-22 research pass, the Chonglihuaxue map image returned a 502 error in the live browser and the Skiresort map page timed out. Search indexing confirmed that both map resources existed, but their full-resolution imagery was not available for visual, trail-by-trail inspection. That pass established the source and validation strategy but did not approve Fulong geometry.
+
+## 2026-09-23 representative-Trail follow-up
+
+A follow-up visual pass was able to inspect a Fulong panorama image hosted by the Chonglihuaxue source family. A 2025-2026 opening-plan schematic mirrored at 66ski was used only as a discovery/cross-check aid and is not publication evidence. The preserved Chonglihuaxue Source Snapshot is enough to support a deliberately simplified **five-Trail** structural schematic for A1, D1, A7, B1, and B13, but not enough to promote the locations to verified geometry.
+
+- The published SVG uses independent terrain artwork and simplified original curves; it does not ship or trace the source raster composition.
+- Each visible Trail path is bound to its Trail ID and the `chonglihuaxue-167-2026-09-22` Source Snapshot in the content package.
+- All five Trail Locations remain `unverified` because the visual references have not yet been corroborated against a preserved current-season official Resort panorama.
+- Lift geometry is intentionally omitted from this representative map until lift topology and Trail access can be tied to explicit season-aware evidence.
+- The paths communicate relative placement only: D1 on the left side, A7 in the central lower area, A1 near the lower base area, and B1/B13 on the right-hand advanced terrain.
+- This follow-up approves only the representative Ticket 03 schematic. Expanding the Panorama Map to the full Trail Catalog still requires a new Trail-by-Trail topology review.

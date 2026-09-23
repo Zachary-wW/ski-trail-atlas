@@ -15,22 +15,24 @@ test("defaults to English and can switch the interface to Chinese", async ({ pag
 test("searches the Fulong Trail Catalog by Trail name and code", async ({ page }) => {
   await page.goto("/");
 
+  const catalog = page.locator(".catalog-section");
+
   const search = page.getByRole("searchbox", { name: "Search trails" });
   await expect(search).toBeVisible();
-  await expect(page.getByRole("link", { name: "A1 · 蓝调" })).toBeVisible();
+  await expect(catalog.getByRole("link", { name: "A1 · 蓝调" })).toBeVisible();
 
   await search.fill("摇滚");
-  await expect(page.getByRole("link", { name: "B1 · 摇滚" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "A1 · 蓝调" })).toHaveCount(0);
+  await expect(catalog.getByRole("link", { name: "B1 · 摇滚" })).toBeVisible();
+  await expect(catalog.getByRole("link", { name: "A1 · 蓝调" })).toHaveCount(0);
 
   await search.fill("B13");
-  await expect(page.getByRole("link", { name: "B13 · 打击乐" })).toBeVisible();
+  await expect(catalog.getByRole("link", { name: "B13 · 打击乐" })).toBeVisible();
 });
 
 test("opens the selected Trail on its stable direct URL", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("link", { name: "B1 · 摇滚" }).click();
+  await page.locator(".catalog-section").getByRole("link", { name: "B1 · 摇滚" }).click();
 
   await expect(page).toHaveURL(/\/trails\/fulong-b1$/);
   await expect(page.getByRole("heading", { name: "B1 · 摇滚" })).toBeVisible();

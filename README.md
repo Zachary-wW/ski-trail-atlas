@@ -4,7 +4,7 @@
 
 An evidence-first trail lookup experience for Fulong Ski Resort. The current release lets skiers browse and search a small representative Trail Catalog, open stable direct links, and inspect source-reported difficulty, slope, length, width, elevation, verification state, and evidence.
 
-The longer-term product is designed to expand beyond Fulong. Its Panorama Map will be an original, structurally accurate redraw based on corroborated public or official material rather than a republished source map.
+The longer-term product is designed to expand beyond Fulong. Its Panorama Map uses original SVG artwork and evidence-backed relative Trail Locations rather than republishing a source map; the current five-Trail geometry remains explicitly unverified and non-navigational.
 
 ## Live site
 
@@ -14,13 +14,14 @@ The website defaults to English and includes an in-page switch to Simplified Chi
 
 ## Current status
 
-Tickets 01 and 02 are complete:
+Tickets 01–03 are complete:
 
 - one evidence-backed Trail was implemented end to end through versioned JSON, Zod validation, Claim compilation, and React rendering;
 - the Trail Catalog now contains five representative Fulong Trails across different difficulty and completeness states;
 - search supports Trail names and codes;
 - every published Trail has a stable direct URL such as `/trails/fulong-a1`;
 - missing values are rendered explicitly rather than inferred.
+- an interactive SVG Panorama Map now synchronizes with Trail selection, supports pointer/keyboard zoom and pan, and exposes topology evidence plus a non-navigation disclaimer.
 
 The product does **not** currently provide real-time operating status, GPS navigation, safety judgement, or personalized recommendations.
 

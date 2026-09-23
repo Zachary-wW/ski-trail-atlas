@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { appHref, routePathFromLocation } from "./app-paths";
 import { publication } from "./data/publication";
 import { copy, languageFromStorage, type Language } from "./i18n";
+import { PanoramaMap } from "./PanoramaMap";
 import { TrailCatalog } from "./TrailCatalog";
 import { difficultyLabels } from "./trail-labels";
 
@@ -117,7 +118,10 @@ function App() {
         </div>
       </header>
 
-      <TrailCatalog language={language} selectedTrailId={trail.id} />
+      <section className="explore-layout" aria-label="Trail explorer">
+        <TrailCatalog language={language} selectedTrailId={trail.id} />
+        <PanoramaMap language={language} selectedTrailId={trail.id} />
+      </section>
 
       <main>
         <section className="hero" aria-labelledby="trail-title">

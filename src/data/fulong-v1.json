@@ -46,6 +46,43 @@
       "name": "打击乐"
     }
   ],
+  "trailLocations": [
+    {
+      "trailId": "fulong-d1",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified",
+      "path": "M 170 548 C 208 505 244 465 286 418 C 311 390 326 357 340 325",
+      "label": { "x": 267, "y": 421 }
+    },
+    {
+      "trailId": "fulong-a7",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified",
+      "path": "M 468 574 C 474 522 482 475 493 429 C 505 383 519 342 533 300",
+      "label": { "x": 500, "y": 414 }
+    },
+    {
+      "trailId": "fulong-a1",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified",
+      "path": "M 624 590 C 641 574 655 555 664 532 C 672 511 676 489 677 463",
+      "label": { "x": 655, "y": 528 }
+    },
+    {
+      "trailId": "fulong-b1",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified",
+      "path": "M 742 584 C 721 531 718 485 735 441 C 753 395 788 354 810 307 C 837 251 852 197 838 126",
+      "label": { "x": 785, "y": 347 }
+    },
+    {
+      "trailId": "fulong-b13",
+      "sourceSnapshotId": "chonglihuaxue-167-2026-09-22",
+      "verificationState": "unverified",
+      "path": "M 850 568 C 878 514 893 461 899 410 C 906 354 909 300 897 248 C 888 208 878 176 866 150",
+      "label": { "x": 886, "y": 366 }
+    }
+  ],
   "claims": [
     {
       "id": "fulong-a1-difficulty",

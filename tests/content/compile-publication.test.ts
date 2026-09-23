@@ -77,6 +77,140 @@ describe("compilePublication", () => {
     ]);
   });
 
+  it("publishes an evidence-backed Trail Location for the Panorama Map", () => {
+    const publication = compilePublication({
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-22",
+      sourceSnapshots: [
+        {
+          id: "map-source",
+          title: "Fulong trail panorama",
+          url: "https://example.com/map",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-22",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
+      claims: [],
+      trailLocations: [
+        {
+          trailId: "fulong-a1",
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+          path: "M 100 200 C 140 160 170 120 200 80",
+          label: { x: 160, y: 130 },
+        },
+      ],
+    });
+
+    expect(publication.trailLocations).toEqual([
+      expect.objectContaining({
+        trailId: "fulong-a1",
+        verificationState: "unverified",
+        path: "M 100 200 C 140 160 170 120 200 80",
+        source: expect.objectContaining({ id: "map-source" }),
+      }),
+    ]);
+  });
+
+  it("rejects a Trail Location whose topology source is missing", () => {
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-22",
+      sourceSnapshots: [],
+      trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
+      claims: [],
+      trailLocations: [
+        {
+          trailId: "fulong-a1",
+          sourceSnapshotId: "missing-map-source",
+          verificationState: "unverified",
+          path: "M 0 0 L 10 10",
+          label: { x: 5, y: 5 },
+        },
+      ],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/Trail Location.*missing source/i);
+  });
+
+  it("rejects a Trail Location whose Trail is missing", () => {
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-22",
+      sourceSnapshots: [
+        {
+          id: "map-source",
+          title: "Map source",
+          url: "https://example.com/map",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-22",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [],
+      claims: [],
+      trailLocations: [
+        {
+          trailId: "missing-trail",
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+          path: "M 0 0 L 10 10",
+          label: { x: 5, y: 5 },
+        },
+      ],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/Trail Location.*missing Trail/i);
+  });
+
+  it("rejects duplicate Trail Locations for the same Trail", () => {
+    const location = {
+      trailId: "fulong-a1",
+      sourceSnapshotId: "map-source",
+      verificationState: "unverified",
+      path: "M 0 0 L 10 10",
+      label: { x: 5, y: 5 },
+    } as const;
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-22",
+      sourceSnapshots: [
+        {
+          id: "map-source",
+          title: "Map source",
+          url: "https://example.com/map",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-22",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [{ id: "fulong-a1", code: "A1", name: "蓝调" }],
+      claims: [],
+      trailLocations: [location, { ...location, path: "M 1 1 L 9 9" }],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/Duplicate Trail Location/i);
+  });
+
   it("rejects duplicate Trail identifiers", () => {
     const duplicateTrails = {
       schemaVersion: "1.0.0",

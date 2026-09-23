@@ -31,11 +31,24 @@ const trailSchema = z.object({
   name: z.string().min(1),
 });
 
+const verificationStateSchema = z.enum(["verified", "unverified", "stale", "link_only"]);
+
+const trailLocationSchema = z.object({
+  trailId: z.string().min(1),
+  sourceSnapshotId: z.string().min(1),
+  verificationState: verificationStateSchema,
+  path: z.string().min(1),
+  label: z.object({
+    x: z.number(),
+    y: z.number(),
+  }),
+});
+
 const claimBase = {
   id: z.string().min(1),
   trailId: z.string().min(1),
   sourceSnapshotId: z.string().min(1),
-  verificationState: z.enum(["verified", "unverified", "stale", "link_only"]),
+  verificationState: verificationStateSchema,
 };
 
 const claimSchema = z.discriminatedUnion("field", [
@@ -99,6 +112,7 @@ const researchPackageSchema = z.object({
   sourceSnapshots: z.array(sourceSnapshotSchema),
   trails: z.array(trailSchema),
   claims: z.array(claimSchema),
+  trailLocations: z.array(trailLocationSchema).default([]),
 });
 
 type PublishedField = {
@@ -142,11 +156,46 @@ export function compilePublication(input: unknown) {
     }
   }
 
+  const locatedTrailIds = new Set<string>();
+
+  for (const location of researchPackage.trailLocations) {
+    if (!trailIds.has(location.trailId)) {
+      throw new Error(`Trail Location references missing Trail ${location.trailId}`);
+    }
+
+    if (!sourceById.has(location.sourceSnapshotId)) {
+      throw new Error(`Trail Location for ${location.trailId} references missing source ${location.sourceSnapshotId}`);
+    }
+
+    if (locatedTrailIds.has(location.trailId)) {
+      throw new Error(`Duplicate Trail Location for ${location.trailId}`);
+    }
+
+    locatedTrailIds.add(location.trailId);
+  }
+
   return {
     schemaVersion: researchPackage.schemaVersion,
     resort: researchPackage.resort,
     season: researchPackage.season,
     lastVerifiedAt: researchPackage.lastVerifiedAt,
+    trailLocations: researchPackage.trailLocations.map((location) => {
+      const source = sourceById.get(location.sourceSnapshotId);
+
+      if (!source) {
+        throw new Error(
+          `Trail Location for ${location.trailId} references missing source ${location.sourceSnapshotId}`,
+        );
+      }
+
+      return {
+        trailId: location.trailId,
+        verificationState: location.verificationState,
+        path: location.path,
+        label: location.label,
+        source,
+      };
+    }),
     trails: researchPackage.trails.map((trail) => {
       const publishedFields: Record<string, PublishedField> = {};
 
