@@ -50,7 +50,7 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
   const dragRef = useRef<DragState | null>(null);
   const trailPathRefs = useRef(new Map<string, SVGPathElement>());
   const routeTrailIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "trail").map((segment) => segment.id) ?? []);
-  const routeLiftIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "lift").map((segment) => segment.id) ?? []);
+  const routeTransportIds = new Set(routePlan?.segments.filter((segment) => segment.kind === "transport").map((segment) => segment.id) ?? []);
 
   useEffect(() => {
     if (routePlan) {
@@ -239,20 +239,21 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
             })}
           </g>
 
-          <g className="lift-system" aria-label="Major lift skeleton">
-            {publication.lifts.map((lift) => (
-              <g key={lift.id} className={routeLiftIds.has(lift.id) ? "map-lift route-active" : "map-lift"}>
+          <g className="lift-system" aria-label="Major uphill transport skeleton">
+            {publication.uphillTransports.map((transport) => (
+              <g key={transport.id} className={routeTransportIds.has(transport.id) ? "map-transport route-active" : "map-transport"}>
                 <path
                   className="lift-line"
-                  d={lift.path}
-                  data-lift-code={lift.code}
-                  data-topology-source={lift.source.id}
-                  data-layout-fidelity={referenceCalibratedLiftIds.has(lift.id) ? "reference-calibrated" : "legacy-schematic"}
-                  data-route-active={routeLiftIds.has(lift.id) ? "true" : undefined}
+                  d={transport.path}
+                  data-uphill-transport-code={transport.code}
+                  data-transport-type={transport.transportType}
+                  data-topology-source={transport.source.id}
+                  data-layout-fidelity={referenceCalibratedLiftIds.has(transport.id) ? "reference-calibrated" : "legacy-schematic"}
+                  data-route-active={routeTransportIds.has(transport.id) ? "true" : undefined}
                 />
-                <g className="lift-label" transform={`translate(${lift.label.x} ${lift.label.y})`}>
+                <g className="lift-label" transform={`translate(${transport.label.x} ${transport.label.y})`}>
                   <rect x="-16" y="-10" width="32" height="20" />
-                  <text textAnchor="middle" dominantBaseline="central">{lift.code}</text>
+                  <text textAnchor="middle" dominantBaseline="central">{transport.code}</text>
                 </g>
               </g>
             ))}

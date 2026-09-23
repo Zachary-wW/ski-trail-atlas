@@ -11,7 +11,7 @@ const sourceSnapshotSchema = z.object({
     { message: "Source URL must use HTTP or HTTPS" },
   ),
   publisher: z.string().min(1),
-  publishedAt: z.iso.date(),
+  publishedAt: z.iso.date().nullable(),
   retrievedAt: z.iso.date(),
   season: z.string().min(1),
   sourceClass: z.enum([
@@ -32,6 +32,7 @@ const trailSchema = z.object({
 });
 
 const verificationStateSchema = z.enum(["verified", "unverified", "stale", "link_only"]);
+const transportTypeSchema = z.enum(["chairlift", "gondola", "magic_carpet", "unknown"]);
 
 const evidenceReferenceFields = {
   sourceSnapshotId: z.string().min(1),
@@ -40,18 +41,37 @@ const evidenceReferenceFields = {
 
 const mapNodeSchema = z.object({
   id: z.string().min(1),
-  kind: z.enum(["lift_station", "junction", "base", "zone_anchor"]),
+  kind: z.enum(["transport_station", "junction", "base", "zone_anchor"]),
   x: z.number(),
   y: z.number(),
   label: z.string().min(1).optional(),
   ...evidenceReferenceFields,
 });
 
-const liftSchema = z.object({
+const transportStationSchema = z.object({
+  id: z.string().min(1),
+  transportId: z.string().min(1),
+  nodeId: z.string().min(1),
+  role: z.enum(["bottom", "top"]),
+  name: z.string().min(1),
+  ...evidenceReferenceFields,
+});
+
+const placeSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  nodeId: z.string().min(1),
+  kind: z.enum(["base", "summit", "zone"]),
+  ...evidenceReferenceFields,
+});
+
+const uphillTransportSchema = z.object({
   id: z.string().min(1),
   code: z.string().min(1),
-  fromNodeId: z.string().min(1),
-  toNodeId: z.string().min(1),
+  transportType: transportTypeSchema,
+  bottomStationId: z.string().min(1),
+  topStationId: z.string().min(1),
+  transportTypeSourceSnapshotId: z.string().min(1),
   path: z.string().min(1),
   label: z.object({
     x: z.number(),
@@ -149,7 +169,9 @@ const researchPackageSchema = z.object({
   claims: z.array(claimSchema),
   trailLocations: z.array(trailLocationSchema).default([]),
   mapNodes: z.array(mapNodeSchema).default([]),
-  lifts: z.array(liftSchema).default([]),
+  transportStations: z.array(transportStationSchema).default([]),
+  places: z.array(placeSchema).default([]),
+  uphillTransports: z.array(uphillTransportSchema).default([]),
 });
 
 type PublishedField = {
@@ -178,13 +200,17 @@ export function compilePublication(input: unknown) {
   assertUniqueIds(researchPackage.trails, "Trail");
   assertUniqueIds(researchPackage.claims, "Claim");
   assertUniqueIds(researchPackage.mapNodes, "Map Node");
-  assertUniqueIds(researchPackage.lifts, "Lift");
+  assertUniqueIds(researchPackage.transportStations, "Transport Station");
+  assertUniqueIds(researchPackage.places, "Place");
+  assertUniqueIds(researchPackage.uphillTransports, "Uphill Transport");
 
   const sourceById = new Map(
     researchPackage.sourceSnapshots.map((source) => [source.id, source]),
   );
   const trailIds = new Set(researchPackage.trails.map((trail) => trail.id));
   const mapNodeIds = new Set(researchPackage.mapNodes.map((node) => node.id));
+  const stationById = new Map(researchPackage.transportStations.map((station) => [station.id, station]));
+  const transportIds = new Set(researchPackage.uphillTransports.map((transport) => transport.id));
 
   for (const claim of researchPackage.claims) {
     if (!trailIds.has(claim.trailId)) {
@@ -228,13 +254,44 @@ export function compilePublication(input: unknown) {
     }
   }
 
-  for (const lift of researchPackage.lifts) {
-    if (!sourceById.has(lift.sourceSnapshotId)) {
-      throw new Error(`Lift ${lift.id} references missing source ${lift.sourceSnapshotId}`);
+  for (const station of researchPackage.transportStations) {
+    if (!sourceById.has(station.sourceSnapshotId)) {
+      throw new Error(`Transport Station ${station.id} references missing source ${station.sourceSnapshotId}`);
     }
+    if (!mapNodeIds.has(station.nodeId)) {
+      throw new Error(`Transport Station ${station.id} references missing topology node ${station.nodeId}`);
+    }
+    if (!transportIds.has(station.transportId)) {
+      throw new Error(`Transport Station ${station.id} references missing Uphill Transport ${station.transportId}`);
+    }
+  }
 
-    if (!mapNodeIds.has(lift.fromNodeId) || !mapNodeIds.has(lift.toNodeId)) {
-      throw new Error(`Lift ${lift.id} references missing topology node`);
+  for (const place of researchPackage.places) {
+    if (!sourceById.has(place.sourceSnapshotId)) {
+      throw new Error(`Place ${place.id} references missing source ${place.sourceSnapshotId}`);
+    }
+    if (!mapNodeIds.has(place.nodeId)) {
+      throw new Error(`Place ${place.id} references missing topology node ${place.nodeId}`);
+    }
+  }
+
+  for (const transport of researchPackage.uphillTransports) {
+    if (!sourceById.has(transport.sourceSnapshotId)) {
+      throw new Error(`Uphill Transport ${transport.id} references missing source ${transport.sourceSnapshotId}`);
+    }
+    if (!sourceById.has(transport.transportTypeSourceSnapshotId)) {
+      throw new Error(`Uphill Transport ${transport.id} references missing Transport Type source ${transport.transportTypeSourceSnapshotId}`);
+    }
+    const bottom = stationById.get(transport.bottomStationId);
+    const top = stationById.get(transport.topStationId);
+    if (!bottom || !top) {
+      throw new Error(`Uphill Transport ${transport.id} references missing Transport Station`);
+    }
+    if (bottom.transportId !== transport.id || bottom.role !== "bottom") {
+      throw new Error(`Uphill Transport ${transport.id} has an invalid bottom Transport Station`);
+    }
+    if (top.transportId !== transport.id || top.role !== "top") {
+      throw new Error(`Uphill Transport ${transport.id} has an invalid top Transport Station`);
     }
   }
 
@@ -248,10 +305,25 @@ export function compilePublication(input: unknown) {
       if (!source) throw new Error(`Map Node ${node.id} references missing source ${node.sourceSnapshotId}`);
       return { ...node, source };
     }),
-    lifts: researchPackage.lifts.map((lift) => {
-      const source = sourceById.get(lift.sourceSnapshotId);
-      if (!source) throw new Error(`Lift ${lift.id} references missing source ${lift.sourceSnapshotId}`);
-      return { ...lift, source };
+    transportStations: researchPackage.transportStations.map((station) => {
+      const source = sourceById.get(station.sourceSnapshotId);
+      if (!source) throw new Error(`Transport Station ${station.id} references missing source ${station.sourceSnapshotId}`);
+      return { ...station, source };
+    }),
+    places: researchPackage.places.map((place) => {
+      const source = sourceById.get(place.sourceSnapshotId);
+      if (!source) throw new Error(`Place ${place.id} references missing source ${place.sourceSnapshotId}`);
+      return { ...place, source };
+    }),
+    uphillTransports: researchPackage.uphillTransports.map((transport) => {
+      const source = sourceById.get(transport.sourceSnapshotId);
+      const typeSource = sourceById.get(transport.transportTypeSourceSnapshotId);
+      const bottomStation = stationById.get(transport.bottomStationId);
+      const topStation = stationById.get(transport.topStationId);
+      if (!source || !typeSource || !bottomStation || !topStation) {
+        throw new Error(`Uphill Transport ${transport.id} has incomplete publication evidence`);
+      }
+      return { ...transport, source, typeSource, bottomStation, topStation };
     }),
     trailLocations: researchPackage.trailLocations.map((location) => {
       const source = sourceById.get(location.sourceSnapshotId);

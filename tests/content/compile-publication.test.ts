@@ -225,7 +225,7 @@ describe("compilePublication", () => {
     expect(() => compilePublication(input)).toThrow(/Duplicate Trail Location/i);
   });
 
-  it("publishes evidence-backed topology nodes and lifts", () => {
+  it("publishes evidence-backed topology nodes, Transport Stations, Places, and Uphill Transport", () => {
     const publication = compilePublication({
       schemaVersion: "1.0.0",
       resort: { id: "fulong", name: "富龙滑雪场" },
@@ -247,15 +247,47 @@ describe("compilePublication", () => {
       trails: [],
       claims: [],
       mapNodes: [
-        { id: "l3-base", kind: "lift_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
-        { id: "l3-top", kind: "lift_station", x: 690, y: 90, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "l3-base", kind: "transport_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "l3-top", kind: "transport_station", x: 690, y: 90, sourceSnapshotId: "map-source", verificationState: "unverified" },
       ],
-      lifts: [
+      transportStations: [
+        {
+          id: "fulong-l3-bottom",
+          transportId: "fulong-l3",
+          nodeId: "l3-base",
+          role: "bottom",
+          name: "L3 Bottom",
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+        {
+          id: "fulong-l3-top",
+          transportId: "fulong-l3",
+          nodeId: "l3-top",
+          role: "top",
+          name: "L3 Top",
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+      ],
+      places: [
+        {
+          id: "west-base-place",
+          name: "West Base",
+          nodeId: "l3-base",
+          kind: "base",
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+      ],
+      uphillTransports: [
         {
           id: "fulong-l3",
           code: "L3",
-          fromNodeId: "l3-base",
-          toNodeId: "l3-top",
+          transportType: "gondola",
+          bottomStationId: "fulong-l3-bottom",
+          topStationId: "fulong-l3-top",
+          transportTypeSourceSnapshotId: "map-source",
           path: "M 160 520 L 690 90",
           label: { x: 330, y: 375 },
           sourceSnapshotId: "map-source",
@@ -268,12 +300,25 @@ describe("compilePublication", () => {
       expect.objectContaining({ id: "l3-base", source: expect.objectContaining({ id: "map-source" }) }),
       expect.objectContaining({ id: "l3-top", source: expect.objectContaining({ id: "map-source" }) }),
     ]);
-    expect(publication.lifts).toEqual([
-      expect.objectContaining({ id: "fulong-l3", code: "L3", fromNodeId: "l3-base", toNodeId: "l3-top" }),
+    expect(publication.transportStations).toEqual([
+      expect.objectContaining({ id: "fulong-l3-bottom", nodeId: "l3-base", role: "bottom" }),
+      expect.objectContaining({ id: "fulong-l3-top", nodeId: "l3-top", role: "top" }),
+    ]);
+    expect(publication.places).toEqual([
+      expect.objectContaining({ id: "west-base-place", nodeId: "l3-base", kind: "base" }),
+    ]);
+    expect(publication.uphillTransports).toEqual([
+      expect.objectContaining({
+        id: "fulong-l3",
+        code: "L3",
+        transportType: "gondola",
+        bottomStation: expect.objectContaining({ nodeId: "l3-base" }),
+        topStation: expect.objectContaining({ nodeId: "l3-top" }),
+      }),
     ]);
   });
 
-  it("rejects a lift whose topology node is missing", () => {
+  it("rejects a Transport Station whose topology node is missing", () => {
     const input = {
       schemaVersion: "1.0.0",
       resort: { id: "fulong", name: "富龙滑雪场" },
@@ -295,14 +340,27 @@ describe("compilePublication", () => {
       trails: [],
       claims: [],
       mapNodes: [
-        { id: "l3-base", kind: "lift_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "l3-base", kind: "transport_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
       ],
-      lifts: [
+      transportStations: [
+        {
+          id: "fulong-l3-bottom",
+          transportId: "fulong-l3",
+          nodeId: "missing-bottom",
+          role: "bottom",
+          name: "L3 Bottom",
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+      ],
+      uphillTransports: [
         {
           id: "fulong-l3",
           code: "L3",
-          fromNodeId: "l3-base",
-          toNodeId: "missing-top",
+          transportType: "gondola",
+          bottomStationId: "fulong-l3-bottom",
+          topStationId: "fulong-l3-bottom",
+          transportTypeSourceSnapshotId: "map-source",
           path: "M 160 520 L 690 90",
           label: { x: 330, y: 375 },
           sourceSnapshotId: "map-source",
@@ -311,7 +369,55 @@ describe("compilePublication", () => {
       ],
     };
 
-    expect(() => compilePublication(input)).toThrow(/Lift.*missing topology node/i);
+    expect(() => compilePublication(input)).toThrow(/Transport Station.*missing topology node/i);
+  });
+
+  it("rejects an Uphill Transport whose Transport Type source is missing", () => {
+    const input = {
+      schemaVersion: "1.0.0",
+      resort: { id: "fulong", name: "富龙滑雪场" },
+      season: "2025-2026",
+      lastVerifiedAt: "2026-09-23",
+      sourceSnapshots: [
+        {
+          id: "map-source",
+          title: "Map source",
+          url: "https://example.com/map",
+          publisher: "Publisher",
+          publishedAt: "2026-01-01",
+          retrievedAt: "2026-09-23",
+          season: "2025-2026",
+          sourceClass: "secondary_commercial",
+          permittedUse: "reference_only",
+        },
+      ],
+      trails: [],
+      claims: [],
+      mapNodes: [
+        { id: "l3-base", kind: "transport_station", x: 160, y: 520, sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "l3-top", kind: "transport_station", x: 690, y: 90, sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
+      transportStations: [
+        { id: "fulong-l3-bottom", transportId: "fulong-l3", nodeId: "l3-base", role: "bottom", name: "L3 Bottom", sourceSnapshotId: "map-source", verificationState: "unverified" },
+        { id: "fulong-l3-top", transportId: "fulong-l3", nodeId: "l3-top", role: "top", name: "L3 Top", sourceSnapshotId: "map-source", verificationState: "unverified" },
+      ],
+      uphillTransports: [
+        {
+          id: "fulong-l3",
+          code: "L3",
+          transportType: "gondola",
+          bottomStationId: "fulong-l3-bottom",
+          topStationId: "fulong-l3-top",
+          transportTypeSourceSnapshotId: "missing-type-source",
+          path: "M 160 520 L 690 90",
+          label: { x: 330, y: 375 },
+          sourceSnapshotId: "map-source",
+          verificationState: "unverified",
+        },
+      ],
+    };
+
+    expect(() => compilePublication(input)).toThrow(/missing Transport Type source/i);
   });
 
   it("rejects duplicate Trail identifiers", () => {

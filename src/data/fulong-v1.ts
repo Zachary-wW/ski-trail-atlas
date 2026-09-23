@@ -8,6 +8,7 @@ import {
 
 const PARAMETER_SOURCE_ID = "chonglihuaxue-167-2026-09-22";
 const TOPOLOGY_SOURCE_ID = "chonglihuaxue-map-2026-09-23";
+const TRANSPORT_TYPE_SOURCE_ID = "skiresort-fulong-lifts-2026-09-23";
 
 const verificationState = "unverified" as const;
 
@@ -31,7 +32,7 @@ type TrailRow = {
 
 type NodeRow = {
   id: string;
-  kind: "lift_station" | "junction" | "base" | "zone_anchor";
+  kind: "transport_station" | "junction" | "base" | "zone_anchor";
   x: number;
   y: number;
   label?: string;
@@ -40,6 +41,16 @@ type NodeRow = {
 type TopologyRow = {
   fromNodeId: string;
   toNodeId: string;
+};
+
+type TransportType = "chairlift" | "gondola" | "magic_carpet" | "unknown";
+
+type UphillTransportRow = {
+  code: string;
+  bottomNodeId: string;
+  topNodeId: string;
+  transportType: TransportType;
+  transportTypeSourceSnapshotId: string;
 };
 
 const trailRows: TrailRow[] = [
@@ -101,7 +112,7 @@ const referenceControlPoints = {
 
 const nodeRows: NodeRow[] = [
   { id: "summit-main", kind: "zone_anchor", ...referenceControlPoints.summit, label: "SUMMIT" },
-  { id: "ridge-west-high", kind: "lift_station", ...referenceControlPoints.l3Top },
+  { id: "ridge-west-high", kind: "transport_station", ...referenceControlPoints.l3Top },
   { id: "ridge-west-mid", kind: "junction", ...referenceControlPoints.c8Lower },
   { id: "west-upper", kind: "junction", ...referenceControlPoints.westUpper },
   { id: "west-base", kind: "base", ...referenceControlPoints.l3Base, label: "WEST BASE" },
@@ -109,15 +120,15 @@ const nodeRows: NodeRow[] = [
   { id: "center-upper", kind: "junction", ...referenceControlPoints.centerUpper },
   { id: "center-mid", kind: "junction", ...referenceControlPoints.centerMid },
   { id: "center-low", kind: "junction", ...referenceControlPoints.centerLow },
-  { id: "l2-top", kind: "lift_station", ...referenceControlPoints.l2Top, label: "PARK" },
+  { id: "l2-top", kind: "transport_station", ...referenceControlPoints.l2Top, label: "PARK" },
   { id: "fulong-base", kind: "base", ...referenceControlPoints.fulongBase, label: "FULONG BASE" },
   { id: "central-transport-base", kind: "zone_anchor", ...referenceControlPoints.centralTransportBase, label: "L2 / L5 BASE" },
-  { id: "east-high", kind: "lift_station", ...referenceControlPoints.eastHigh },
+  { id: "east-high", kind: "transport_station", ...referenceControlPoints.eastHigh },
   { id: "east-upper", kind: "junction", ...referenceControlPoints.eastUpper },
   { id: "east-mid", kind: "junction", ...referenceControlPoints.eastMid },
   { id: "beginner-top", kind: "junction", ...referenceControlPoints.beginnerTop },
-  { id: "far-east-high", kind: "lift_station", ...referenceControlPoints.farEastHigh },
-  { id: "l7-base", kind: "lift_station", ...referenceControlPoints.eastHigh, label: "L7 EAST" },
+  { id: "far-east-high", kind: "transport_station", ...referenceControlPoints.farEastHigh },
+  { id: "l7-base", kind: "transport_station", ...referenceControlPoints.eastHigh, label: "L7 EAST" },
   { id: "l7-east-sector", kind: "zone_anchor", ...referenceControlPoints.l7EastSector },
 ];
 
@@ -181,19 +192,17 @@ function claimsFor(row: TrailRow) {
   return claims;
 }
 
-const liftRows = [
-  {
-    code: "L3",
-    fromNodeId: "west-base",
-    toNodeId: "ridge-west-high",
-    path: "M 101 420 C 201 362 305 259 395 174",
-    label: { x: 114, y: 410 },
-  },
-  { code: "L2", fromNodeId: "fulong-base", toNodeId: "l2-top", bendX: -18, label: { x: 518, y: 524 } },
-  { code: "L5", fromNodeId: "fulong-base", toNodeId: "summit-main", bendX: 0, label: { x: 558, y: 325 } },
-  { code: "L1", fromNodeId: "fulong-base", toNodeId: "east-high", bendX: 24, label: { x: 650, y: 360 } },
-  { code: "L7", fromNodeId: "l7-base", toNodeId: "far-east-high" }
-] as const;
+const uphillTransportRows: UphillTransportRow[] = [
+  { code: "L3", bottomNodeId: "west-base", topNodeId: "ridge-west-high", transportType: "gondola", transportTypeSourceSnapshotId: TRANSPORT_TYPE_SOURCE_ID },
+  { code: "L2", bottomNodeId: "fulong-base", topNodeId: "l2-top", transportType: "chairlift", transportTypeSourceSnapshotId: TRANSPORT_TYPE_SOURCE_ID },
+  { code: "L5", bottomNodeId: "fulong-base", topNodeId: "summit-main", transportType: "gondola", transportTypeSourceSnapshotId: TRANSPORT_TYPE_SOURCE_ID },
+  { code: "L1", bottomNodeId: "fulong-base", topNodeId: "east-high", transportType: "unknown", transportTypeSourceSnapshotId: TRANSPORT_TYPE_SOURCE_ID },
+  { code: "L7", bottomNodeId: "l7-base", topNodeId: "far-east-high", transportType: "unknown", transportTypeSourceSnapshotId: TOPOLOGY_SOURCE_ID },
+];
+
+function transportId(code: string) {
+  return `fulong-${code.toLowerCase()}`;
+}
 
 export default {
   schemaVersion: "1.0.0" as const,
@@ -223,6 +232,17 @@ export default {
       sourceClass: "secondary_commercial" as const,
       permittedUse: "reference_only" as const,
     },
+    {
+      id: TRANSPORT_TYPE_SOURCE_ID,
+      title: "Ski lifts Fulong — current lift inventory",
+      url: "https://www.skiresort.info/ski-resort/fulong/ski-lifts/",
+      publisher: "Skiresort.info",
+      publishedAt: null,
+      retrievedAt: "2026-09-23",
+      season: "2025-2026",
+      sourceClass: "secondary_commercial" as const,
+      permittedUse: "reference_only" as const,
+    },
   ],
   trails: trailRows.map((row) => ({ id: trailId(row.code), code: row.code, name: row.name })),
   mapNodes: nodeRows.map((node) => ({
@@ -230,13 +250,40 @@ export default {
     sourceSnapshotId: TOPOLOGY_SOURCE_ID,
     verificationState,
   })),
-  lifts: liftRows.map((lift) => ({
-    id: `fulong-${lift.code.toLowerCase()}`,
-    code: lift.code,
-    fromNodeId: lift.fromNodeId,
-    toNodeId: lift.toNodeId,
-    path: pathFromReferencePoints(referenceLiftGeometry[lift.code].points),
-    label: labelFromReferencePoint(referenceLiftGeometry[lift.code].label),
+  transportStations: uphillTransportRows.flatMap((transport) => [
+    {
+      id: `${transportId(transport.code)}-bottom`,
+      transportId: transportId(transport.code),
+      nodeId: transport.bottomNodeId,
+      role: "bottom" as const,
+      name: `${transport.code} Bottom`,
+      sourceSnapshotId: TOPOLOGY_SOURCE_ID,
+      verificationState,
+    },
+    {
+      id: `${transportId(transport.code)}-top`,
+      transportId: transportId(transport.code),
+      nodeId: transport.topNodeId,
+      role: "top" as const,
+      name: `${transport.code} Top`,
+      sourceSnapshotId: TOPOLOGY_SOURCE_ID,
+      verificationState,
+    },
+  ]),
+  places: [
+    { id: "fulong-base-place", name: "Fulong Base", nodeId: "fulong-base", kind: "base" as const, sourceSnapshotId: TOPOLOGY_SOURCE_ID, verificationState },
+    { id: "fulong-summit-place", name: "Summit", nodeId: "summit-main", kind: "summit" as const, sourceSnapshotId: TOPOLOGY_SOURCE_ID, verificationState },
+    { id: "fulong-west-base-place", name: "West Base", nodeId: "west-base", kind: "base" as const, sourceSnapshotId: TOPOLOGY_SOURCE_ID, verificationState },
+  ],
+  uphillTransports: uphillTransportRows.map((transport) => ({
+    id: transportId(transport.code),
+    code: transport.code,
+    transportType: transport.transportType,
+    bottomStationId: `${transportId(transport.code)}-bottom`,
+    topStationId: `${transportId(transport.code)}-top`,
+    transportTypeSourceSnapshotId: transport.transportTypeSourceSnapshotId,
+    path: pathFromReferencePoints(referenceLiftGeometry[transport.code].points),
+    label: labelFromReferencePoint(referenceLiftGeometry[transport.code].label),
     sourceSnapshotId: TOPOLOGY_SOURCE_ID,
     verificationState,
   })),

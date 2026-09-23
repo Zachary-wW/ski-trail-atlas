@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("plans and highlights a schematic route across Trails and a Lift", async ({ page }) => {
+test("plans and highlights a schematic route across Trails and Uphill Transport", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: "Plan route" }).click();
@@ -20,7 +20,7 @@ test("plans and highlights a schematic route across Trails and a Lift", async ({
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   await expect(map.locator('[data-trail-id="fulong-b1"]')).toHaveAttribute("data-route-active", "true");
-  await expect(map.locator('[data-lift-code="L5"]')).toHaveAttribute("data-route-active", "true");
+  await expect(map.locator('[data-uphill-transport-code="L5"]')).toHaveAttribute("data-route-active", "true");
   await expect(map.locator('[data-trail-id="fulong-d1"]')).toHaveAttribute("data-route-active", "true");
 
   const mapBox = await map.boundingBox();

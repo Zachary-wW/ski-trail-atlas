@@ -1234,9 +1234,9 @@ footer {
 .route-step-copy strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
 .route-step-copy small { color:#59645e; font-size:11px; }
 .panorama-panel.route-mode .map-trail:not(.route-active) .trail-line { opacity:.22; }
-.panorama-panel.route-mode .map-lift:not(.route-active) .lift-line { opacity:.16; }
+.panorama-panel.route-mode .map-transport:not(.route-active) .lift-line { opacity:.16; }
 .panorama-panel.route-mode .map-trail.route-active .trail-line { stroke-width:9; opacity:1; }
-.panorama-panel.route-mode .map-lift.route-active .lift-line { stroke-width:4; opacity:1; stroke-dasharray:5 4; }
+.panorama-panel.route-mode .map-transport.route-active .lift-line { stroke-width:4; opacity:1; stroke-dasharray:5 4; }
 .panorama-panel.route-mode .map-trail.route-active .trail-label rect { stroke-width:2; stroke:var(--ink); }
 
 @media (max-width:620px) {

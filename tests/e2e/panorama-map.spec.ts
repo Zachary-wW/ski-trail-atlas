@@ -69,17 +69,17 @@ test("shows season, verification date, evidence, and a non-navigation disclaimer
   );
 });
 
-test("renders the evidence-backed major lift skeleton and topology anchors", async ({ page }) => {
+test("renders the evidence-backed major Uphill Transport skeleton and topology anchors", async ({ page }) => {
   await page.goto("/");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   for (const code of ["L3", "L2", "L5", "L1", "L7"]) {
-    await expect(map.locator(`[data-lift-code="${code}"]`)).toBeVisible();
+    await expect(map.locator(`[data-uphill-transport-code="${code}"]`)).toBeVisible();
   }
 
   await expect(map.locator('[data-topology-node="summit-main"]')).toBeVisible();
   await expect(map.locator('[data-topology-node="fulong-base"]')).toBeVisible();
-  await expect(map.locator('[data-lift-code="L3"]')).toHaveAttribute(
+  await expect(map.locator('[data-uphill-transport-code="L3"]')).toHaveAttribute(
     "data-topology-source",
     "chonglihuaxue-map-2026-09-23",
   );
@@ -94,7 +94,7 @@ test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", a
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   const c8 = map.getByRole("link", { name: "C8 · 约德尔" });
-  const l3 = map.locator('[data-lift-code="L3"]');
+  const l3 = map.locator('[data-uphill-transport-code="L3"]');
 
   await expect(c8).toHaveAttribute("data-layout-fidelity", "reference-calibrated");
   await expect(l3).toHaveAttribute("data-layout-fidelity", "reference-calibrated");
@@ -106,12 +106,14 @@ test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", a
 });
 
 
-test("uses the reference layout for every published Trail and major lift while keeping map-only lines inert", async ({ page }) => {
+test("uses the reference layout for every published Trail and major Uphill Transport while keeping map-only lines inert", async ({ page }) => {
   await page.goto("/");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   await expect(map.locator('[data-trail-id][data-layout-fidelity="reference-calibrated"]')).toHaveCount(33);
-  await expect(map.locator('[data-lift-code][data-layout-fidelity="reference-calibrated"]')).toHaveCount(5);
+  await expect(map.locator('[data-uphill-transport-code][data-layout-fidelity="reference-calibrated"]')).toHaveCount(5);
+  await expect(map.locator('[data-uphill-transport-code="L5"]')).toHaveAttribute("data-transport-type", "gondola");
+  await expect(map.locator('[data-uphill-transport-code="L2"]')).toHaveAttribute("data-transport-type", "chairlift");
   await expect(map.locator('[data-layout-fidelity="legacy-schematic"]')).toHaveCount(0);
 
   for (const code of ["C11", "C12", "C13", "E1"]) {
@@ -120,7 +122,7 @@ test("uses the reference layout for every published Trail and major lift while k
   }
 });
 
-test("keeps reference-calibrated Trail and lift labels from materially overlapping", async ({ page }) => {
+test("keeps reference-calibrated Trail and transport labels from materially overlapping", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/");
 

@@ -26,8 +26,14 @@ describe("Fulong global publication", () => {
     }
   });
 
-  it("keeps the five major visible lifts including L7", () => {
-    expect(publication.lifts.map((lift) => lift.code)).toEqual(expect.arrayContaining(["L1", "L2", "L3", "L5", "L7"]));
+  it("keeps the five major visible Uphill Transports including L7 with evidence-backed types", () => {
+    expect(publication.uphillTransports.map((transport) => transport.code)).toEqual(expect.arrayContaining(["L1", "L2", "L3", "L5", "L7"]));
+    const byCode = new Map(publication.uphillTransports.map((transport) => [transport.code, transport]));
+    expect(byCode.get("L5")?.transportType).toBe("gondola");
+    expect(byCode.get("L3")?.transportType).toBe("gondola");
+    expect(byCode.get("L2")?.transportType).toBe("chairlift");
+    expect(byCode.get("L1")?.transportType).toBe("unknown");
+    expect(byCode.get("L7")?.transportType).toBe("unknown");
   });
 
   it("preserves source-specific difficulty categories", () => {

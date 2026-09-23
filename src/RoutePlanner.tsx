@@ -80,8 +80,8 @@ export function RoutePlanner({ language, selectedTrailId, onPlanChange }: RouteP
 export function RoutePlanPanel({ language, plan }: { language: Language; plan: RoutePlan | null }) {
   if (!plan) return null;
   const text = copy[language];
-  const start = publication.trails.find((trail) => trail.id === plan.startTrailId);
-  const destination = publication.trails.find((trail) => trail.id === plan.destinationTrailId);
+  const start = plan.startEndpoint.kind === "trail" ? publication.trails.find((trail) => trail.id === plan.startEndpoint.id) : undefined;
+  const destination = plan.destinationEndpoint.kind === "trail" ? publication.trails.find((trail) => trail.id === plan.destinationEndpoint.id) : undefined;
 
   return (
     <section className="route-plan-sheet" role="region" aria-label={text.routePlanAria}>
@@ -96,10 +96,10 @@ export function RoutePlanPanel({ language, plan }: { language: Language; plan: R
         {plan.segments.map((segment, index) => (
           <li className={`route-step route-${segment.kind}`} key={`${segment.kind}-${segment.id}-${index}`}>
             <span className="route-step-index">{String(index + 1).padStart(2, "0")}</span>
-            <span className="route-step-mode" aria-hidden="true">{segment.kind === "lift" ? "↑" : "↓"}</span>
+            <span className="route-step-mode" aria-hidden="true">{segment.kind === "transport" ? "↑" : "↓"}</span>
             <span className="route-step-copy">
               <strong>{segment.kind === "trail" && segment.name ? `${segment.code} · ${segment.name}` : segment.code}</strong>
-              <small>{segment.kind === "lift" ? text.routeRideLift : text.routeSkiTrail}</small>
+              <small>{segment.kind === "transport" ? text.routeRideLift : text.routeSkiTrail}</small>
             </span>
           </li>
         ))}

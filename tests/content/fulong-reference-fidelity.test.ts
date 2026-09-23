@@ -37,7 +37,7 @@ describe("Fulong reference-layout calibration", () => {
     }
   });
 
-  it("calibrates every published Trail and supported major lift to the reference frame", () => {
+  it("calibrates every published Trail and supported major Uphill Transport to the reference frame", () => {
     expect(referenceCalibratedTrailIds.size).toBe(33);
     expect(referenceCalibratedLiftIds.size).toBe(5);
 
@@ -45,19 +45,19 @@ describe("Fulong reference-layout calibration", () => {
       expect(referenceCalibratedTrailIds.has(trail.id)).toBe(true);
     }
 
-    for (const lift of publication.lifts) {
-      expect(referenceCalibratedLiftIds.has(lift.id)).toBe(true);
+    for (const transport of publication.uphillTransports) {
+      expect(referenceCalibratedLiftIds.has(transport.id)).toBe(true);
     }
   });
 
   it("connects the calibrated C8 tracer Trail to the calibrated L3 top station", () => {
     const c8 = publication.trailLocations.find((location) => location.trailId === "fulong-c8");
-    const l3 = publication.lifts.find((lift) => lift.code === "L3");
+    const l3 = publication.uphillTransports.find((transport) => transport.code === "L3");
 
     expect(c8).toBeDefined();
     expect(l3).toBeDefined();
     expect(c8?.fromNodeId).toBe("ridge-west-high");
-    expect(l3?.toNodeId).toBe("ridge-west-high");
+    expect(l3?.topStation.nodeId).toBe("ridge-west-high");
     expect(c8?.source.permittedUse).toBe("reference_only");
     expect(l3?.source.permittedUse).toBe("reference_only");
   });
