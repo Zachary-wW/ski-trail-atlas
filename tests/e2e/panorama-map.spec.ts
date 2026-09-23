@@ -14,6 +14,7 @@ test("selects and highlights Trails through the Panorama Map", async ({ page }) 
   await expect(
     page.getByRole("region", { name: "Fulong Panorama Map" }).getByRole("link", { name: "B1 · 摇滚" }),
   ).toHaveAttribute("aria-current", "page");
+  await expect(page.locator(".panorama-viewport svg")).not.toHaveAttribute("viewBox", "0 0 1000 650");
 });
 
 test("supports keyboard zoom and pan plus pointer panning", async ({ page }) => {
@@ -80,6 +81,28 @@ test("renders the evidence-backed major lift skeleton and topology anchors", asy
     "data-topology-source",
     "chonglihuaxue-map-2026-09-23",
   );
+});
+
+test("keeps compact search above a dominant map and Trail details below it", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/");
+
+  const search = page.getByRole("searchbox", { name: "Search trails" });
+  const map = page.getByRole("region", { name: "Fulong Panorama Map" });
+  const detail = page.locator(".trail-inspector");
+  const searchBox = await search.boundingBox();
+  const mapBox = await map.boundingBox();
+  const detailBox = await detail.boundingBox();
+
+  expect(searchBox).not.toBeNull();
+  expect(mapBox).not.toBeNull();
+  expect(detailBox).not.toBeNull();
+  expect(searchBox!.width).toBeLessThanOrEqual(440);
+  expect(mapBox!.width).toBeGreaterThan(1100);
+  expect(detailBox!.y).toBeGreaterThanOrEqual(mapBox!.y + mapBox!.height - 2);
+
+  const searchFontSize = await search.evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+  expect(searchFontSize).toBeGreaterThanOrEqual(14);
 });
 
 test("keeps mobile query-first without horizontal overflow", async ({ page }) => {

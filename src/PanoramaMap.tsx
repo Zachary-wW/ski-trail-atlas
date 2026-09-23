@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { appHref } from "./app-paths";
 import { publication } from "./data/publication";
@@ -9,7 +9,11 @@ const MAP_HEIGHT = 650;
 const MIN_VIEW_WIDTH = 420;
 
 type ViewBox = { x: number; y: number; width: number; height: number };
-type PanoramaMapProps = { language: Language; selectedTrailId: string };
+type PanoramaMapProps = {
+  language: Language;
+  selectedTrailId: string;
+  autoFocusSelected?: boolean;
+};
 type DragState = {
   pointerId: number;
   startX: number;
@@ -32,10 +36,42 @@ function clampView(view: ViewBox): ViewBox {
   };
 }
 
-export function PanoramaMap({ language, selectedTrailId }: PanoramaMapProps) {
+export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = false }: PanoramaMapProps) {
   const text = copy[language];
   const [view, setView] = useState<ViewBox>(initialView);
   const dragRef = useRef<DragState | null>(null);
+  const trailPathRefs = useRef(new Map<string, SVGPathElement>());
+
+  useEffect(() => {
+    if (!autoFocusSelected) {
+      setView(initialView);
+      return;
+    }
+
+    const path = trailPathRefs.current.get(selectedTrailId);
+    if (!path) return;
+
+    const bounds = path.getBBox();
+    const padding = 72;
+    const aspect = MAP_HEIGHT / MAP_WIDTH;
+    const width = Math.max(
+      bounds.width + padding * 2,
+      (bounds.height + padding * 2) / aspect,
+      MIN_VIEW_WIDTH,
+    );
+    const height = width * aspect;
+    const centerX = bounds.x + bounds.width / 2;
+    const centerY = bounds.y + bounds.height / 2;
+
+    setView(
+      clampView({
+        x: centerX - width / 2,
+        y: centerY - height / 2,
+        width,
+        height,
+      }),
+    );
+  }, [autoFocusSelected, selectedTrailId]);
 
   const zoom = (factor: number) => {
     setView((current) => {
@@ -212,7 +248,14 @@ export function PanoramaMap({ language, selectedTrailId }: PanoramaMapProps) {
                 data-topology-source={location.source.id}
               >
                 <path className="trail-hit-target" d={location.path} />
-                <path className={`trail-line difficulty-${difficulty}`} d={location.path} />
+                <path
+                  ref={(node) => {
+                    if (node) trailPathRefs.current.set(trail.id, node);
+                    else trailPathRefs.current.delete(trail.id);
+                  }}
+                  className={`trail-line difficulty-${difficulty}`}
+                  d={location.path}
+                />
                 <g className="trail-label" transform={`translate(${location.label.x} ${location.label.y})`}>
                   <rect x="-26" y="-14" width="52" height="28" rx="14" />
                   <text textAnchor="middle" dominantBaseline="central">{trail.code}</text>

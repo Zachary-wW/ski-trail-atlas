@@ -14,26 +14,16 @@ export function TrailCatalog({ language, selectedTrailId }: TrailCatalogProps) {
   const [query, setQuery] = useState("");
   const text = copy[language];
   const normalizedQuery = query.trim().toLocaleLowerCase();
-  const matchingTrails = publication.trails.filter((trail) => {
-    if (!normalizedQuery) {
-      return true;
-    }
-
-    return `${trail.code} ${trail.name}`.toLocaleLowerCase().includes(normalizedQuery);
-  });
+  const matchingTrails = normalizedQuery
+    ? publication.trails.filter((trail) =>
+        `${trail.code} ${trail.name}`.toLocaleLowerCase().includes(normalizedQuery),
+      )
+    : [];
 
   return (
-    <section className="catalog-section" aria-labelledby="catalog-title">
-      <header className="catalog-heading">
-        <div>
-          <p className="eyebrow">{text.catalogEyebrow}</p>
-          <h2 id="catalog-title">{text.catalogTitle}</h2>
-        </div>
-        <span className="catalog-count">{publication.trails.length.toString().padStart(2, "0")}</span>
-      </header>
-
+    <section className="catalog-section" aria-label={text.catalogAria}>
       <label className="trail-search">
-        <span>{text.searchLabel}</span>
+        <span className="sr-only">{text.searchLabel}</span>
         <div className="search-field">
           <span className="search-glyph" aria-hidden="true">⌕</span>
           <input
@@ -43,12 +33,13 @@ export function TrailCatalog({ language, selectedTrailId }: TrailCatalogProps) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={text.searchPlaceholder}
+            aria-controls="trail-search-results"
           />
         </div>
       </label>
 
       {matchingTrails.length > 0 ? (
-        <nav className="trail-list" aria-label={text.catalogAria}>
+        <nav id="trail-search-results" className="trail-list" aria-label={text.catalogAria}>
           {matchingTrails.map((trail) => {
             const difficulty = trail.publishedFields.difficulty;
             const slope = trail.publishedFields.averageSlopeDegrees;
@@ -72,10 +63,9 @@ export function TrailCatalog({ language, selectedTrailId }: TrailCatalogProps) {
             );
           })}
         </nav>
-      ) : (
-        <p className="catalog-empty">{text.noMatches}</p>
-      )}
-      <p className="catalog-footnote">{text.mapDisclaimer}</p>
+      ) : normalizedQuery ? (
+        <p id="trail-search-results" className="catalog-empty">{text.noMatches}</p>
+      ) : null}
     </section>
   );
 }

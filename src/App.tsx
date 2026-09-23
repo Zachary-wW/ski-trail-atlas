@@ -106,8 +106,14 @@ function App() {
       </header>
 
       <main className="atlas-stage">
-        <TrailCatalog language={language} selectedTrailId={trail.id} />
-        <PanoramaMap language={language} selectedTrailId={trail.id} />
+        <div className="atlas-toolbar">
+          <TrailCatalog language={language} selectedTrailId={trail.id} />
+        </div>
+        <PanoramaMap
+          language={language}
+          selectedTrailId={trail.id}
+          autoFocusSelected={routePath !== "/" && routePath !== ""}
+        />
         <aside className="trail-inspector metrics-panel" aria-labelledby="trail-title">
           <header className="inspector-heading">
             <div className="inspector-kicker">
