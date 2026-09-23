@@ -24,6 +24,22 @@ _Avoid_: Official map, navigation map
 The verified relative position and connections of a Trail on a Panorama Map. A Trail without sufficient topology evidence is Unlocated.
 _Avoid_: GPS track, exact route
 
+**Map Node**:
+A source-backed relative connection point on a Panorama Map, such as a lift station, Trail junction, base area, or zone anchor. A Map Node is topology, not a surveyed coordinate.
+_Avoid_: GPS point, waypoint
+
+**Lift**:
+An uphill transport connection between Map Nodes. A Lift may participate in a Route Plan only when its relative endpoints are supported by topology evidence.
+_Avoid_: route, trail
+
+**Route Plan**:
+A derived, ordered sequence of Trails and Lifts connecting a chosen starting Trail to a destination Trail on the published topology graph. A Route Plan is schematic and season-aware; it does not assert live opening status, safety, travel time, or GPS navigation.
+_Avoid_: navigation route, safest route, shortest-distance route
+
+**Route Segment**:
+One directed Trail or Lift step inside a Route Plan. Trail segments travel downhill through the published topology; Lift segments travel uphill.
+_Avoid_: GPS segment
+
 **Season**:
 The named snow season to which a Source Snapshot, Claim, Trail attribute, or Panorama Map applies.
 _Avoid_: Current, latest
