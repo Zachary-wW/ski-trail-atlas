@@ -20,8 +20,8 @@ describe("planTrailRoute", () => {
     expect(plan?.verificationState).toBe("unverified");
   });
 
-  it("returns no route when the published directed topology has no supported connection", () => {
-    expect(planTrailRoute(publication, "fulong-a1", "fulong-b1")).toBeNull();
+  it("fails closed for an endpoint that is not in the published Trail topology", () => {
+    expect(planTrailRoute(publication, "fulong-a1", "fulong-not-published")).toBeNull();
   });
 
   it("uses the selected Trail itself when origin and destination are the same", () => {

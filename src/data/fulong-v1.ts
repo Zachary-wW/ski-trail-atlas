@@ -1,4 +1,10 @@
 import { referencePixelToMap } from "../map/fulong-reference-frame";
+import {
+  labelFromReferencePoint,
+  pathFromReferencePoints,
+  referenceLiftGeometry,
+  referenceTrailGeometry,
+} from "../map/fulong-reference-geometry";
 
 const PARAMETER_SOURCE_ID = "chonglihuaxue-167-2026-09-22";
 const TOPOLOGY_SOURCE_ID = "chonglihuaxue-map-2026-09-23";
@@ -34,11 +40,6 @@ type NodeRow = {
 type TopologyRow = {
   fromNodeId: string;
   toNodeId: string;
-  bendX?: number;
-  bendY?: number;
-  labelDx?: number;
-  labelDy?: number;
-  path?: string;
 };
 
 const trailRows: TrailRow[] = [
@@ -85,103 +86,81 @@ const referenceControlPoints = {
   c8Lower: referencePixelToMap({ x: 1691, y: 575 }),
   centralTransportBase: referencePixelToMap({ x: 1886, y: 1304 }),
   l7EastSector: referencePixelToMap({ x: 3389, y: 590 }),
+  westUpper: referencePixelToMap({ x: 1450, y: 760 }),
+  centerHigh: referencePixelToMap({ x: 2020, y: 560 }),
+  centerUpper: referencePixelToMap({ x: 1900, y: 650 }),
+  centerMid: referencePixelToMap({ x: 1900, y: 780 }),
+  centerLow: referencePixelToMap({ x: 2050, y: 950 }),
+  l2Top: referencePixelToMap({ x: 1790, y: 760 }),
+  eastHigh: referencePixelToMap({ x: 2470, y: 455 }),
+  eastUpper: referencePixelToMap({ x: 2550, y: 600 }),
+  eastMid: referencePixelToMap({ x: 2700, y: 800 }),
+  beginnerTop: referencePixelToMap({ x: 2920, y: 990 }),
+  farEastHigh: referencePixelToMap({ x: 3389, y: 590 }),
 };
 
 const nodeRows: NodeRow[] = [
   { id: "summit-main", kind: "zone_anchor", ...referenceControlPoints.summit, label: "SUMMIT" },
   { id: "ridge-west-high", kind: "lift_station", ...referenceControlPoints.l3Top },
   { id: "ridge-west-mid", kind: "junction", ...referenceControlPoints.c8Lower },
-  { id: "west-upper", kind: "junction", x: 338, y: 319 },
+  { id: "west-upper", kind: "junction", ...referenceControlPoints.westUpper },
   { id: "west-base", kind: "base", ...referenceControlPoints.l3Base, label: "WEST BASE" },
-  { id: "center-high", kind: "junction", x: 535, y: 150 },
-  { id: "center-upper", kind: "junction", x: 520, y: 228 },
-  { id: "center-mid", kind: "junction", x: 525, y: 332 },
-  { id: "center-low", kind: "junction", x: 548, y: 445 },
-  { id: "l2-top", kind: "lift_station", x: 430, y: 355, label: "PARK" },
+  { id: "center-high", kind: "junction", ...referenceControlPoints.centerHigh },
+  { id: "center-upper", kind: "junction", ...referenceControlPoints.centerUpper },
+  { id: "center-mid", kind: "junction", ...referenceControlPoints.centerMid },
+  { id: "center-low", kind: "junction", ...referenceControlPoints.centerLow },
+  { id: "l2-top", kind: "lift_station", ...referenceControlPoints.l2Top, label: "PARK" },
   { id: "fulong-base", kind: "base", ...referenceControlPoints.fulongBase, label: "FULONG BASE" },
   { id: "central-transport-base", kind: "zone_anchor", ...referenceControlPoints.centralTransportBase, label: "L2 / L5 BASE" },
-  { id: "east-high", kind: "lift_station", x: 665, y: 152 },
-  { id: "east-upper", kind: "junction", x: 705, y: 235 },
-  { id: "east-mid", kind: "junction", x: 730, y: 342 },
-  { id: "beginner-top", kind: "junction", x: 825, y: 455 },
-  { id: "far-east-high", kind: "lift_station", x: 830, y: 185 },
-  { id: "l7-base", kind: "lift_station", x: 960, y: 300, label: "L7 EAST" },
+  { id: "east-high", kind: "lift_station", ...referenceControlPoints.eastHigh },
+  { id: "east-upper", kind: "junction", ...referenceControlPoints.eastUpper },
+  { id: "east-mid", kind: "junction", ...referenceControlPoints.eastMid },
+  { id: "beginner-top", kind: "junction", ...referenceControlPoints.beginnerTop },
+  { id: "far-east-high", kind: "lift_station", ...referenceControlPoints.farEastHigh },
+  { id: "l7-base", kind: "lift_station", ...referenceControlPoints.eastHigh, label: "L7 EAST" },
   { id: "l7-east-sector", kind: "zone_anchor", ...referenceControlPoints.l7EastSector },
 ];
 
 const topologyByCode: Record<string, TopologyRow> = {
-  A1: { fromNodeId: "beginner-top", toNodeId: "fulong-base", bendX: 88, labelDx: 42, labelDy: 10 },
-  A2: { fromNodeId: "beginner-top", toNodeId: "fulong-base", bendX: 126, labelDx: 96, labelDy: 38 },
-  A3: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: 26, labelDx: 28, labelDy: -8 },
-  A5: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: -12, labelDx: -4, labelDy: 35 },
-  A6: { fromNodeId: "center-low", toNodeId: "fulong-base", bendX: -42, labelDx: -60, labelDy: 45 },
-  C3: { fromNodeId: "ridge-west-high", toNodeId: "fulong-base", bendX: -100, bendY: 35, labelDx: -56, labelDy: 18 },
-  D1: { fromNodeId: "west-upper", toNodeId: "west-base", bendX: -24, labelDx: -18, labelDy: 18 },
-  D2: { fromNodeId: "west-upper", toNodeId: "west-base", bendX: 18, labelDx: 22, labelDy: -18 },
-  B2: { fromNodeId: "far-east-high", toNodeId: "beginner-top", bendX: 50, labelDx: 42, labelDy: -5 },
-  A9: { fromNodeId: "l2-top", toNodeId: "fulong-base", bendX: -74, labelDx: -54, labelDy: 5 },
-  A10: { fromNodeId: "l2-top", toNodeId: "fulong-base", bendX: -112, labelDx: -86, labelDy: 32 },
-  A7: { fromNodeId: "center-mid", toNodeId: "fulong-base", bendX: 10, labelDx: 18, labelDy: 4 },
-  A8: { fromNodeId: "center-mid", toNodeId: "fulong-base", bendX: 46, labelDx: 96, labelDy: 56 },
-  B9: { fromNodeId: "center-high", toNodeId: "east-mid", bendX: 36, labelDx: -72, labelDy: -14 },
-  B10: { fromNodeId: "center-high", toNodeId: "east-mid", bendX: -12, labelDx: -6, labelDy: -36 },
-  B11: { fromNodeId: "center-mid", toNodeId: "center-low", bendX: 28, labelDx: 32, labelDy: -2 },
-  C8: {
-    fromNodeId: "ridge-west-high",
-    toNodeId: "ridge-west-mid",
-    path: "M 395 174 C 412 181 441 203 463 222",
-    labelDx: 10,
-    labelDy: -6,
-  },
-  B6: { fromNodeId: "east-high", toNodeId: "fulong-base", bendX: 95, labelDx: 76, labelDy: 8 },
-  B8: { fromNodeId: "east-high", toNodeId: "east-mid", bendX: -22, labelDx: 38, labelDy: 16 },
-  C1: { fromNodeId: "summit-main", toNodeId: "center-upper", bendX: 28, labelDx: 28, labelDy: -6 },
-  C2: { fromNodeId: "summit-main", toNodeId: "east-upper", bendX: 42, labelDx: 55, labelDy: 4 },
-  C7: { fromNodeId: "ridge-west-high", toNodeId: "ridge-west-mid", bendX: -26, labelDx: -28, labelDy: 8 },
-  C9: { fromNodeId: "ridge-west-mid", toNodeId: "west-upper", bendX: 14, labelDx: 18, labelDy: -8 },
-  C10: { fromNodeId: "ridge-west-mid", toNodeId: "west-base", bendX: -42, labelDx: -45, labelDy: -2 },
-  B1: { fromNodeId: "far-east-high", toNodeId: "fulong-base", bendX: 105, labelDx: 82, labelDy: -22 },
-  B3: { fromNodeId: "far-east-high", toNodeId: "fulong-base", bendX: 146, labelDx: 112, labelDy: 12 },
-  B5: { fromNodeId: "east-mid", toNodeId: "fulong-base", bendX: 90, labelDx: 74, labelDy: 8 },
-  B7: { fromNodeId: "east-upper", toNodeId: "fulong-base", bendX: 58, labelDx: 55, labelDy: 8 },
-  B12: { fromNodeId: "center-upper", toNodeId: "center-mid", bendX: 30, labelDx: 32, labelDy: 4 },
-  B13: { fromNodeId: "center-upper", toNodeId: "center-mid", bendX: -14, labelDx: -13, labelDy: -10 },
-  B15: { fromNodeId: "center-upper", toNodeId: "center-mid", bendX: -45, labelDx: -48, labelDy: 16 },
-  C5: { fromNodeId: "summit-main", toNodeId: "center-high", bendX: -12, labelDx: -12, labelDy: 2 },
-  C6: { fromNodeId: "summit-main", toNodeId: "ridge-west-high", bendX: -34, labelDx: -36, labelDy: -2 },
+  A1: { fromNodeId: "beginner-top", toNodeId: "fulong-base" },
+  A2: { fromNodeId: "beginner-top", toNodeId: "fulong-base" },
+  A3: { fromNodeId: "center-low", toNodeId: "fulong-base" },
+  A5: { fromNodeId: "center-low", toNodeId: "fulong-base" },
+  A6: { fromNodeId: "center-low", toNodeId: "fulong-base" },
+  C3: { fromNodeId: "ridge-west-high", toNodeId: "fulong-base" },
+  D1: { fromNodeId: "west-upper", toNodeId: "west-base" },
+  D2: { fromNodeId: "west-upper", toNodeId: "west-base" },
+  B2: { fromNodeId: "east-high", toNodeId: "beginner-top" },
+  A9: { fromNodeId: "l2-top", toNodeId: "fulong-base" },
+  A10: { fromNodeId: "l2-top", toNodeId: "fulong-base" },
+  A7: { fromNodeId: "center-mid", toNodeId: "fulong-base" },
+  A8: { fromNodeId: "center-mid", toNodeId: "fulong-base" },
+  B9: { fromNodeId: "center-high", toNodeId: "east-mid" },
+  B10: { fromNodeId: "center-high", toNodeId: "east-mid" },
+  B11: { fromNodeId: "center-mid", toNodeId: "center-low" },
+  C8: { fromNodeId: "ridge-west-high", toNodeId: "ridge-west-mid" },
+  B6: { fromNodeId: "east-high", toNodeId: "fulong-base" },
+  B8: { fromNodeId: "east-high", toNodeId: "east-mid" },
+  C1: { fromNodeId: "summit-main", toNodeId: "center-upper" },
+  C2: { fromNodeId: "summit-main", toNodeId: "east-upper" },
+  C7: { fromNodeId: "ridge-west-high", toNodeId: "ridge-west-mid" },
+  C9: { fromNodeId: "ridge-west-mid", toNodeId: "west-upper" },
+  C10: { fromNodeId: "ridge-west-mid", toNodeId: "west-base" },
+  B1: { fromNodeId: "east-high", toNodeId: "fulong-base" },
+  B3: { fromNodeId: "east-high", toNodeId: "fulong-base" },
+  B5: { fromNodeId: "east-mid", toNodeId: "fulong-base" },
+  B7: { fromNodeId: "east-upper", toNodeId: "fulong-base" },
+  B12: { fromNodeId: "center-upper", toNodeId: "center-mid" },
+  B13: { fromNodeId: "center-upper", toNodeId: "center-mid" },
+  B15: { fromNodeId: "center-upper", toNodeId: "center-mid" },
+  C5: { fromNodeId: "summit-main", toNodeId: "center-high" },
+  C6: { fromNodeId: "summit-main", toNodeId: "ridge-west-high" },
 };
 
 const nodeById = new Map(nodeRows.map((node) => [node.id, node]));
 
 function trailId(code: string) {
   return `fulong-${code.toLowerCase()}`;
-}
-
-function pathBetween(topology: TopologyRow) {
-  const from = nodeById.get(topology.fromNodeId);
-  const to = nodeById.get(topology.toNodeId);
-  if (!from || !to) throw new Error(`Unknown topology node for ${topology.fromNodeId} -> ${topology.toNodeId}`);
-
-  if (topology.path) return topology.path;
-
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const bendX = topology.bendX ?? 0;
-  const bendY = topology.bendY ?? 0;
-  const c1x = Math.round(from.x + dx / 3 + bendX);
-  const c1y = Math.round(from.y + dy / 3 + bendY);
-  const c2x = Math.round(from.x + (dx * 2) / 3 + bendX);
-  const c2y = Math.round(from.y + (dy * 2) / 3 + bendY);
-  return `M ${from.x} ${from.y} C ${c1x} ${c1y} ${c2x} ${c2y} ${to.x} ${to.y}`;
-}
-
-function labelFor(topology: TopologyRow) {
-  const from = nodeById.get(topology.fromNodeId)!;
-  const to = nodeById.get(topology.toNodeId)!;
-  return {
-    x: Math.round((from.x + to.x) / 2 + (topology.labelDx ?? 0)),
-    y: Math.round((from.y + to.y) / 2 + (topology.labelDy ?? 0)),
-  };
 }
 
 function claimsFor(row: TrailRow) {
@@ -213,7 +192,7 @@ const liftRows = [
   { code: "L2", fromNodeId: "fulong-base", toNodeId: "l2-top", bendX: -18, label: { x: 518, y: 524 } },
   { code: "L5", fromNodeId: "fulong-base", toNodeId: "summit-main", bendX: 0, label: { x: 558, y: 325 } },
   { code: "L1", fromNodeId: "fulong-base", toNodeId: "east-high", bendX: 24, label: { x: 650, y: 360 } },
-  { code: "L7", fromNodeId: "l7-base", toNodeId: "far-east-high", bendX: 20, label: { x: 905, y: 225 } },
+  { code: "L7", fromNodeId: "l7-base", toNodeId: "far-east-high" }
 ] as const;
 
 export default {
@@ -256,8 +235,8 @@ export default {
     code: lift.code,
     fromNodeId: lift.fromNodeId,
     toNodeId: lift.toNodeId,
-    path: pathBetween(lift),
-    label: lift.label,
+    path: pathFromReferencePoints(referenceLiftGeometry[lift.code].points),
+    label: labelFromReferencePoint(referenceLiftGeometry[lift.code].label),
     sourceSnapshotId: TOPOLOGY_SOURCE_ID,
     verificationState,
   })),
@@ -270,8 +249,8 @@ export default {
       toNodeId: topology.toNodeId,
       sourceSnapshotId: TOPOLOGY_SOURCE_ID,
       verificationState,
-      path: pathBetween(topology),
-      label: labelFor(topology),
+      path: pathFromReferencePoints(referenceTrailGeometry[row.code].points),
+      label: labelFromReferencePoint(referenceTrailGeometry[row.code].label),
     };
   }),
   claims: trailRows.flatMap(claimsFor),

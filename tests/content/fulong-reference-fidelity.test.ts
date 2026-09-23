@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { publication } from "../../src/data/publication";
 import { REFERENCE_LAYOUT_BOUNDS } from "../../src/map/fulong-reference-frame";
+import {
+  referenceCalibratedLiftIds,
+  referenceCalibratedTrailIds,
+} from "../../src/map/fulong-reference-geometry";
 
 const expectedReferenceAnchors = {
   "summit-main": { x: 0.543, y: 0.066 },
@@ -30,6 +34,19 @@ describe("Fulong reference-layout calibration", () => {
       const normalized = normalizedReferencePosition(node!);
       expect(normalized.x, `${id}.x`).toBeCloseTo(expected.x, 2);
       expect(normalized.y, `${id}.y`).toBeCloseTo(expected.y, 2);
+    }
+  });
+
+  it("calibrates every published Trail and supported major lift to the reference frame", () => {
+    expect(referenceCalibratedTrailIds.size).toBe(33);
+    expect(referenceCalibratedLiftIds.size).toBe(5);
+
+    for (const trail of publication.trails) {
+      expect(referenceCalibratedTrailIds.has(trail.id)).toBe(true);
+    }
+
+    for (const lift of publication.lifts) {
+      expect(referenceCalibratedLiftIds.has(lift.id)).toBe(true);
     }
   });
 

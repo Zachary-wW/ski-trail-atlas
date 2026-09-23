@@ -105,6 +105,45 @@ test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", a
   await expect(page.locator(".panorama-viewport svg")).not.toHaveAttribute("viewBox", "0 0 1000 650");
 });
 
+
+test("uses the reference layout for every published Trail and major lift while keeping map-only lines inert", async ({ page }) => {
+  await page.goto("/");
+
+  const map = page.getByRole("region", { name: "Fulong Panorama Map" });
+  await expect(map.locator('[data-trail-id][data-layout-fidelity="reference-calibrated"]')).toHaveCount(33);
+  await expect(map.locator('[data-lift-code][data-layout-fidelity="reference-calibrated"]')).toHaveCount(5);
+  await expect(map.locator('[data-layout-fidelity="legacy-schematic"]')).toHaveCount(0);
+
+  for (const code of ["C11", "C12", "C13", "E1"]) {
+    await expect(map.locator(`[data-reference-feature="${code}"]`)).toBeVisible();
+    await expect(map.getByRole("link", { name: new RegExp(`^${code} ·`) })).toHaveCount(0);
+  }
+});
+
+test("keeps reference-calibrated Trail and lift labels from materially overlapping", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/");
+
+  const labels = page.getByRole("region", { name: "Fulong Panorama Map" }).locator(".trail-label, .lift-label");
+  const boxes = await labels.evaluateAll((elements) => elements.map((element) => {
+    const box = element.getBoundingClientRect();
+    return { label: element.textContent?.trim() ?? "", x: box.x, y: box.y, width: box.width, height: box.height };
+  }));
+
+  const overlaps: string[] = [];
+  for (let left = 0; left < boxes.length; left += 1) {
+    for (let right = left + 1; right < boxes.length; right += 1) {
+      const a = boxes[left];
+      const b = boxes[right];
+      const width = Math.max(0, Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x));
+      const height = Math.max(0, Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y));
+      if (width * height > 18) overlaps.push(`${a.label}/${b.label}`);
+    }
+  }
+
+  expect(overlaps).toEqual([]);
+});
+
 test("keeps compact search above a dominant map and Trail details below it", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/");

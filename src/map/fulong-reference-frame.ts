@@ -27,14 +27,24 @@ export function referencePixelToMap(point: ReferencePixelPoint) {
   };
 }
 
-export const referenceCalibratedTrailIds = new Set(["fulong-c8"]);
-export const referenceCalibratedLiftIds = new Set(["fulong-l3"]);
 export const referenceControlNodeIds = new Set([
   "summit-main",
-  "fulong-base",
-  "west-base",
-  "central-transport-base",
-  "l7-east-sector",
   "ridge-west-high",
   "ridge-west-mid",
+  "west-upper",
+  "west-base",
+  "center-high",
+  "center-upper",
+  "center-mid",
+  "center-low",
+  "l2-top",
+  "fulong-base",
+  "central-transport-base",
+  "east-high",
+  "east-upper",
+  "east-mid",
+  "beginner-top",
+  "far-east-high",
+  "l7-base",
+  "l7-east-sector",
 ]);

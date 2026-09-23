@@ -1006,6 +1006,11 @@ footer {
 .atlas-stage .ridge-line.primary { stroke:rgba(35,50,43,.34); stroke-dasharray:none; stroke-width:1.5; }
 .atlas-stage .ridge-line.secondary { stroke:rgba(35,50,43,.17); stroke-dasharray:3 7; }
 .atlas-stage .base-village rect { fill:#f5f2e8; stroke:rgba(31,43,38,.45); stroke-width:1.3; }
+.atlas-stage .forest-mass path { fill:#aebdb3; opacity:.38; stroke:rgba(45,67,56,.09); stroke-width:1; }
+.atlas-stage .reference-feature-line { fill:none; stroke:#526159; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; opacity:.68; pointer-events:none; }
+.atlas-stage .reference-feature-line.state-planned { stroke-dasharray:8 7; }
+.atlas-stage .reference-feature-line.state-map-only { stroke-dasharray:3 7; opacity:.52; }
+.atlas-stage .reference-feature-label { fill:#5c6962; font-size:8px; font-weight:800; letter-spacing:.05em; paint-order:stroke; stroke:#edf0e9; stroke-width:4px; pointer-events:none; }
 .atlas-stage .lift-line { fill:none; stroke:#b34e3e; stroke-width:2.2; stroke-dasharray:7 6; stroke-linecap:round; opacity:.9; }
 .atlas-stage .lift-label rect { fill:#b34e3e; stroke:#f7f5ed; stroke-width:1; }
 .atlas-stage .lift-label text { fill:#fffaf0; font-size:8px; font-weight:800; letter-spacing:.04em; }

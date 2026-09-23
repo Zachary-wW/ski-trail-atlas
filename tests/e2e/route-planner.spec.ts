@@ -24,13 +24,22 @@ test("plans and highlights a schematic route across Trails and a Lift", async ({
   await expect(map.locator('[data-trail-id="fulong-d1"]')).toHaveAttribute("data-route-active", "true");
 });
 
-test("shows a no-route state instead of guessing an unsupported connection", async ({ page }) => {
+
+test("fails closed in the browser for a destination outside the published topology", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: "Plan route" }).click();
   const planner = page.getByRole("region", { name: "Route planner" });
   await planner.getByLabel("Start trail").selectOption("fulong-a1");
-  await planner.getByLabel("Destination trail").selectOption("fulong-b1");
+  const destination = planner.getByLabel("Destination trail");
+  await destination.evaluate((select) => {
+    const option = document.createElement("option");
+    option.value = "fulong-not-published";
+    option.textContent = "Unsupported test endpoint";
+    select.append(option);
+    (select as HTMLSelectElement).value = option.value;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
   await planner.getByRole("button", { name: "Build route" }).click();
 
   await expect(page.getByText("No supported route in the published topology", { exact: true })).toBeVisible();

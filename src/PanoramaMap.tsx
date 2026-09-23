@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { appHref } from "./app-paths";
 import { publication } from "./data/publication";
 import { copy, type Language } from "./i18n";
+import { MAP_HEIGHT, MAP_WIDTH, referenceControlNodeIds } from "./map/fulong-reference-frame";
 import {
-  MAP_HEIGHT,
-  MAP_WIDTH,
+  mapPoint,
+  pathFromReferencePoints,
   referenceCalibratedLiftIds,
   referenceCalibratedTrailIds,
-  referenceControlNodeIds,
-} from "./map/fulong-reference-frame";
+  referenceFeatureGeometry,
+} from "./map/fulong-reference-geometry";
 import type { RoutePlan } from "./routing/plan-trail-route";
 
 const MIN_VIEW_WIDTH = 420;
@@ -193,27 +194,49 @@ export function PanoramaMap({ language, selectedTrailId, autoFocusSelected = fal
           <circle cx="128" cy="105" r="48" className="map-sun" />
           <path
             className="mountain back"
-            d="M0 474 C118 438 225 386 322 304 C404 235 474 137 525 58 C585 112 650 157 714 207 C806 278 897 345 1000 391 L1000 650 L0 650 Z"
+            d="M0 430 C90 403 170 371 245 326 C335 272 430 172 543 108 C642 151 734 184 826 205 C892 220 950 229 1000 236 L1000 575 L0 575 Z"
           />
           <path
             className="terrain-face terrain-west"
-            d="M0 525 C132 492 256 425 352 332 C427 260 487 167 525 58 C495 226 445 349 366 444 C282 545 162 590 0 614 Z"
+            d="M0 520 C105 486 205 439 300 367 C390 300 474 203 543 108 C471 275 383 375 282 430 C193 478 99 511 0 548 Z"
           />
           <path
             className="terrain-face terrain-central"
-            d="M525 58 C579 170 614 293 600 590 C519 565 441 518 366 444 C445 349 495 226 525 58 Z"
+            d="M543 108 C590 195 625 296 625 475 C565 465 508 448 452 416 C500 338 531 235 543 108 Z"
           />
           <path
             className="terrain-face terrain-east"
-            d="M525 58 C606 118 702 175 790 245 C878 316 943 361 1000 391 L1000 614 C872 575 735 574 600 590 C614 293 579 170 525 58 Z"
+            d="M543 108 C662 156 785 194 1000 236 L1000 530 C872 502 748 486 625 475 C625 296 590 195 543 108 Z"
           />
-          <path className="ridge-line primary" d="M104 563 C214 451 320 352 406 249 C464 180 503 111 525 58" />
-          <path className="ridge-line" d="M525 58 C632 132 731 199 817 286 C878 347 928 409 966 479" />
-          <path className="ridge-line secondary" d="M258 342 C359 300 446 272 526 253 C614 232 701 221 800 244" />
+          <g className="forest-mass" aria-hidden="true">
+            <path d="M40 420 C165 380 275 327 375 253 C330 353 233 430 98 481 Z" />
+            <path d="M322 284 C395 230 449 179 498 132 C477 234 430 312 363 360 Z" />
+            <path d="M604 170 C697 195 770 224 830 269 C763 274 697 257 642 220 Z" />
+            <path d="M720 252 C815 235 912 241 991 265 L991 395 C894 365 815 330 750 302 Z" />
+            <path d="M656 330 C736 319 812 337 883 383 C804 391 735 381 676 358 Z" />
+          </g>
+          <path className="ridge-line primary" d="M101 420 C255 337 397 212 543 108" />
+          <path className="ridge-line" d="M543 108 C678 161 812 203 951 226" />
+          <path className="ridge-line secondary" d="M395 174 C455 188 507 209 562 235 C648 239 734 248 820 282" />
           <g className="base-village" aria-hidden="true">
-            <rect x="520" y="590" width="62" height="24" />
-            <rect x="592" y="579" width="82" height="35" />
-            <rect x="684" y="588" width="64" height="26" />
+            <rect x="557" y="448" width="58" height="21" />
+            <rect x="624" y="440" width="76" height="29" />
+            <rect x="710" y="447" width="64" height="22" />
+            <rect x="786" y="452" width="92" height="18" />
+          </g>
+
+          <g className="reference-features" aria-label="Reference-only map context">
+            {referenceFeatureGeometry.map((feature) => {
+              const labelPoint = mapPoint(feature.points[Math.floor(feature.points.length / 2)]);
+              return (
+                <g key={feature.code} data-reference-feature={feature.code} data-reference-state={feature.state}>
+                  <path className={`reference-feature-line state-${feature.state}`} d={pathFromReferencePoints([...feature.points])} />
+                  <text className="reference-feature-label" x={labelPoint.x + 8} y={labelPoint.y - 8} aria-hidden="true">
+                    {feature.code}
+                  </text>
+                </g>
+              );
+            })}
           </g>
 
           <g className="lift-system" aria-label="Major lift skeleton">
