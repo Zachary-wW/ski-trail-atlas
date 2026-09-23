@@ -1,0 +1,55 @@
+:root {
+  font-family: Inter, "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+  color: #17211e;
+  background: #f4f4ef;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-width: 320px; min-height: 100%; }
+body { min-height: 100vh; }
+a { color: inherit; }
+button, input { font: inherit; }
+
+.prototype-note {
+  position: fixed;
+  z-index: 30;
+  right: 14px;
+  bottom: 14px;
+  padding: 7px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .58;
+  backdrop-filter: blur(12px);
+}
+
+.map-host { width: 100%; height: 100%; min-height: 0; }
+.map-host svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.map-host .contour { fill: none; stroke: var(--contour, rgba(26, 45, 40, .13)); stroke-width: 1.2; }
+.map-host .ridge { fill: var(--mountain-fill, rgba(216, 226, 217, .36)); stroke: var(--ridge, rgba(31, 55, 48, .34)); stroke-width: 1.3; }
+.map-host .lift { fill: none; stroke: var(--lift, #c34a35); stroke-width: 3; stroke-dasharray: 7 7; }
+.map-host .station { fill: var(--surface, #fff); stroke: var(--lift, #c34a35); stroke-width: 2; }
+.map-host .trail { fill: none; stroke-linecap: round; stroke-linejoin: round; opacity: .82; }
+.map-host .trail.beginner { stroke: var(--beginner, #3b8f58); stroke-width: 5; }
+.map-host .trail.intermediate { stroke: var(--intermediate, #2c66a8); stroke-width: 5; }
+.map-host .trail.advanced { stroke: var(--advanced, #202521); stroke-width: 5; }
+.map-host .trail.selected { stroke: var(--selected, #e3583c); stroke-width: 10; opacity: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.16)); }
+.map-host .trail-hit { fill: none; stroke: transparent; stroke-width: 24; }
+.map-host .trail-label rect { fill: var(--label-bg, #fff); stroke: var(--label-border, rgba(18, 32, 28, .24)); }
+.map-host .trail-label text { fill: var(--label-text, #17211e); font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+.map-host .lift-label { fill: var(--lift, #c34a35); font-size: 16px; font-weight: 800; }
+.map-host .peak-label { fill: var(--muted, #67736e); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+
+.search-shell { position: relative; }
+.search-shell input { width: 100%; border: 0; outline: 0; background: transparent; color: inherit; }
+.difficulty-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+.difficulty-dot.beginner { background: #3b8f58; }
+.difficulty-dot.intermediate { background: #2c66a8; }
+.difficulty-dot.advanced { background: #202521; }
+
+@media (max-width: 760px) {
+  .prototype-note { display: none; }
+}
