@@ -4,7 +4,7 @@
 
 **Blocked by:** 03: Restore a non-overlapping desktop right inspector; 04: Generalize Route Endpoints and typed Uphill Transport.
 
-**Status:** ready-for-agent
+**Status:** historical — previously ready-for-agent; superseded by `docs/mvp-rebuild.md`.
 
 - [ ] Start and destination pickers group selectable Route Endpoints into Trails, Places, Chairlift stations, Gondola stations, Magic-carpet stations, and an explicit fallback group only when a transport type is genuinely unknown.
 - [ ] Transport choices identify the station/direction clearly (for example, L5 Bottom versus L5 Top) rather than offering ambiguous raw transport names.

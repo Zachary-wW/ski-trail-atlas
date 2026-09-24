@@ -4,7 +4,7 @@
 
 **Blocked by:** 02: Add five-Trail search and direct links.
 
-**Status:** ready-for-agent
+**Status:** historical — previously ready-for-agent; superseded by `docs/mvp-rebuild.md`.
 
 - [ ] Video records contain platform, original URL, author, publication date, Season, review state, and match level.
 - [ ] Trail-specific, zone-level, and Resort-level matches are visually distinct.

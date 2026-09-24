@@ -4,7 +4,7 @@
 
 **Blocked by:** 06: Expand the evidence-backed Fulong Trail Catalog.
 
-**Status:** ready-for-agent
+**Status:** historical — previously ready-for-agent; superseded by `docs/mvp-rebuild.md`.
 
 - [ ] Search, catalog, map, details, evidence, videos, and direct links pass end-to-end regression tests.
 - [ ] The core journey passes at desktop and mobile viewport sizes.

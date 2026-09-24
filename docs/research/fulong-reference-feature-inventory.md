@@ -1,59 +1,38 @@
-# Fulong high-resolution panorama feature inventory
+# Fulong map inventory — reconciliation required
 
-Status: reviewed from the user-supplied 3631 × 2560 panorama for the layout-faithful redraw. The raster remains reference-only and is not a production asset.
+Updated: 2026-09-24. **First full-map candidate pass; not a complete or accepted inventory.**
 
-## Published Trails
+The old document reported a completed full-map fidelity review without
+reproducible per-path comparison evidence. That conclusion is withdrawn.
+The active reference is identified in [the calibration contract](fulong-reference-calibration.md).
 
-The publication boundary remains exactly 33 Trails. All 33 are reconstructed in the shared reference coordinate frame and remain searchable/clickable/routable only because they already exist in the Trail Catalog.
+## Three different scopes
 
-`A1 A2 A3 A5 A6 C3 D1 D2 B2 A9 A10 A7 A8 B9 B10 B11 C8 B6 B8 C1 C2 C7 C9 C10 B1 B3 B5 B7 B12 B13 B15 C5 C6`
+| Scope | Present state |
+| --- | --- |
+| Legacy parameter catalog | 33 source-listed records; not a claim about total map coverage |
+| Accepted east visual baseline | B1, B2, B3, B5, B6, B7, B8, B9, B10; travel directions remain unverified |
+| Full-map candidate pass | 58 segments, 33 trail-code groups, 5 reference features, 11 transport records; new regions awaiting review |
 
-## Supported uphill transport corridors
+## Items requiring reconciliation
 
-The current publication contains five major visible uphill corridors, reconstructed to the panorama layout:
+- C11, C12 and E1 appear as planned lines; distinguish them from usable routes.
+- C13 is traced as map-only context. Its lower unnumbered curved neighbor is a
+  separate connector, not automatically assigned to C13.
+- B16 is mentioned in the MOGUL legend but remains unlocated with no geometry.
+- Transport records include L1/L2/L3/L5/L7 and six carpet groups:
+  F1/F2, F3, F5, F6, F8, F9. F1/F2 retains two parallel lines in one combined record;
+  individual identities and boarding connections are not inferred.
+- C3 appears on both the summit black line and western green line. They share a
+  code-group selector with an ambiguity note, not a verified continuous route.
+- A reference label and an older parameter row must not be joined solely because
+  their codes look similar. Check location, name, source version and season.
 
-- `L1` — central/east base to upper east sector.
-- `L2` — terrain-park/base corridor.
-- `L3` — west base to west upper station.
-- `L5` — central base to summit ridge corridor.
-- `L7` — east ridge / Urban airbus corridor.
+Future inventory rows must record the reference location, identity/status,
+candidate geometry, source, unresolved questions and review result.
+Keep unknown features visible as context where appropriate, without creating
+published trail records or route connections.
 
-Transport subtype and first-class top/bottom Route Endpoint semantics are intentionally deferred to the typed-transport tickets. Ticket 02 only preserves the visible corridor and endpoint topology already supported by publication.
-
-## Reference-only map context
-
-These labels/lines are visible on the panorama but are **not** silently added to the 33-Trail Catalog and are not route edges:
-
-| Label | Classification | Public interaction |
-| --- | --- | --- |
-| C11 | planned map line | non-interactive context |
-| C12 | planned map line | non-interactive context |
-| C13 | map-only / unresolved publication identity | non-interactive context |
-| E1 | planned map line | non-interactive context |
-| B16 | referenced by panorama legend/MOGUL note but not in the 33-row published parameter boundary | unresolved; not drawn as routable Trail |
-
-## Beginner transport / facility labels for later typed-transport work
-
-The panorama visibly includes several magic-carpet facilities around the beginner area, including `F1/F2`, `F3`, `F5`, `F6`, `F8`, and `F9`. They are inventoried here but are not promoted to `Lift` records in Ticket 02 because the current domain model does not yet preserve typed Uphill Transport + Transport Station semantics. The later route-endpoint ticket must model them explicitly rather than guessing from their proximity to A1/A2/A3/A5/A6.
-
-## Major Places / landmarks
-
-Layout control and orientation use the visible Summit / Chongli Eye ridge, Fulong Base / Four Seasons service area, west L3 base, central L2/L5 base, terrain park, DJ square, beginner teaching area, and east/RV-camp sector. These are cartographic orientation references, not GPS coordinates.
-
-## Sector-by-sector fidelity review
-
-The completed redraw was reviewed against the same uploaded panorama at desktop map scale after the 33 Trail paths and five major uphill corridors were migrated into the reference coordinate frame.
-
-| Sector | Reference cues checked | Result |
-| --- | --- | --- |
-| West / L3 | L3 base, L3 upper station, D1/D2 fan, C8/C9/C10 and planned C11/C12 corridor | no unexplained large-layout drift |
-| Central / L2 + L5 | park runs A9/A10, A7/A8, L2 base corridor, L5 summit corridor, B11/B12/B13/B15 cluster | no unexplained large-layout drift |
-| Summit / ridge | summit control anchor, C1/C2/C5/C6/C7 branches, upper B9/B10 relationship | no unexplained large-layout drift |
-| East / L1 + L7 | L1 upper sector, B1/B2/B3/B5/B6/B7/B8 fan, L7 east ridge corridor | no unexplained large-layout drift |
-| Beginner / base | A1/A2, A3/A5/A6 teaching area, Fulong Base and central service/base mass | no unexplained large-layout drift |
-
-This review is cartographic, not survey-grade. The geometry remains `unverified` and the product continues to state that it is not for on-mountain navigation. Label anchors are allowed small offsets from the source label positions for legibility; the automated 1440px QC reports zero material Trail/Lift label overlap after those offsets.
-
-## Fidelity boundary
-
-Trail/transport geometry is redrawn from measured source-pixel paths into the shared 1000 × 650 SVG frame. Terrain masses, forest texture, buildings, typography, labels, and icons are independently redrawn. The source raster is never included in the Vite production bundle. Planned/map-only features remain visibly distinct and cannot create graph connectivity by SVG proximity.
+The accepted east baseline lives in `src/map/prototype/east-trace-data.ts`; the
+full-map candidate geometry lives in `src/map/prototype/fulong-trace-data.ts`.
+Do not duplicate coordinate tables here.

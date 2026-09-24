@@ -1,6 +1,8 @@
 # Fulong Trail Intelligence
 
-**Status:** ready-for-agent
+**Status:** superseded — 2026-09-24
+
+Historical specification and child tickets; use [the active MVP plan](../../docs/mvp-rebuild.md).
 
 ## Problem Statement
 

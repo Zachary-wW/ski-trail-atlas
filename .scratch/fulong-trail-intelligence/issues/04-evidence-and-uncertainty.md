@@ -4,7 +4,7 @@
 
 **Blocked by:** 02: Add five-Trail search and direct links; 03: Add the interactive SVG Panorama Map.
 
-**Status:** ready-for-agent
+**Status:** historical — previously ready-for-agent; superseded by `docs/mvp-rebuild.md`.
 
 - [ ] Published Fields expose their evidence and verification state.
 - [ ] Missing values render as missing rather than zero or generated prose.

@@ -1,5 +1,9 @@
 # Frontend Design and Fulong Map Redesign Research
 
+Historical research: this predates the 2026-09-24 tracing pilot. Retain it for
+design rationale, not as the current execution plan or evidence of map fidelity.
+See [the active MVP plan](../mvp-rebuild.md).
+
 Research date: 2026-09-23
 
 ## Questions

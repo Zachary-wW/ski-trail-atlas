@@ -1,6 +1,9 @@
 # Fulong Layout-Faithful Panorama and Mountain Routing V2
 
-**Status:** ready-for-agent
+**Status:** superseded — 2026-09-24
+
+Historical specification and child tickets; use [the active MVP plan](../../docs/mvp-rebuild.md).
+Prior completion statements do not constitute acceptance of map fidelity.
 
 ## Problem Statement
 

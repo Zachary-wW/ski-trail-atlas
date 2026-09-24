@@ -4,7 +4,7 @@
 
 **Blocked by:** 04: Make evidence and uncertainty visible; 05: Add curated Video Matches.
 
-**Status:** ready-for-agent
+**Status:** historical — previously ready-for-agent; superseded by `docs/mvp-rebuild.md`.
 
 - [ ] The catalog states its inventory scope and Season.
 - [ ] Planned, built, named, and operating counts are not collapsed into one number.

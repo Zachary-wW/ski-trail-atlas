@@ -4,7 +4,7 @@
 
 **Blocked by:** 02: Rebuild the full layout-faithful Fulong Panorama Map; 03: Restore a non-overlapping desktop right inspector; 05: Route Planner with grouped mountain endpoints.
 
-**Status:** ready-for-agent
+**Status:** historical — previously ready-for-agent; superseded by `docs/mvp-rebuild.md`.
 
 - [ ] Full side-by-side/overlay review against the uploaded panorama covers west L3, central L2/L5, east L1/L7, summit/ridge, beginner, and base sectors with no unexplained structural mismatch.
 - [ ] Reference-calibration control anchors remain within the agreed tolerance and map label collision QC passes at desktop and mobile sizes.

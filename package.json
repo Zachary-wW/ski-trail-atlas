@@ -13,7 +13,7 @@
     "test": "vitest run tests/content",
     "test:content": "vitest run tests/content",
     "test:e2e": "playwright test",
-    "calibrate:fulong": "node scripts/fulong-reference-calibration.mjs"
+    "dev:trace": "vite --open '/?prototype=fulong-trace'"
   },
   "dependencies": {
     "react": "19.3.0",
