@@ -12,16 +12,20 @@ The active reference is identified in [the calibration contract](fulong-referenc
 | --- | --- |
 | Legacy parameter catalog | 33 source-listed records; not a claim about total map coverage |
 | Accepted east visual baseline | B1, B2, B3, B5, B6, B7, B8, B9, B10; travel directions remain unverified |
-| Full-map candidate pass | 58 segments, 33 trail-code groups, 5 reference features, 11 transport records; new regions awaiting review |
+| Full-map candidate pass after user correction | 63 segments, 35 trail-code groups, 3 reference features, 9 transport records; new regions awaiting review |
 
 ## Items requiring reconciliation
 
-- C11, C12 and E1 appear as planned lines; distinguish them from usable routes.
+- C11/C12 were planned in the source image, but the user reports opening in 2025.
+  They are now selectable trail-code groups with explicit user provenance and
+  remain direction-pending. E1 remains planned.
 - C13 is traced as map-only context. Its lower unnumbered curved neighbor is a
   separate connector, not automatically assigned to C13.
 - B16 is mentioned in the MOGUL legend but remains unlocated with no geometry.
-- Transport records include L1/L2/L3/L5/L7 and six carpet groups:
-  F1/F2, F3, F5, F6, F8, F9. F1/F2 retains two parallel lines in one combined record;
+- Transport records include L1/L2/L3/L5/L7 and four carpet groups:
+  F1/F2, F3, F5, F6. F8/F9 are hidden from the vector layer following the user's
+  tentative removal report; this is not an independently verified removal.
+  F1/F2 retains two parallel lines in one combined record;
   individual identities and boarding connections are not inferred.
 - C3 appears on both the summit black line and western green line. They share a
   code-group selector with an ambiguity note, not a verified continuous route.

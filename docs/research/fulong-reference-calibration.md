@@ -31,6 +31,9 @@ Zoom and pan change only the viewBox, never the source or geometry transform.
 Segment endpoints are references to shared nodes. The same segment path is
 used for linework, selection, click targets, and route highlighting.
 Coordinates and connections remain candidate annotations, not verified facts.
+The user's 2026-09-24 corrections authorize shared-node joins across gaps in the
+historical image. The source raster remains unchanged; current local status
+overrides (C11/C12 and F8/F9) are labeled as user reports in the prototype.
 
 ## Local review
 

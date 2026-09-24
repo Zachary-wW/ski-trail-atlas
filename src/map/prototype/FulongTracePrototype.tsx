@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import {
   findPilotRoute, nodes, reference, referenceFeatures, repeatedLabels, sectors,
-  segmentPath, segments, trails, transports, type NodeId, type SectorId,
+  segmentPath, segments, trails, transports, userCorrections, type NodeId, type SectorId,
 } from "./fulong-trace-data";
 import "./east-trace-prototype.css";
 
@@ -223,6 +223,7 @@ export default function FulongTracePrototype() {
             </div>
             <div className="trace-map-legend"><span><i /> 候选描摹</span><span><i className="selected" /> 已选雪道</span><span><i className="route" /> 演示路线</span><span><i className="pending" /> 待核验 · 不参与规划</span><span>其余虚线：参考要素 / 索道</span></div>
             <p className="trace-map-hint">选择区域放大核对 · 拖动空白处平移 · Home 复位 · 全图仅显示选中编号；新区域待验收</p>
+            <p className="trace-muted">{userCorrections.note} 本地线稿暂隐藏 F8/F9；高清原图保留历史标注。相邻通道已接至教学区。</p>
           </section>
           <aside className="trace-inspector">
             <section>
@@ -237,7 +238,7 @@ export default function FulongTracePrototype() {
                 <div className="trace-trail-picker">{referenceFeatures.map((feature) =>
                   <button key={feature.code} aria-pressed={selected === feature.code} onClick={() => selectMark(feature.code)}>{feature.code}</button>)}</div>
               </details>
-              <div className="trace-selection-heading"><strong>{selected}</strong><span>{selectedMark.review === "accepted" ? "东侧描摹已认可 · 通行待核验" : selectedMark.state === "planned" ? "原图规划线 · 不参与规划" : "候选描摹 · 等待验收"}</span></div>
+              <div className="trace-selection-heading"><strong>{selected}</strong><span>{selectedMark.review === "accepted" ? "东侧描摹已认可 · 通行待核验" : selectedMark.state === "open-reported" ? "用户反馈已开放 · 非实时状态" : selectedMark.state === "planned" ? "原图规划线 · 不参与规划" : "候选描摹 · 等待验收"}</span></div>
               {selectedMark.note && <p className="trace-feature-note" role="note">{selectedMark.note}</p>}
               {selectedMark.state === "unlocated" && <p className="trace-muted">当前没有可绘制几何。保留原图图例记录，不补造线路。</p>}
               <ol className="trace-segments">

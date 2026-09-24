@@ -9,8 +9,8 @@ or verification of travel directions.
 ## What was checked automatically
 
 - `npm run typecheck` — passed.
-- `npm run test:content` — 5 files, 36 tests passed.
-- `npm run test:e2e` — 26 tests passed.
+- `npm run test:content` — 6 files, 42 tests passed after the second correction.
+- `npm run test:e2e` — 28 tests passed after the second correction.
 - `npm run build` — passed.
 - Production build output contains only the legacy JPG and favicon; it does not
   contain the development-only prototype module or the local high-resolution WEBP.
@@ -53,14 +53,15 @@ Desktop overlay, independent-linework and mobile screenshots were inspected.
 Local inspection artifacts are under `artifacts/inspection/` and are not shipped.
 This smoke does not establish a numeric geometric error bound.
 
-## Full-map expansion checks
+## First full-map expansion checks (before second user correction)
 
 The primary URL is `/?prototype=fulong-trace`; the old east URL remains supported.
 New geometry uses native WEBP coordinates, not the legacy application's curves.
-The current pass has 58 segments, 33 trail-code groups, 5 reference features and
+The first pass had 58 segments, 33 trail-code groups, 5 reference features and
 11 transport records (5 cable corridors and 6 carpet groups, including the
-combined F1/F2 record). The 42 newly traced full-map segments plus the pending
-east `upper-entry-link` are excluded from routing.
+combined F1/F2 record). The pre-correction pass had 42 newly traced full-map
+segments plus the pending east `upper-entry-link`; the current corrected counts
+are recorded below.
 
 Local Chrome checks at 1512 × 1150 and 390 × 844 verified:
 
@@ -84,7 +85,7 @@ geometric error bound.
 Compare `/?prototype=fulong-trace` against the supplied image:
 
 1. Summit C1/C2/C3 branches, C5–C10 and their junctions.
-2. West C3, D1/D2, C11/C12 and L3 endpoints.
+2. West C3, D1/D2, C11/C12 and L3 endpoints; C11/C12 now use user-reported built status.
 3. Central B11/B12/B13/B15, C13 and the separate unnumbered curved connector.
 4. A7–A10 park corridors and beginner A1/A2/A3/A5/A6 with carpet positions.
 5. Missing or misidentified features, especially repeated C3 and unlocated B16.
@@ -93,3 +94,34 @@ This is not full-map acceptance. New paths remain excluded from routing until
 identity, directions and connections are reviewed. The B3 lower connection and
 upper-entry corridor also retain their earlier unresolved states. Keep this
 review prototype isolated until a production migration is explicitly undertaken.
+
+## Second user correction — 2026-09-24
+
+The user authorized topology corrections to gaps in the original illustration:
+
+- D1, D2, A9 and A10 now share `centralHub`, the L2 upper station.
+- B15 branches from the B12 approach and shares a fork with B13. Its lower end
+  joins the redrawn central bend, which joins B13 before the B11/A7 junction.
+  This bend no longer cuts across C3 toward L2.
+- C3 is split at its C6 crossing; A8 shares a node with B11.
+- The former F8/F9-adjacent corridor reaches `teaching`.
+- C11/C12 are trail-code groups, rendered as solid lines, with user-reported
+  opening in 2025 (exact season/date unconfirmed). They are not live-open claims.
+- F8/F9 are hidden from the vector transport layer based on the user's tentative
+  removal report. The original reference image is unchanged.
+
+Counts after correction: 63 segments, 35 code groups, 3 reference features,
+9 transport records; 48 segments remain excluded from directed routing.
+The east baseline itself is unchanged.
+
+New regression checks cover shared nodes, reported status, removed vector marks,
+the teaching connection, segment integrity, and undirected connectivity of all
+non-isolated-teaching trails without enabling reverse skiing. Browser checks
+sample SVG paths every 3 native pixels and reject intersections away from a
+shared node (3-pixel numerical tolerance), excluding aerial transports and E1.
+This sampling is a regression guard, not a mathematical proof of planarity.
+Central, western and beginner overlays were inspected after the corrections.
+All 16 east paths and all 144 ordered east-node route results were rechecked and
+remain unchanged. The structural graph has one main component and four separate
+teaching components (A6, A5, A3, A1/A2); planned E1 is not needed for main-network
+connectivity.

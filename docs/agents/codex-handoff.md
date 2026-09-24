@@ -30,6 +30,13 @@ Full-map fidelity is not yet accepted. Preserve the prototype on
 Ticket 05 merely because legacy tests pass. After visual acceptance, review
 identities/directions and define the production data migration.
 
+Second correction: the user authorized joins across original-image gaps. L2's
+upper station is shared by D1/D2/A9/A10; B15/B13 and the central bend were
+resegmented; the F8/F9-adjacent trail reaches teaching. C11/C12 are user-reported
+existing trails; F8/F9 are tentatively hidden in the vector layer. See the review
+record's second-correction section before applying the earlier counts or planned
+statuses. Undirected connectivity checks are separate from directed ski routing.
+
 ## Known legacy gaps
 
 The existing app remains intact. Its 33 records are a parameter-source scope,
