@@ -1,7 +1,7 @@
 # Fulong reference and calibration contract
 
 Updated: 2026-09-28. Status: structural tracing baseline accepted for content MVP
-work; production publication and directed-route review remain pending.
+work; public linework is enabled, while content and directed-route review remain pending.
 
 ## Source identity
 
@@ -51,7 +51,8 @@ overrides (C11/C12 and F8/F9) are labeled as user reports in the prototype.
 
 The fixed `/__reference/fulong-highres.webp` endpoint exists only on the dev
 server. It serves that one fixture, not arbitrary filesystem paths. Vite builds
-exclude both the pilot import and the new high-resolution fixture.
+include the shared linework component, but exclude the high-resolution fixture.
+The public component never renders or requests the reference image.
 
 ## Review boundaries
 

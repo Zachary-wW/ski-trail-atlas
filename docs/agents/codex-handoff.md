@@ -8,20 +8,25 @@
 `CONTEXT.md` 和相关 ADR；修改描摹几何时读
 [描摹验收记录](../trace-pilot-review.md)。
 
-开发工作台：
+生产入口：
+
+`/ski-trail-atlas/`
+
+本地增强校准工作台：
 
 `/?prototype=fulong-trace`
 
 关键实现：
 
 - `src/map/prototype/fulong-trace-data.ts`：富龙候选分段、节点和交通设施；
-- `src/map/prototype/FulongTracePrototype.tsx`：开发环境交互；
+- `src/map/prototype/FulongTracePrototype.tsx`：共用地图交互；`published` 区分线稿首页与本地校准；
 - `docs/research/fulong-reference-calibration.md`：原图身份与坐标契约；
 - `docs/mvp-roadmap.md`：后续阶段和退出条件。
 
 ## 当前状态
 
-用户已确认雪道整体结构可进入内容 MVP。当前候选数据仍有 65 个分段，
+用户已确认雪道整体结构可进入内容 MVP。Pages 根路径现在发布原创线稿版；
+当前候选数据仍有 65 个分段，
 其中 51 个不进入有向路线；这表示“候选结构可继续开发”，不表示生产地图
 或通行方向已经核验。
 

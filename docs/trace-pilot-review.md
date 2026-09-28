@@ -3,8 +3,8 @@
 Updated: 2026-09-28. Status: **the overall structural baseline is accepted for
 content-MVP continuation; route direction and publication evidence remain pending**.
 
-The user's confirmation authorizes content-MVP continuation, not production
-promotion or verification of every travel direction.
+The user subsequently authorized a linework-only Pages homepage. Publishing
+this structural preview does not verify travel directions or complete the content MVP.
 
 ## What was checked automatically
 
@@ -12,8 +12,9 @@ promotion or verification of every travel direction.
 - `npm run test:content` — 6 files, 51 tests passed after the seventh correction.
 - `npm run test:e2e` — 32 tests passed after the seventh correction.
 - `npm run build` — passed.
-- Production build output contains only the legacy JPG and favicon; it does not
-  contain the development-only prototype module or the local high-resolution WEBP.
+- The production build now includes the original linework surface and its
+  styles, but not the local high-resolution WEBP or its development-only
+  reference endpoint.
 
 ## Accepted east baseline
 
@@ -91,10 +92,12 @@ Compare `/?prototype=fulong-trace` against the supplied image:
 5. Missing or misidentified features, especially repeated C3 and unlocated B16.
 
 The user has since accepted the overall structural baseline as sufficiently
-stable for the content MVP. The items above remain editorial/data review work:
+stable for the content MVP, and the linework surface is now published at the
+Pages root. The items above remain editorial/data review work:
 they are not reasons to redraw the accepted visual baseline, and they remain
 excluded from production routing until identity, direction and evidence are
-reviewed. Keep this prototype isolated until a production migration is explicit.
+reviewed. Reference-image comparison remains local-only; public display uses
+the same geometry without promoting pending edges into the routing graph.
 
 ## Second user correction — 2026-09-24
 

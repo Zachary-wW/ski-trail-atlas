@@ -7,13 +7,12 @@
 
 ## 实际完成到哪里
 
-目前 `/` 页面仍是**旧原型，不是完整 MVP**：有 33 条来源参数记录、搜索、
-参数详情、双语界面和示意路线；逐道文字、审核后视频和正式富龙路线图
+GitHub Pages 根路径现在展示富龙结构版 MVP：包含全图线稿、分区查看、雪道
+选择、交通设施和有条件的路线演示。逐道文字、审核后视频和正式富龙路线图
 仍未完成。
 
-`/?prototype=fulong-trace` 是开发环境专用的富龙全图描摹工作台：使用用户
-提供的 3631 × 2560 WEBP 原始坐标，支持原图、叠加校准和独立线稿复核，
-绘图与交互共用候选分段。用户已确认当前雪道整体结构可进入内容 MVP 阶段；
+本地 `/?prototype=fulong-trace` 额外提供基于高清 WEBP 的原图/叠加校准；
+生产页和本地工作台共用同一批候选分段，但只有本地工作台加载私有高清原图。
 方向、证据和发布状态仍需显式管理，候选几何尚不等于生产路线图。
 
 [当前范围与验收门槛](docs/mvp-rebuild.md) 是执行入口；[未来交付路线图](docs/mvp-roadmap.md)
@@ -29,7 +28,7 @@ npm ci
 npm run dev
 ```
 
-旧原型地址：`http://127.0.0.1:4173/`。
+开发环境仍保留旧详情页：`http://127.0.0.1:4173/`。
 
 将用户提供的高清 WEBP 放入 `artifacts/reference/fulong-highres.webp`，然后：
 
@@ -41,8 +40,8 @@ npm run dev:trace
 旧地址 `?prototype=east-trace` 仍可用于东侧对照。
 若开发服务器已经启动，直接打开该地址即可。
 
-高清图存放于 Git 忽略目录，仅由开发服务器提供。新的高清图和样板代码
-均不进入生产构建。详见[原图与校准说明](docs/research/fulong-reference-calibration.md)。
+高清图存放于 Git 忽略目录，仅由开发服务器提供。生产构建只发布原创线稿，
+不包含高清原图。详见[原图与校准说明](docs/research/fulong-reference-calibration.md)。
 
 ## 验证
 
@@ -58,7 +57,7 @@ npm run build
 ## 目录
 
 - `src/`：旧原型应用。
-- `src/map/prototype/`：开发环境专用描摹样板。
+- `src/map/prototype/`：当前共用的富龙地图实现；原图校准控件仅开发环境启用。
 - `docs/mvp-rebuild.md`：当前 MVP 范围与人工验收关口。
 - `docs/mvp-roadmap.md`：描摹基线之后的分阶段交付计划。
 - `docs/trace-pilot-review.md`：用户修正与回归证据。
@@ -66,6 +65,6 @@ npm run build
 - `docs/research/`：来源登记、校准和库存边界说明。
 - `prototypes/design-directions/`：保留的旧视觉探索，不再复制到发布目录。
 
-推送 `main` 会触发 GitHub Pages 部署；本地样板未更新线上网站。
-生产目录现存 JPG 属于旧版本遗留资产，下一次地图发布前仍需统一其使用
-政策；新高清图的提供不被自动视为公开发布许可。
+推送 `main` 会触发 GitHub Pages 部署；根路径发布富龙结构版 MVP，旧详情
+直链仍保留作回归兼容。生产目录现存 JPG 属于旧版本遗留资产，使用政策与
+新线稿分开处理；新高清图的提供不被自动视为公开发布许可。

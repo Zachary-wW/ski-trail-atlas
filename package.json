@@ -13,6 +13,8 @@
     "test": "vitest run tests/content",
     "test:content": "vitest run tests/content",
     "test:e2e": "playwright test",
+    "preview": "vite preview --base /ski-trail-atlas/",
+    "test:pages": "npm run build && playwright test --config playwright.pages.config.ts",
     "dev:trace": "vite --open '/?prototype=fulong-trace'"
   },
   "dependencies": {
