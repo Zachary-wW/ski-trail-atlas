@@ -243,3 +243,30 @@ trail catalog is populated.
   exclude it from route calculations.
 - Keep the local high-resolution source out of published assets unless its
   distribution rights and publication policy are explicitly resolved.
+
+## 6. Platform expansion after the Fulong MVP
+
+The map MVP is the first product slice, not the complete platform. The
+platform-level north star and content ingestion boundary are documented in
+[the platform vision](platform-vision.md) and [the content ingestion contract](content-ingestion.md).
+
+After the first Fulong content loop, continue in this order:
+
+1. **Publishable content snapshot** — move trail details, video matches and
+   Resort Feed items behind one versioned publication boundary.
+2. **Editorial content loop** — add source channels, collection runs,
+   candidate content, deduplication and review states; start with official
+   sources and manually supplied public links.
+3. **Season and operating snapshots** — let dated notices update operating
+   context without mutating Trail identity or geometry.
+4. **Client-neutral read contract** — expose map, detail, route and Resort Feed
+   data in a form a Web client and a future Mini Program can both consume.
+5. **Second-resort package** — prove another resort can be added through data
+   packages and source policy rather than duplicated React components.
+6. **Mini Program decision** — only after the content/API/review loop is stable,
+   decide whether a WeChat Mini Program is justified and what capabilities it
+   needs.
+
+The repository should not begin with an automated Xiaohongshu or WeChat crawler.
+First prove the content model, source policy, editorial workload and rollback
+behavior with a small, reviewable set of official and manually supplied links.
