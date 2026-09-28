@@ -2,8 +2,10 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-A map-first ski-resort MVP, starting with Fulong: a complete, reference-faithful
-trail map, trail-by-trail text and video, and route planning on that same map.
+A map-first ski-resort information platform, starting with Fulong: a complete,
+reference-faithful trail map, trail-by-trail evidence, route planning and
+source-reviewed resort information. A future WeChat Mini Program remains an
+explicit product option, not a current implementation promise.
 
 ## What is actually implemented
 
@@ -17,6 +19,10 @@ against the supplied 3631 × 2560 WEBP. Both surfaces share the same candidate
 segments; only the local workbench loads the private raster. Direction,
 evidence, and publication states remain explicit, and candidate geometry is not
 yet the production route graph.
+
+The long-term product boundary is described in
+[the platform vision](docs/platform-vision.md), while collection, provenance
+and editorial rules live in [the content ingestion contract](docs/content-ingestion.md).
 
 [Current scope and acceptance gates](docs/mvp-rebuild.md) are the execution
 source of truth. [The future delivery plan](docs/mvp-roadmap.md) is the roadmap,

@@ -96,3 +96,58 @@ A Video Match that depicts the Trail's surrounding area but cannot be confirmed 
 
 **Resort-level Match**:
 A Video Match that depicts the Resort generally.
+
+## Information integration
+
+**Information Item**:
+A user-visible piece of resort information published for a Resort and Season,
+such as an operating notice, event, weather note, lesson announcement, price
+change, trail update, or editorial summary. An Information Item is not
+automatically a fact; it carries source, time, scope, and editorial state.
+_Avoid_: News, post, announcement without provenance
+
+**Source Channel**:
+The originating channel for an Information Item or Source Snapshot, such as an
+official resort site, official WeChat account, Xiaohongshu account, government
+site, commercial map, or community post. Channel identity is separate from
+publisher trust and permitted use.
+_Avoid_: Platform, account, source
+
+**Content Snapshot**:
+An immutable capture of the title, URL, publisher, observed time, publication
+time when available, season, source channel, and permitted-use boundary for an
+Information Item. The product may retain metadata and a short excerpt without
+republishing the original article or media unless permission allows it.
+_Avoid_: Scraped article, copied post
+
+**Collection Run**:
+A dated execution that discovers candidate Information Items from configured
+Source Channels. A Collection Run produces candidates and diagnostics; it does
+not publish content by itself.
+_Avoid_: Sync, crawler success
+
+**Editorial State**:
+The publication state of an Information Item: candidate, needs_review,
+published, rejected, stale, or retracted. Editorial State is independent from
+Verification State because a reviewed item may still be stale for the current
+Season.
+_Avoid_: Approved, live
+
+**Resort Feed**:
+The season-aware, user-visible grouping of Information Items for one Resort.
+It may contain official notices, structured updates, and clearly labeled
+community or editorial context, each retaining its own source and state.
+_Avoid_: Timeline, social feed
+
+**Client**:
+A user-facing surface such as the web application or a future WeChat Mini
+Program. Clients consume the same published domain contract; they do not own
+source collection, editorial decisions, or route geometry.
+_Avoid_: Frontend as the source of truth
+
+**Platform Package**:
+The portable data and UI contract needed to add another Resort without
+copying Fulong-specific business logic. A package includes resort identity,
+map references, trails, transports, sources, information items, and season
+policies.
+_Avoid_: Another prototype, cloned resort page
