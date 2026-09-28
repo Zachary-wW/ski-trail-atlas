@@ -1,6 +1,6 @@
-# Fulong map inventory — reconciliation required
+# Fulong map inventory — candidate boundary
 
-Updated: 2026-09-28. **Full-map candidate corrections; not a complete or accepted inventory.**
+Updated: 2026-09-28. **User-reviewed structural candidate; not a published inventory.**
 
 The old document reported a completed full-map fidelity review without
 reproducible per-path comparison evidence. That conclusion is withdrawn.
@@ -12,7 +12,7 @@ The active reference is identified in [the calibration contract](fulong-referenc
 | --- | --- |
 | Legacy parameter catalog | 33 source-listed records; not a claim about total map coverage |
 | Accepted east visual baseline | B1, B2, B3, B5, B6, B7, B8, B9, B10; travel directions remain unverified |
-| Full-map candidate pass after fifth correction | 65 segments, 35 trail-code groups, 3 reference features, 9 transport records; new regions awaiting review |
+| Current full-map structural candidate | 65 segments, 35 trail-code groups, 3 reference features, 9 transport records; identity, direction and evidence review remain |
 
 ## Items requiring reconciliation
 

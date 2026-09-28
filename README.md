@@ -9,18 +9,21 @@ trail map, trail-by-trail text and video, and route planning on that same map.
 
 The existing `/` application is a **legacy prototype**, not the completed MVP.
 It has 33 source-listed trail records, search, metric detail, bilingual UI, and
-schematic routing. It does not yet have trail descriptions or videos, and its
-drawn geometry and routing graph disagree in places.
+schematic routing. Trail narratives, reviewed videos, and the production
+Fulong route graph are still unfinished.
 
-The current work is a **local full-map tracing review**. It uses the supplied
-3631 × 2560 WEBP in its native coordinate system and provides reference,
-overlay, and independent-linework modes. Candidate segments are shared by
-drawing and route demonstration, with six regional views. The corrected east
-visual baseline was accepted for continuation; new full-map geometry awaits
-review and is excluded from routing.
+The current `/?prototype=fulong-trace` workbench is a development-only
+full-map tracing surface. It uses the supplied 3631 × 2560 WEBP in its native
+coordinate system, supports reference/overlay/linework review, and shares
+candidate segments between drawing and interaction. The user has accepted the
+overall structural baseline for moving into the content MVP; direction,
+evidence, and publication states remain explicit and candidate geometry is not
+yet the production route graph.
 
-[Current scope, acceptance gates, and next steps](docs/mvp-rebuild.md) are the
-source of truth. Historical `.scratch/` specs are superseded, not queued work.
+[Current scope and acceptance gates](docs/mvp-rebuild.md) are the execution
+source of truth. [The future delivery plan](docs/mvp-roadmap.md) is the roadmap,
+and [the tracing review](docs/trace-pilot-review.md) is the correction and test
+record.
 
 ## Run locally
 
@@ -65,9 +68,11 @@ reference fidelity or of accurate on-mountain connections.
 
 - `src/` — existing application.
 - `src/map/prototype/` — isolated, development-only tracing experiment.
-- `docs/mvp-rebuild.md` — active MVP plan and review gate.
+- `docs/mvp-rebuild.md` — active MVP scope and review gate.
+- `docs/mvp-roadmap.md` — phased delivery plan after the tracing baseline.
+- `docs/trace-pilot-review.md` — user corrections and regression evidence.
 - `docs/adr/` — durable decisions, including their supersession status.
-- `.scratch/` — historical specs/tickets; see its README before using them.
+- `docs/research/` — source registry, calibration, and inventory contracts.
 - `prototypes/design-directions/` — archived visual explorations, not deployed.
 
 The legacy site is hosted on GitHub Pages. Pushing `main` triggers deployment;

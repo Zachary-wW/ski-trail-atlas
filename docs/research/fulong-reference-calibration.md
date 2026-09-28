@@ -1,6 +1,7 @@
 # Fulong reference and calibration contract
 
-Updated: 2026-09-28. Status: east visual baseline accepted; full-map review pending.
+Updated: 2026-09-28. Status: structural tracing baseline accepted for content MVP
+work; production publication and directed-route review remain pending.
 
 ## Source identity
 

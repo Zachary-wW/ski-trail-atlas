@@ -1,10 +1,10 @@
 # Fulong tracing review
 
-Updated: 2026-09-28. Status: **east visual baseline accepted for continuation;
-full-map candidate geometry awaiting review**.
+Updated: 2026-09-28. Status: **the overall structural baseline is accepted for
+content-MVP continuation; route direction and publication evidence remain pending**.
 
-The user's confirmation authorizes full-map tracing, not production promotion
-or verification of travel directions.
+The user's confirmation authorizes content-MVP continuation, not production
+promotion or verification of every travel direction.
 
 ## What was checked automatically
 
@@ -80,7 +80,7 @@ Full-map overlay, linework, regional overlays and mobile screenshots were
 inspected under `artifacts/inspection/`. These checks do not establish a numeric
 geometric error bound.
 
-## Human review still required
+## Remaining review boundary
 
 Compare `/?prototype=fulong-trace` against the supplied image:
 
@@ -90,10 +90,11 @@ Compare `/?prototype=fulong-trace` against the supplied image:
 4. A7–A10 park corridors and beginner A1/A2/A3/A5/A6 with carpet positions.
 5. Missing or misidentified features, especially repeated C3 and unlocated B16.
 
-This is not full-map acceptance. New paths remain excluded from routing until
-identity, directions and connections are reviewed. The B3 lower connection and
-upper-entry corridor also retain their earlier unresolved states. Keep this
-review prototype isolated until a production migration is explicitly undertaken.
+The user has since accepted the overall structural baseline as sufficiently
+stable for the content MVP. The items above remain editorial/data review work:
+they are not reasons to redraw the accepted visual baseline, and they remain
+excluded from production routing until identity, direction and evidence are
+reviewed. Keep this prototype isolated until a production migration is explicit.
 
 ## Second user correction — 2026-09-24
 
