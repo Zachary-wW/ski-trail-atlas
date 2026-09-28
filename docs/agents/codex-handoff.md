@@ -1,6 +1,6 @@
 # Current handoff
 
-Updated: 2026-09-24.
+Updated: 2026-09-28.
 
 Read [the active MVP plan](../mvp-rebuild.md) before continuing implementation.
 Read `CONTEXT.md` and relevant ADRs when changing domain concepts.
@@ -36,6 +36,44 @@ resegmented; the F8/F9-adjacent trail reaches teaching. C11/C12 are user-reporte
 existing trails; F8/F9 are tentatively hidden in the vector layer. See the review
 record's second-correction section before applying the earlier counts or planned
 statuses. Undirected connectivity checks are separate from directed ski routing.
+
+Third correction supersedes the second pass's trail assignments: the user's
+colored annotation identifies the full central loop as B11, the lower black
+continuation as B12, and two gray links as separate connectors. B8's former
+`b8-2` is now the excluded `b8-b7-link` in the full-map view; therefore earlier
+claims of identical east route results no longer apply to the full-map draft.
+See the third-correction section of the review record and the new annotated
+sector button. The historical east module is intentionally unchanged.
+
+Fourth correction: C5/C7 share a junction; C1's false left stub was removed;
+A7/A8 share a start. The annotation palette is retired in favor of uniform
+solid trails, thinner connectors and purple dashed transports with square known
+stations/type labels. The B11/B12 assignments remain unchanged.
+
+Fifth correction supersedes the fourth pass's false B11–A7/A8 junction:
+A7/A8 have their own fork on the L2 approach, with a building gap to B11.
+A8 is nearly straight; A7 bows right. C1 is split at the new unnumbered
+restaurant corridor below E1. L3/L5/L7 tops share the summit; the old `l3Top`
+node remains only a western trail junction. L5 has a marked intermediate
+alighting station, without guessed boarding/ground-route edges. Current counts:
+65 segments, 51 excluded from directed routing. This still awaits user visual
+acceptance; do not restore the rejected connection to satisfy connectivity.
+
+Sixth correction is display-only: deduplicated terminal symbols render after
+all cable paths, with solid arrival caps bridging dash gaps at known top stations.
+All trail/connector/selection/route strokes are 3px, non-scaling. Default
+see-through mode removes broad white casing, makes strokes/label plates
+translucent and keeps text legible; the toggle restores solid strokes.
+Difficulty colors remain future evidence-backed work, not guessed from codes.
+
+Seventh correction addresses actual geometry, not just station rendering:
+C3 now starts at `summit` and the unused `c3Upper` is removed; L5's upper
+dogleg is replaced by a curve into the same point. D1/A9/A10 fan away from L2
+with readable separation, preserving all shared nodes and downstream corridors.
+B11 is tangent-continuous across its four segments; B13's endpoint and the
+internal B11 bend move slightly to match the arc. The house gap stays intact.
+Counts remain 65/51 (total/excluded). New tests check summit trail starts,
+sampled fan-out spacing, B11 join angles and L5's approach, not just endpoints.
 
 ## Known legacy gaps
 

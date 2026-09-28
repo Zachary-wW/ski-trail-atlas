@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import {
   findPilotRoute, nodes, reference, referenceFeatures, repeatedLabels, sectors,
-  segmentPath, segments, trails, transports, userCorrections, type NodeId, type SectorId,
+  segmentPath, segments, trails, transports, userCorrections, type NodeId, type SectorId, type Point,
 } from "./fulong-trace-data";
 import "./east-trace-prototype.css";
 
@@ -14,6 +14,19 @@ const modes: { key: Mode; name: string; description: string }[] = [
   { key: "reference", name: "高清原图", description: "查看原始图示，按住对照按钮可临时切换" },
   { key: "redraw", name: "独立线稿", description: "隐藏原图，检查结构与路线连续性" },
 ];
+
+// One symbol per physical station, painted after every cable. Shared terminals
+// must not accumulate opaque squares or be erased by the next transport path.
+const terminalStations = new Map<string, { point: Point; codes: string[] }>();
+for (const transport of transports) {
+  for (const point of [transport.bottom, transport.top]) {
+    if (!point) continue;
+    const key = `${point.x},${point.y}`;
+    const station = terminalStations.get(key) ?? { point, codes: [] };
+    if (!station.codes.includes(transport.code)) station.codes.push(transport.code);
+    terminalStations.set(key, station);
+  }
+}
 
 function clamp(view: View): View {
   const width = Math.max(360, Math.min(reference.frame.width, view.width));
@@ -33,6 +46,7 @@ export default function FulongTracePrototype() {
   const [selected, setSelected] = useState("B10");
   const [showNodes, setShowNodes] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
+  const [seeThrough, setSeeThrough] = useState(true);
   const [compare, setCompare] = useState(false);
   const [view, setView] = useState<View>(sectors[initialSector].frame);
   const [imageFailed, setImageFailed] = useState(false);
@@ -46,7 +60,9 @@ export default function FulongTracePrototype() {
   const selectedMark = marks.find((mark) => mark.code === selected)!;
   const selectedSegments = segments.filter((segment) => segment.trail === selected || segment.featureCode === selected);
   const pendingSegments = segments.filter((segment) => segment.id === "upper-entry-link" && ["B5", "B6", "B7"].includes(selected));
-  const visibleTrails = trails.filter((trail) => sector === "all" || trail.sector === sector || (trail.code === "C3" && sector === "west"));
+  const visibleTrails = trails.filter((trail) => sector === "all" || trail.sector === sector
+    || (sector === "annotation" && ["B10", "B11", "B9", "B8", "B12", "B13", "B15"].includes(trail.code))
+    || (trail.code === "C3" && sector === "west"));
   const labelScale = Math.max(0.8, view.width / 1300);
   const routeIds = new Set(route?.map((segment) => segment.id) ?? []);
 
@@ -80,7 +96,7 @@ export default function FulongTracePrototype() {
   }
 
   return (
-    <div className="trace-workbench">
+    <div className={`trace-workbench trace-full-map ${seeThrough ? "is-see-through" : ""}`}>
       <header className="trace-topbar">
         <a href="/" className="trace-brand">SKI TRAIL ATLAS <span>制图工作台</span></a>
         <span className="trace-local"><i /> 本地样板 · 未核验</span>
@@ -150,6 +166,10 @@ export default function FulongTracePrototype() {
               >
                 <title>仅供结构验收，不用于现场导航。Tab 选择雪道，方向键平移，加减键缩放。</title>
                 <defs>
+                  <marker id="trace-transport-arrival" viewBox="-24 -3 24 6" refX="0" refY="0"
+                    markerWidth="24" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto">
+                    <path className="trace-arrival-cap" d="M -24 0 L 0 0" />
+                  </marker>
                   <pattern id="trace-grid" width="50" height="50" patternUnits="userSpaceOnUse">
                     <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#60756c" strokeOpacity=".08" />
                   </pattern>
@@ -160,22 +180,28 @@ export default function FulongTracePrototype() {
                   opacity={activeMode === "redraw" ? 0 : activeMode === "reference" ? 1 : opacity}
                   pointerEvents="none" onError={() => setImageFailed(true)} />
                 <g visibility={activeMode === "reference" ? "hidden" : "visible"}>
-                  {activeMode === "redraw" && segments.filter((segment) => segment.state !== "planned").map((segment) => <path key={segment.id}
-                    className="trace-snow" d={segmentPath(segment)} />)}
-                  {transports.map((transport) => <g key={transport.code} className={`trace-transport mode-${transport.mode}`} data-transport={transport.code}>
-                    <title>{transport.code} · 图示走廊，未接入路线{transport.note ? ` · ${transport.note}` : ""}</title>
-                    <path d={transport.path} />
-                    {transport.bottom && <circle cx={transport.bottom.x} cy={transport.bottom.y} r="8" />}
-                    {transport.top && <circle cx={transport.top.x} cy={transport.top.y} r="8" />}
-                    {showLabels && view.width < 1900 && <text x={transport.label.x} y={transport.label.y} fontSize={16 * labelScale}>{transport.code}</text>}
-                  </g>)}
                   {segments.map((segment) => <g key={segment.id}
                     data-segment={segment.id}
+                    data-feature-state={segment.state}
                     data-routing-state={segment.direction === "pending" ? "excluded" : "candidate"}
                     className={`trace-segment ${segment.trail === selected || segment.featureCode === selected ? "is-selected" : ""} ${routeIds.has(segment.id) ? "is-route" : ""} ${segment.trail ? "" : "is-connector"} ${segment.direction === "pending" && !segment.trail && !segment.state ? "is-direction-pending" : ""} ${segment.state === "planned" ? "is-planned" : ""}`}>
                     <title>{segment.note ?? segment.trail ?? "未编号连接"}</title>
                     <path className="trace-line" d={segmentPath(segment)} />
                   </g>)}
+                  {transports.map((transport) => <g key={transport.code} className={`trace-transport mode-${transport.mode}`} data-transport={transport.code}>
+                    <title>{transport.code} · {transport.mode === "magic_carpet" ? "魔毯" : "索道（吊厢 / 缆车细分类待核验）"} · 图示走廊，未接入路线{transport.note ? ` · ${transport.note}` : ""}</title>
+                    <path className="trace-transport-guide" d={transport.path} />
+                    <path className="trace-transport-line" d={transport.path}
+                      markerEnd={transport.top ? "url(#trace-transport-arrival)" : undefined} />
+                  </g>)}
+                  <g className="trace-terminals">
+                    {[...terminalStations].map(([key, { point, codes }]) => <g key={key} data-terminal={key}
+                      data-transports={codes.join(" ")}>
+                      <title>{[...codes].sort().join(" / ")} 共用站点</title>
+                      <rect className="trace-station" x={point.x - 8 * labelScale} y={point.y - 8 * labelScale}
+                        width={16 * labelScale} height={16 * labelScale} />
+                    </g>)}
+                  </g>
                   {marks.map((trail) => <g key={trail.code} data-select-trail={trail.code}
                     className="trace-trail-control" role="button" tabIndex={0}
                     aria-label={`选择 ${trail.code}`} aria-pressed={selected === trail.code}
@@ -199,6 +225,36 @@ export default function FulongTracePrototype() {
                       <rect x="-27" y="-15" width="54" height="30" rx="4" />
                       <text textAnchor="middle" dominantBaseline="central">{item.code}</text>
                     </g>)}
+                  {showLabels && view.width < 1900 && transports.map(transport =>
+                    <g key={transport.code} className="trace-transport-label" data-transport-label={transport.code}>
+                      <text x={transport.label.x} y={transport.label.y} fontSize={16 * labelScale}>
+                        {transport.code} {transport.mode === "magic_carpet" ? "魔毯" : "索道"}
+                      </text>
+                    </g>)}
+                  {showLabels && view.width < 1900 && <>
+                    <g className="trace-place" data-place="summit">
+                      <text x={nodes.summit.x} y={nodes.summit.y - 28} textAnchor="middle" fontSize={17 * labelScale}>山顶 · L3 / L5 / L7 汇合</text>
+                    </g>
+                    <g className="trace-place" data-place="restaurant">
+                      <text x={nodes.ridge.x + 15} y={nodes.ridge.y - 27} fontSize={17 * labelScale}>岚山餐厅</text>
+                    </g>
+                    <g className="trace-barrier" data-barrier="b11-a7-a8">
+                      <title>B11 与 A7/A8 之间有房屋隔断，不直接联通</title>
+                      <path d="M 2009 858 L 2022 847 L 2035 858 L 2035 876 L 2009 876 Z" />
+                      <text x="2050" y="888" fontSize={15 * labelScale}>房屋隔断 · 不直连</text>
+                    </g>
+                  </>}
+                  {transports.flatMap(transport => (transport.intermediateStations ?? []).map(station => {
+                    const point = nodes[station.nodeId];
+                    return <g key={station.nodeId} className="trace-intermediate-station" data-station={station.nodeId}>
+                      <title>{station.name}（用户确认，未核验上客及雪道出口）</title>
+                      <circle cx={point.x} cy={point.y} r={9 * labelScale} />
+                      {showLabels && view.width < 1900 && <>
+                        <path d={`M ${point.x - 10} ${point.y - 10} L ${point.x - 35} ${point.y - 20}`} />
+                        <text x={point.x - 35} y={point.y - 30} textAnchor="end" fontSize={16 * labelScale}>{station.name}</text>
+                      </>}
+                    </g>;
+                  }))}
                   {showNodes && Object.entries(nodes).map(([id, node]) => <g key={id} className="trace-node">
                     <circle cx={node.x} cy={node.y} r={6 * labelScale} />
                     {view.width < 1900 && <text x={node.x + 12} y={node.y - 12}>{id}</text>}
@@ -220,8 +276,17 @@ export default function FulongTracePrototype() {
               onKeyUp={() => setCompare(false)} onBlur={() => setCompare(false)}>按住看原图</button>
               <label><input type="checkbox" checked={showNodes} onChange={(event) => setShowNodes(event.target.checked)} /> 交叉口</label>
               <label><input type="checkbox" checked={showLabels} onChange={(event) => setShowLabels(event.target.checked)} /> 编号</label>
+              <label><input type="checkbox" checked={seeThrough} onChange={(event) => setSeeThrough(event.target.checked)} /> 透视叠加</label>
             </div>
-            <div className="trace-map-legend"><span><i /> 候选描摹</span><span><i className="selected" /> 已选雪道</span><span><i className="route" /> 演示路线</span><span><i className="pending" /> 待核验 · 不参与规划</span><span>其余虚线：参考要素 / 索道</span></div>
+            <div className="trace-map-legend" aria-label="地图图例">
+              <span><i /> 雪道 / 连接道 · 等宽实线</span>
+              <span><i className="transport" /> 索道 / 魔毯 · 紫色虚线 + 方形站点</span>
+              <span><i className="midstation" /> 圆圈：中途下客站</span>
+              <span><i className="reference" /> 参考要素 · 灰色虚线</span>
+              <span><i className="selected" /> 已选雪道</span><span><i className="route" /> 演示路线</span>
+            </div>
+            <p className="trace-map-hint">当前为结构校准色；后续按核验资料标注难度颜色与文字，未知难度保留中性色。选中或路线高亮不改变线宽。</p>
+            <p className="trace-map-hint">透视叠加：线条与标签底板半透明，文字和站点保持清晰；关闭可查看实色线条。待核验分段仍不参与规划。</p>
             <p className="trace-map-hint">选择区域放大核对 · 拖动空白处平移 · Home 复位 · 全图仅显示选中编号；新区域待验收</p>
             <p className="trace-muted">{userCorrections.note} 本地线稿暂隐藏 F8/F9；高清原图保留历史标注。相邻通道已接至教学区。</p>
           </section>

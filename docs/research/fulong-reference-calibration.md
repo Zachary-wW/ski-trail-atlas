@@ -1,6 +1,6 @@
 # Fulong reference and calibration contract
 
-Updated: 2026-09-24. Status: east visual baseline accepted; full-map review pending.
+Updated: 2026-09-28. Status: east visual baseline accepted; full-map review pending.
 
 ## Source identity
 
@@ -22,6 +22,7 @@ Frames are defined in `src/map/prototype/fulong-trace-data.ts`:
 | Full map | 80 | 65 | 3480 | 1740 |
 | Summit | 1390 | 150 | 1150 | 610 |
 | Central / park | 1300 | 500 | 1150 | 860 |
+| Annotated B10 / B11 | 1720 | 380 | 800 | 610 |
 | West L3 | 340 | 370 | 1480 | 1020 |
 | East B | 1920 | 350 | 1210 | 1030 |
 | Beginner | 1900 | 1020 | 1050 | 350 |
@@ -52,6 +53,17 @@ server. It serves that one fixture, not arbitrary filesystem paths. Vite builds
 exclude both the pilot import and the new high-resolution fixture.
 
 ## Review boundaries
+
+Fourth-round user corrections add shared C5/C7 and A7/A8 junctions and remove
+the false C1-left stub. Temporary annotation colors are no longer rendered;
+solid blue-green trails and purple dashed transports distinguish line types.
+The immutable historical raster still contains its original colors and marks.
+
+The fifth correction supersedes the fourth pass's false B11–A7/A8 junction.
+Use the independent A7/A8 fork and preserve the building gap. C1's new
+restaurant connection runs below E1. L3/L5/L7 converge at the summit; do not
+move the western trail junction to achieve this. L5's red-circle intermediate
+station is marked for alighting, without inferred boarding or ground edges.
 
 - This prototype checks candidate centerlines and annotated connections, not
   final corridor widths, decorative artwork or live operating conditions.

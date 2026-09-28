@@ -66,6 +66,37 @@
 .trace-map-legend i.selected { background:#096b94; }
 .trace-map-legend i.route { background:var(--trace-accent); }
 .trace-map-legend i.pending { height:0; background:none; border-top:3px dashed #a06317; }
+.trace-full-map { --trace-trail:#245b5e; --trace-transport:#7543a0; }
+.trace-full-map .trace-line { stroke:var(--trace-trail); stroke-width:3; }
+.trace-full-map .trace-segment.is-connector .trace-line { stroke:var(--trace-trail); stroke-width:3; stroke-dasharray:none; }
+.trace-full-map .trace-segment[data-feature-state] .trace-line { stroke:#727870; stroke-dasharray:9 6; }
+.trace-full-map .trace-segment.is-selected .trace-line { stroke:#096b94; stroke-width:3; }
+.trace-full-map .trace-segment.is-route .trace-line { stroke:var(--trace-accent); stroke-width:3; stroke-dasharray:none; }
+.trace-full-map .trace-transport .trace-transport-guide { stroke:var(--trace-transport); stroke-width:1; stroke-dasharray:none; stroke-opacity:.3; }
+.trace-full-map .trace-transport .trace-transport-line { stroke:var(--trace-transport); stroke-width:3; stroke-dasharray:10 6; }
+.trace-full-map .trace-transport.mode-magic_carpet .trace-transport-line { stroke-dasharray:2 5; }
+.trace-full-map .trace-station { fill:#fffdf7; fill-opacity:.25; stroke:var(--trace-transport); stroke-width:2; vector-effect:non-scaling-stroke; }
+.trace-full-map .trace-arrival-cap { fill:none; stroke:var(--trace-transport); stroke-width:3; stroke-linecap:round; }
+.trace-terminals,.trace-transport-label { pointer-events:none; }
+.trace-transport-label text { fill:var(--trace-transport); stroke:#fffdf7; stroke-width:3; paint-order:stroke; font-family:ui-monospace,monospace; font-weight:700; }
+.trace-full-map.is-see-through .trace-line { stroke-opacity:.72; }
+.trace-full-map.is-see-through .trace-segment.is-selected .trace-line,
+.trace-full-map.is-see-through .trace-segment.is-route .trace-line { stroke-opacity:.9; }
+.trace-full-map.is-see-through .trace-transport-line { stroke-opacity:.7; }
+.trace-full-map.is-see-through .trace-label rect { fill-opacity:.6; }
+.trace-full-map.is-see-through .trace-trail-control[aria-pressed=true] .trace-label rect { fill:#fffdf7; stroke:#096b94; stroke-width:2; }
+.trace-full-map.is-see-through .trace-trail-control[aria-pressed=true] .trace-label text { fill:#075d82; }
+.trace-full-map .trace-map-legend i.transport { position:relative; height:0; background:none; border-top:3px dashed var(--trace-transport); }
+.trace-full-map .trace-map-legend i.transport::after { content:""; position:absolute; right:0; top:-5px; width:7px; height:7px; background:#fffdf7; border:2px solid var(--trace-transport); }
+.trace-full-map .trace-map-legend i.reference { height:0; background:none; border-top:2px dashed #727870; }
+.trace-place,.trace-barrier,.trace-intermediate-station { pointer-events:none; }
+.trace-place text,.trace-barrier text,.trace-intermediate-station text { fill:var(--trace-ink); stroke:#fffdf7; stroke-width:4; paint-order:stroke; font-weight:700; }
+.trace-barrier path { fill:#d2c9b8; stroke:#665a48; stroke-width:1.5; vector-effect:non-scaling-stroke; }
+.trace-intermediate-station circle { fill:#fffdf7; stroke:#ac3535; stroke-width:3; vector-effect:non-scaling-stroke; }
+.trace-intermediate-station path { fill:none; stroke:#ac3535; stroke-width:1.5; vector-effect:non-scaling-stroke; }
+.trace-full-map.is-see-through .trace-intermediate-station circle { fill-opacity:0; }
+.trace-full-map.is-see-through .trace-intermediate-station path { stroke-opacity:.72; }
+.trace-full-map .trace-map-legend i.midstation { width:11px; height:11px; border:2px solid #ac3535; border-radius:50%; background:#fffdf7; }
 .trace-map-hint { color:var(--trace-muted); font-size:11px; }
 .trace-inspector { border-left:1px solid #cdd6c9; padding-left:26px; }
 .trace-inspector section { padding:0 0 24px; margin-bottom:24px; border-bottom:1px solid #cdd6c9; }
