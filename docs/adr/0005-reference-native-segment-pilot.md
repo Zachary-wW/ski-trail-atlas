@@ -18,9 +18,11 @@ acceptance. Local access to the source is not taken as permission to publish it.
 
 The cost is explicit map annotation and manual review before further features.
 The benefit is that restyling no longer creates a different mountain, and route
-geometry cannot silently diverge from its own segment graph. The pilot remains
-development-only and unverified until user acceptance and subsequent data review;
-it does not replace the existing production publication.
+geometry cannot silently diverge from its own segment graph. The reference
+comparison controls remain development-only, while the original linework now
+powers the structural MVP at the Pages root. It remains unverified for live
+operating status and directed route publication; it does not publish the source
+raster.
 
 On 2026-09-24 the user accepted the corrected east visual baseline and authorized
 full-map continuation. The full-map prototype preserves those paths and adds

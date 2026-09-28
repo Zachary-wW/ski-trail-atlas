@@ -4,13 +4,13 @@ Updated: 2026-09-28
 
 ## 1. Current baseline
 
-The project is currently on the `codex/fulong-trace-pilot` branch. The Fulong
-full-map workbench is a development-only structural review surface at:
+The Fulong full-map surface is published at the Pages root, while the local reference-review
+workbench remains available at:
 
 `/?prototype=fulong-trace`
 
-It is not yet the production map, a live operating-status product, or a
-navigation guarantee.
+It is a structural MVP, not a live operating-status product or navigation
+guarantee.
 
 ### Completed
 
@@ -63,9 +63,10 @@ navigation guarantee.
   production-style routing.
 - Uphill transports in the prototype are visual context; they are not yet
   integrated into a published Fulong route graph.
-- The current production page has not been replaced by this prototype.
-- No CMS, editorial workflow, live operating-status feed, authentication,
-  multi-resort switcher or production deployment is included.
+- The Pages root now uses the structural Fulong surface; full content and
+  directed-route publication remain unfinished.
+- No CMS, editorial workflow, live operating-status feed, authentication or
+  multi-resort switcher is included.
 
 ## 2. Product boundary for the MVP
 
@@ -204,7 +205,8 @@ Then expand to the remaining Fulong trail groups in review batches.
 **Goal:** promote only the reviewed slice and reuse the architecture.
 
 - Define the production publication boundary for Fulong.
-- Replace the legacy production map only after the MVP acceptance gate.
+- Expand the structural MVP into the reviewed content MVP before replacing
+  legacy detail behavior as the primary product flow.
 - Add observability, performance checks, accessibility checks and rollback notes.
 - Introduce a `resortId` content package for the next resort.
 - Reuse the map/detail/route interfaces rather than duplicating Fulong logic.
@@ -237,7 +239,7 @@ trail catalog is populated.
 - Do not infer difficulty from temporary annotation colors or trail codes.
 - Do not infer route direction from an undirected shared node.
 - Do not represent a missing video as a recommendation.
-- Do not replace the production page while the candidate geometry remains
-  direction-pending.
+- The public structural map may display direction-pending geometry, but must
+  exclude it from route calculations.
 - Keep the local high-resolution source out of published assets unless its
   distribution rights and publication policy are explicitly resolved.

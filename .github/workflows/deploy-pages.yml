@@ -36,6 +36,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install smoke-test browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate production Pages entry
+        run: npx playwright test --config playwright.pages.config.ts
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

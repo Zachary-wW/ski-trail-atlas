@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   findPilotRoute, nodes, reference, referenceFeatures, repeatedLabels, sectors,
   segmentPath, segments, trails, transports, userCorrections, type NodeId, type SectorId, type Point,
@@ -38,10 +38,14 @@ function clamp(view: View): View {
   };
 }
 
-export default function FulongTracePrototype() {
+type FulongTracePrototypeProps = {
+  published?: boolean;
+};
+
+export default function FulongTracePrototype({ published = false }: FulongTracePrototypeProps) {
   const initialSector: SectorId = new URLSearchParams(location.search).get("prototype") === "east-trace" ? "east" : "all";
   const [sector, setSector] = useState<SectorId>(initialSector);
-  const [mode, setMode] = useState<Mode>("overlay");
+  const [mode, setMode] = useState<Mode>(published ? "redraw" : "overlay");
   const [opacity, setOpacity] = useState(0.68);
   const [selected, setSelected] = useState("B10");
   const [showNodes, setShowNodes] = useState(false);
@@ -55,7 +59,7 @@ export default function FulongTracePrototype() {
   const [route, setRoute] = useState<ReturnType<typeof findPilotRoute>>(null);
   const [routeRequested, setRouteRequested] = useState(false);
   const drag = useRef<{ pointer: number; x: number; y: number; view: View; scale: number } | null>(null);
-  const activeMode = compare ? "reference" : mode;
+  const activeMode: Mode = published ? "redraw" : compare ? "reference" : mode;
   const marks = [...trails, ...referenceFeatures];
   const selectedMark = marks.find((mark) => mark.code === selected)!;
   const selectedSegments = segments.filter((segment) => segment.trail === selected || segment.featureCode === selected);
@@ -65,6 +69,11 @@ export default function FulongTracePrototype() {
     || (trail.code === "C3" && sector === "west"));
   const labelScale = Math.max(0.8, view.width / 1300);
   const routeIds = new Set(route?.map((segment) => segment.id) ?? []);
+
+  useEffect(() => {
+    document.documentElement.lang = "zh-CN";
+    document.title = published ? "富龙雪道地图 · Ski Trail Atlas" : "富龙制图工作台";
+  }, [published]);
 
   function chooseSector(next: SectorId) {
     setSector(next);
@@ -97,37 +106,38 @@ export default function FulongTracePrototype() {
 
   return (
     <div className={`trace-workbench trace-full-map ${seeThrough ? "is-see-through" : ""}`}>
+      <a className="skip-link" href="#fulong-map-content">跳转到地图</a>
       <header className="trace-topbar">
-        <a href="/" className="trace-brand">SKI TRAIL ATLAS <span>制图工作台</span></a>
-        <span className="trace-local"><i /> 本地样板 · 未核验</span>
+        <a href={import.meta.env.BASE_URL} className="trace-brand">SKI TRAIL ATLAS <span>{published ? "富龙地图 MVP" : "制图工作台"}</span></a>
+        <span className="trace-local"><i /> {published ? "富龙 MVP · 结构版" : "本地样板 · 未核验"}</span>
       </header>
-      <main>
+      <main id="fulong-map-content" tabIndex={-1}>
         <div className="trace-intro">
           <div>
-            <p className="trace-eyebrow">FULONG / FULL MAP / STUDY 02</p>
-            <h1>整张图，逐段核对。</h1>
-            <p>富龙全图结构描摹。山的结构不变，视觉表达可以改变。</p>
+            <p className="trace-eyebrow">FULONG / FULL MAP / MVP</p>
+            <h1>{published ? "整张图，找到你的下一条雪道。" : "整张图，逐段核对。"}</h1>
+            <p>{published ? "按区域查看富龙雪道，了解连接关系，并在同一张图上演示路线。" : "富龙全图结构描摹。山的结构不变，视觉表达可以改变。"}</p>
           </div>
           <div className="trace-coverage"><strong>{String(trails.length).padStart(2, "0")}<span>组雪道标号</span></strong><strong>{segments.length}<span>个图示分段</span></strong><strong>{referenceFeatures.length}<span>项参考要素</span></strong></div>
         </div>
-        <nav className="trace-sectors" aria-label="核对区域">
+        <nav className="trace-sectors" aria-label={published ? "地图区域" : "核对区域"}>
           {(Object.entries(sectors) as [SectorId, typeof sectors[SectorId]][]).map(([key, item]) =>
             <button key={key} aria-pressed={sector === key} onClick={() => chooseSector(key)}>{item.name}</button>)}
         </nav>
         <div className="trace-layout">
-          <section className="trace-map-section" aria-label="富龙全图描摹地图">
+          <section className="trace-map-section" aria-label={published ? "富龙全图结构地图" : "富龙全图描摹地图"}>
             <div className="trace-map-toolbar">
-              <div className="trace-modes" aria-label="对照模式">
+              {!published && <div className="trace-modes" aria-label="对照模式">
                 {modes.map((item) => <button key={item.key} aria-pressed={mode === item.key}
                   onClick={() => setMode(item.key)}>{item.name}</button>)}
-              </div>
+              </div>}
               <div className="trace-zoom">
                 <button onClick={() => zoom(0.75)} aria-label="放大地图">＋</button>
                 <button onClick={() => zoom(1.3333)} aria-label="缩小地图">−</button>
                 <button onClick={() => setView(sectors[sector].frame)}>复位</button>
               </div>
             </div>
-            {imageFailed && <p className="trace-error" role="alert">
+            {!published && imageFailed && <p className="trace-error" role="alert">
               本地高清参照未加载。请按 README 将 WEBP 放入 artifacts/reference/fulong-highres.webp，再刷新。
               独立线稿仍可查看。
             </p>}
@@ -164,7 +174,9 @@ export default function FulongTracePrototype() {
                 onPointerUp={() => { drag.current = null; }}
                 onPointerCancel={() => { drag.current = null; }}
               >
-                <title>仅供结构验收，不用于现场导航。Tab 选择雪道，方向键平移，加减键缩放。</title>
+                <title>{published
+                  ? "富龙全图结构版，不用于现场导航。Tab 选择雪道，方向键平移，加减键缩放。"
+                  : "仅供结构验收，不用于现场导航。Tab 选择雪道，方向键平移，加减键缩放。"}</title>
                 <defs>
                   <marker id="trace-transport-arrival" viewBox="-24 -3 24 6" refX="0" refY="0"
                     markerWidth="24" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto">
@@ -176,9 +188,9 @@ export default function FulongTracePrototype() {
                 </defs>
                 <rect x={reference.frame.x} y={reference.frame.y} width={reference.frame.width} height={reference.frame.height} fill="#e7ede5" />
                 <rect x={reference.frame.x} y={reference.frame.y} width={reference.frame.width} height={reference.frame.height} fill="url(#trace-grid)" />
-                <image href={reference.url} width={reference.width} height={reference.height}
+                {!published && <image href={reference.url} width={reference.width} height={reference.height}
                   opacity={activeMode === "redraw" ? 0 : activeMode === "reference" ? 1 : opacity}
-                  pointerEvents="none" onError={() => setImageFailed(true)} />
+                  pointerEvents="none" onError={() => setImageFailed(true)} />}
                 <g visibility={activeMode === "reference" ? "hidden" : "visible"}>
                   {segments.map((segment) => <g key={segment.id}
                     data-segment={segment.id}
@@ -261,19 +273,23 @@ export default function FulongTracePrototype() {
                   </g>)}
                 </g>
               </svg>
-              <span className="trace-map-caption">{activeMode === "redraw" ? "全图结构线稿 / 非最终视觉" : "SOURCE FRAME / 3631 × 2560"}</span>
+              <span className="trace-map-caption">{published
+                ? "FULONG TRAIL ATLAS / STRUCTURAL MVP"
+                : activeMode === "redraw"
+                  ? "全图结构线稿 / 非最终视觉"
+                  : "SOURCE FRAME / 3631 × 2560"}</span>
             </div>
             <div className="trace-map-options">
-              <label className="trace-opacity">原图透明度
+              {!published && <label className="trace-opacity">原图透明度
                 <input type="range" min="0" max="1" step=".05" value={opacity}
                   disabled={mode !== "overlay"} onChange={(event) => setOpacity(Number(event.target.value))} />
                 <output>{Math.round(opacity * 100)}%</output>
-              </label>
-              <button className="trace-compare" onPointerDown={(event) => {
+              </label>}
+              {!published && <button className="trace-compare" onPointerDown={(event) => {
                 event.currentTarget.setPointerCapture(event.pointerId); setCompare(true);
               }} onPointerUp={() => setCompare(false)} onPointerCancel={() => setCompare(false)}
               onKeyDown={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); setCompare(true); } }}
-              onKeyUp={() => setCompare(false)} onBlur={() => setCompare(false)}>按住看原图</button>
+              onKeyUp={() => setCompare(false)} onBlur={() => setCompare(false)}>按住看原图</button>}
               <label><input type="checkbox" checked={showNodes} onChange={(event) => setShowNodes(event.target.checked)} /> 交叉口</label>
               <label><input type="checkbox" checked={showLabels} onChange={(event) => setShowLabels(event.target.checked)} /> 编号</label>
               <label><input type="checkbox" checked={seeThrough} onChange={(event) => setSeeThrough(event.target.checked)} /> 透视叠加</label>
@@ -287,13 +303,13 @@ export default function FulongTracePrototype() {
             </div>
             <p className="trace-map-hint">当前为结构校准色；后续按核验资料标注难度颜色与文字，未知难度保留中性色。选中或路线高亮不改变线宽。</p>
             <p className="trace-map-hint">透视叠加：线条与标签底板半透明，文字和站点保持清晰；关闭可查看实色线条。待核验分段仍不参与规划。</p>
-            <p className="trace-map-hint">选择区域放大核对 · 拖动空白处平移 · Home 复位 · 全图仅显示选中编号；新区域待验收</p>
-            <p className="trace-muted">{userCorrections.note} 本地线稿暂隐藏 F8/F9；高清原图保留历史标注。相邻通道已接至教学区。</p>
+            <p className="trace-map-hint">{published ? "选择区域放大查看 · 拖动空白处平移 · Home 复位" : "选择区域放大核对 · 拖动空白处平移 · Home 复位 · 全图仅显示选中编号；新区域待验收"}</p>
+            <p className="trace-muted">{published ? "地图为结构版 MVP，难度、逐道资料和视频将按来源逐步补全。" : `${userCorrections.note} 本地线稿暂隐藏 F8/F9；高清原图保留历史标注。相邻通道已接至教学区。`}</p>
           </section>
           <aside className="trace-inspector">
             <section>
               <p className="trace-eyebrow">01 / TRAIL INSPECTOR</p>
-              <h2>逐道检查</h2>
+              <h2>{published ? "雪道信息" : "逐道检查"}</h2>
               <div className="trace-trail-picker" aria-label="雪道列表">
                 {visibleTrails.map((trail) => <button key={trail.code} aria-pressed={selected === trail.code}
                   onClick={() => selectMark(trail.code)}>{trail.code}</button>)}
@@ -303,27 +319,43 @@ export default function FulongTracePrototype() {
                 <div className="trace-trail-picker">{referenceFeatures.map((feature) =>
                   <button key={feature.code} aria-pressed={selected === feature.code} onClick={() => selectMark(feature.code)}>{feature.code}</button>)}</div>
               </details>
-              <div className="trace-selection-heading"><strong>{selected}</strong><span>{selectedMark.review === "accepted" ? "东侧描摹已认可 · 通行待核验" : selectedMark.state === "open-reported" ? "用户反馈已开放 · 非实时状态" : selectedMark.state === "planned" ? "原图规划线 · 不参与规划" : "候选描摹 · 等待验收"}</span></div>
+              <div className="trace-selection-heading"><strong>{selected}</strong><span>{published
+                ? selectedMark.state === "open-reported"
+                  ? "用户报告已开放 · 非实时状态"
+                  : selectedMark.state === "planned"
+                    ? "参考要素 · 不参与路线"
+                    : selectedMark.state === "unlocated"
+                      ? "未定位 · 不补绘"
+                      : selectedMark.review === "accepted"
+                        ? "结构已确认 · 通行待核验"
+                        : "结构候选 · 方向待核验"
+                : selectedMark.review === "accepted"
+                  ? "东侧描摹已认可 · 通行待核验"
+                  : selectedMark.state === "open-reported"
+                    ? "用户反馈已开放 · 非实时状态"
+                    : selectedMark.state === "planned"
+                      ? "原图规划线 · 不参与规划"
+                      : "候选描摹 · 等待验收"}</span></div>
               {selectedMark.note && <p className="trace-feature-note" role="note">{selectedMark.note}</p>}
               {selectedMark.state === "unlocated" && <p className="trace-muted">当前没有可绘制几何。保留原图图例记录，不补造线路。</p>}
               <ol className="trace-segments">
                 {selectedSegments.map((segment) => <li key={segment.id}>
                   <code>{segment.id}</code>
                   <span>{nodes[segment.from].name}<b>{segment.direction === "pending" ? "— 图示连接，方向待核验 —" : "↓ 候选下行"}</b>{nodes[segment.to].name}</span>
-                  <small>{segment.note ?? (segment.direction === "pending" ? "新描摹待验收，暂不参与路线计算。" : "仅供候选连接演示，不代表现场可通行。")}</small>
+                  <small>{segment.note ?? (segment.direction === "pending" ? "方向待核验，暂不参与路线规划。" : "仅供结构路线演示，不代表现场可通行。")}</small>
                 </li>)}
               </ol>
               {pendingSegments.map((segment) => <div className="trace-pending-note" key={segment.id} role="note">
-                <strong>新补绘 · 归属与方向待核验</strong>
+                <strong>{published ? "连接记录 · 归属与方向待核验" : "新补绘 · 归属与方向待核验"}</strong>
                 <p>{segment.note}</p>
                 <code>{segment.id}</code>
               </div>)}
-              <p className="trace-muted">全图分段先验证位置和形状；尚未核验的雪道不会进入路线规划。介绍与逐道视频留待内容核验。</p>
+              <p className="trace-muted">{published ? "选中雪道后可查看其结构分段；逐道文字、视频和正式路线资格会随资料审核逐步补全。" : "全图分段先验证位置和形状；尚未核验的雪道不会进入路线规划。介绍与逐道视频留待内容核验。"}</p>
             </section>
             <section>
               <p className="trace-eyebrow">02 / CONNECTIVITY STUDY</p>
               <h2>走一遍这张图</h2>
-              <p className="trace-muted">仅演示原有东侧候选连接；全图新分段不参与计算。描摹认可不等于通行核验，索道尚未接入。</p>
+              <p className="trace-muted">仅演示东侧已标注的候选连接；方向待核验的分段不会自动加入路线，索道尚未接入。路线是结构示意，不是现场导航。</p>
               <div className="trace-endpoint">
                 <label htmlFor="trace-start">起点</label>
                 <select id="trace-start" value={start} onChange={(event) => { setStart(event.target.value as NodeId); resetRoute(); }}>
@@ -346,7 +378,9 @@ export default function FulongTracePrototype() {
                 {routeRequested && <button onClick={resetRoute}>清除</button>}
               </div>
               <div className="trace-route-result" aria-live="polite">
-                {routeRequested && route === null && <p>本样板尚无已标注的下行连接，不自动补线或反向穿越；不代表实际雪场不可达。</p>}
+                {routeRequested && route === null && <p>{published
+                  ? "当前没有足够的已标注有向连接，不自动补线或反向穿越；不代表实际雪场不可达。"
+                  : "本样板尚无已标注的下行连接，不自动补线或反向穿越；不代表实际雪场不可达。"}</p>}
                 {routeRequested && route?.length === 0 && <p>起终点相同，无需经过任何分段。</p>}
                 {!!route?.length && <ol>{route.map((segment) => <li key={segment.id}>
                   <span>{segment.trail ?? "未编号连接"}</span><code>{segment.id}</code>
@@ -354,14 +388,14 @@ export default function FulongTracePrototype() {
               </div>
             </section>
             <section className="trace-review-note">
-              <p className="trace-eyebrow">REVIEW GATE</p>
-              <p>逐区核对弯道、分岔和汇合，通过验收后再接入正式地图。</p>
-              <small>参考图不是测绘或实时运营数据。遮挡处的插值与通行方向仍需核验，本样板不用于现场导航。</small>
+              <p className="trace-eyebrow">{published ? "ABOUT THIS MAP" : "REVIEW GATE"}</p>
+              <p>{published ? "这是富龙全图结构版 MVP，先把地图、详情和路线放在同一张图上。" : "逐区核对弯道、分岔和汇合，通过验收后再接入正式地图。"}</p>
+              <small>参考图不是测绘或实时运营数据。遮挡处的插值与通行方向仍需核验，本页面不用于现场导航。</small>
             </section>
           </aside>
         </div>
       </main>
-      <footer className="trace-footer"><span>Fidelity before styling.</span><span>富龙 / 全图结构 / 2026-09-24 · 未发布</span></footer>
+      <footer className="trace-footer"><span>Fidelity before styling.</span><span>{published ? "富龙 / 全图结构 / MVP" : "富龙 / 全图结构 / 2026-09-24 · 未发布"}</span></footer>
     </div>
   );
 }
