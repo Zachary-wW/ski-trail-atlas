@@ -2,43 +2,57 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-An evidence-first interactive trail atlas for Fulong Ski Resort. The current release covers the 33 Trails listed by the active parameter source, supports search and stable direct links, and exposes source-reported difficulty, slope, length, width, elevation, verification state, and evidence.
+A map-first ski-resort MVP, starting with Fulong: a complete, reference-faithful
+trail map, trail-by-trail text and video, and route planning on that same map.
 
-The longer-term product is designed to expand beyond Fulong. The current fidelity mode keeps the published source panorama as the visual layout reference and layers evidence-backed SVG interaction, selection, and route geometry on top. Interactive geometry remains explicitly unverified and non-navigational; the panorama is reference evidence, not GPS or survey data.
+## What is actually implemented
 
-## Live site
+The existing `/` application is a **legacy prototype**, not the completed MVP.
+It has 33 source-listed trail records, search, metric detail, bilingual UI, and
+schematic routing. Trail narratives, reviewed videos, and the production
+Fulong route graph are still unfinished.
 
-GitHub Pages: <https://zachary-ww.github.io/ski-trail-atlas/>
+The current `/?prototype=fulong-trace` workbench is a development-only
+full-map tracing surface. It uses the supplied 3631 × 2560 WEBP in its native
+coordinate system, supports reference/overlay/linework review, and shares
+candidate segments between drawing and interaction. The user has accepted the
+overall structural baseline for moving into the content MVP; direction,
+evidence, and publication states remain explicit and candidate geometry is not
+yet the production route graph.
 
-The website defaults to English and includes an in-page switch to Simplified Chinese. Source-native trail names and source titles remain in their original language.
+[Current scope and acceptance gates](docs/mvp-rebuild.md) are the execution
+source of truth. [The future delivery plan](docs/mvp-roadmap.md) is the roadmap,
+and [the tracing review](docs/trace-pilot-review.md) is the correction and test
+record.
 
-## Current status
+## Run locally
 
-The current map-first release includes:
-
-- 33 source-listed Fulong Trails compiled from versioned research rows into field-level Claims;
-- the source-specific difficulty categories, including beginner/intermediate mixes and park Trails;
-- compact Trail search by name or code, stable direct URLs, and automatic map focus;
-- a source-aligned Panorama Map that keeps the published panorama as visual layout truth and layers 33 clickable Trail Locations plus major L1/L2/L3/L5/L7 Uphill Transport overlays on top;
-- directed Trail, Transport Station, and Place endpoints validated against evidence-backed Map Nodes;
-- a schematic Route Planner backed by directed downhill Trail and typed Uphill Transport edges; unsupported connections fail closed instead of being guessed;
-- explicit missing values rather than inferred parameters, plus season, evidence, and non-navigation disclosures.
-
-Route Plans are schematic and season-scoped; they are not GPS navigation and do not reflect live lift/trail operating status or safety conditions. The product does **not** provide personalized ability-based route recommendations.
-
-## Local development
-
-Node.js 24 is required (`.nvmrc` is included).
+Use Node.js 24 (`.nvmrc`):
 
 ```bash
 nvm use
-npm install
+npm ci
 npm run dev
 ```
 
-The development server runs at `http://127.0.0.1:4173` by default.
+The existing application is at `http://127.0.0.1:4173/`.
 
-## Validation
+For the tracing pilot, place the supplied WEBP at
+`artifacts/reference/fulong-highres.webp`, then run:
+
+```bash
+npm run dev:trace
+```
+
+Open `http://127.0.0.1:4173/?prototype=fulong-trace`. If the dev server is already
+running, open that URL directly. The image lives in a gitignored folder and is
+served by a development-only endpoint. Neither the new high-resolution image
+nor the pilot is part of the production build.
+The old `?prototype=east-trace` alias remains available for east-sector comparison.
+
+See [the reference and calibration contract](docs/research/fulong-reference-calibration.md).
+
+## Validate
 
 ```bash
 npm run typecheck
@@ -47,14 +61,21 @@ npm run test:e2e
 npm run build
 ```
 
-Content validation rejects duplicate Source Snapshot, Trail, or Claim identifiers; Claims that reference missing Trails or Source Snapshots; unresolved multiple Claims for one published field; and values that do not match the versioned schema.
+Existing tests protect legacy behavior; passing them is **not** proof of
+reference fidelity or of accurate on-mountain connections.
 
-## Evidence boundary
+## Repository guide
 
-`src/data/fulong-v1.ts` stores versioned research inputs: the 33 source rows, Trails, immutable Source Snapshots, field-level Claims, and the evidence-backed topology graph. `compilePublication` produces browser-safe Published Fields at build time while preserving source provenance and verification state.
+- `src/` — existing application.
+- `src/map/prototype/` — isolated, development-only tracing experiment.
+- `docs/mvp-rebuild.md` — active MVP scope and review gate.
+- `docs/mvp-roadmap.md` — phased delivery plan after the tracing baseline.
+- `docs/trace-pilot-review.md` — user corrections and regression evidence.
+- `docs/adr/` — durable decisions, including their supersession status.
+- `docs/research/` — source registry, calibration, and inventory contracts.
+- `prototypes/design-directions/` — archived visual explorations, not deployed.
 
-The current parameters and panorama layout are sourced from the public page “崇礼富龙滑雪场雪道参数及雪道总览图” and remain marked `reference_only`. The current fidelity build includes a source-aligned reference panorama layer for visual orientation, with separate SVG hit targets, selection, route highlighting, and evidence state on top. Unsupported values remain unavailable rather than being derived, and the interactive geometry is not GPS or survey-grade.
-
-## Deployment
-
-Pushes to `main` deploy the Vite production build to GitHub Pages through `.github/workflows/deploy-pages.yml`. The production build uses the `/ski-trail-atlas/` base path, and a lightweight `404.html` fallback preserves stable SPA Trail URLs on GitHub Pages.
+The legacy site is hosted on GitHub Pages. Pushing `main` triggers deployment;
+this local pilot does not change that site. The existing production JPG is a
+legacy asset whose publication policy remains to be reconciled before the next
+map release. Do not treat possession of the new WEBP as publication approval.

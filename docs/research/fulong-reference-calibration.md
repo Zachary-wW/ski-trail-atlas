@@ -1,45 +1,82 @@
-# Fulong high-resolution reference calibration
+# Fulong reference and calibration contract
 
-Status: development reference for the layout-faithful Panorama Map. The raster itself is **reference-only** and must not be added to the production bundle or committed unless reuse rights are explicitly confirmed.
+Updated: 2026-09-28. Status: structural tracing baseline accepted for content MVP
+work; production publication and directed-route review remain pending.
 
-## Reference observed
+## Source identity
 
-The user-supplied panorama is 3631 × 2560 px. The ski-map artwork occupies an approximately 3480 × 1740 px crop beginning at source pixel `(80, 65)`; the legend below that crop is excluded from the map coordinate frame.
+- User-supplied filename: `179014500200932.WEBP`.
+- Dimensions: **3631 × 2560**, WebP.
+- SHA-256: `550e0e8c1d63f68d8b0d8b8ea0b91986926af931b0c1f9c6456f9f72cef06198`.
+- Local fixture: `artifacts/reference/fulong-highres.webp` (gitignored).
+- This is distinct from the legacy `public/maps/fulong-reference.jpg`
+  (2000 × 1379). Do not substitute one for the other.
 
-The public SVG keeps its existing 1000 × 650 interaction viewport during the migration, but the layout-faithful source artwork maps into the inner bounds `(0, 75) → (1000, 575)`. This preserves the source map's ~2:1 aspect ratio without distorting it to the outer UI viewport.
+## One coordinate system
 
-Measured control anchors from the uploaded panorama:
+The pilot stores coordinates directly in original image pixels. The image is
+rendered at `(0, 0, 3631, 2560)` inside the same SVG as the traced paths.
+Frames are defined in `src/map/prototype/fulong-trace-data.ts`:
 
-| Control landmark | Source pixel | Normalized reference position |
-| --- | ---: | ---: |
-| Summit | (1970, 180) | (0.543, 0.066) |
-| Fulong Base | (2241, 1351) | (0.621, 0.739) |
-| L3 Base / west sector | (431, 1266) | (0.101, 0.690) |
-| L3 Top | (1455, 410) | (0.395, 0.198) |
-| C8 lower junction | (1691, 575) | (0.463, 0.293) |
-| Central L2 / L5 base area | (1886, 1304) | (0.519, 0.712) |
-| L7 east sector | (3389, 590) | (0.951, 0.302) |
+| View | x | y | width | height |
+| --- | ---: | ---: | ---: | ---: |
+| Full map | 80 | 65 | 3480 | 1740 |
+| Summit | 1390 | 150 | 1150 | 610 |
+| Central / park | 1300 | 500 | 1150 | 860 |
+| Annotated B10 / B11 | 1720 | 380 | 800 | 610 |
+| West L3 | 340 | 370 | 1480 | 1020 |
+| East B | 1920 | 350 | 1210 | 1030 |
+| Beginner | 1900 | 1020 | 1050 | 350 |
 
-These are **relative cartographic measurements**, not GPS coordinates. The content test keeps publication anchors within a small tolerance of these independently measured normalized positions.
+Zoom and pan change only the viewBox, never the source or geometry transform.
 
-## Tracer slice
+Segment endpoints are references to shared nodes. The same segment path is
+used for linework, selection, click targets, and route highlighting.
+Coordinates and connections remain candidate annotations, not verified facts.
+The user's 2026-09-24 corrections authorize shared-node joins across gaps in the
+historical image. The source raster remains unchanged; current local status
+overrides (C11/C12 and F8/F9) are labeled as user reports in the prototype.
 
-Ticket 01 calibrates C8 and L3 first. They meet at the L3 top station / `ridge-west-high` control node in the reference. C8 remains clickable and focusable through the existing stable Trail URL while L3 remains an evidence-backed uphill line. All other Trail/Lift geometry is explicitly still `legacy-schematic` until the full migration ticket.
+## Local review
 
-## Development-only side-by-side workflow
+1. Place the exact WEBP at the fixture path above.
+2. Run `npm run dev:trace` with Node.js 24.
+3. Open `http://127.0.0.1:4173/?prototype=fulong-trace`.
+   The old `?prototype=east-trace` alias defaults to the east sector.
+4. Toggle reference / overlay / independent linework, adjust source opacity,
+   and enable node markers. Hold the reference button for an instant comparison.
+5. Inspect each trail's curves, forks, and endpoints at multiple zoom levels.
+6. Demonstrate a candidate route and compare every highlighted segment with
+   the route steps. Reversed or unannotated connections must not be invented.
 
-The current Runner cannot import the conversation raster because the host file bridge requires a trusted OAuth MCP client. Do not work around this by committing the image.
+The fixed `/__reference/fulong-highres.webp` endpoint exists only on the dev
+server. It serves that one fixture, not arbitrary filesystem paths. Vite builds
+exclude both the pilot import and the new high-resolution fixture.
 
-On a developer machine that has the same uploaded raster:
+## Review boundaries
 
-1. Save it to `artifacts/reference/fulong-highres.webp` (the whole `artifacts/` directory is gitignored), or set `FULONG_REFERENCE_IMAGE` to another local path.
-2. Start the app: `npm run dev -- --host 127.0.0.1`.
-3. Start the calibration helper: `npm run calibrate:fulong`.
-4. Open `http://127.0.0.1:4174`.
-5. Compare the cropped reference + red control anchors on the left with the live app on the right. The reference raster is served only by the local calibration process and is not imported by Vite.
+Fourth-round user corrections add shared C5/C7 and A7/A8 junctions and remove
+the false C1-left stub. Temporary annotation colors are no longer rendered;
+solid blue-green trails and purple dashed transports distinguish line types.
+The immutable historical raster still contains its original colors and marks.
 
-Use `FULONG_APP_URL` or `FULONG_CALIBRATION_PORT` to override the defaults. `npm run calibrate:fulong -- --help` prints the workflow without requiring the raster.
+The fifth correction supersedes the fourth pass's false B11–A7/A8 junction.
+Use the independent A7/A8 fork and preserve the building gap. C1's new
+restaurant connection runs below E1. L3/L5/L7 converge at the summit; do not
+move the western trail junction to achieve this. L5's red-circle intermediate
+station is marked for alighting, without inferred boarding or ground edges.
 
-## Copyright boundary
+- This prototype checks candidate centerlines and annotated connections, not
+  final corridor widths, decorative artwork or live operating conditions.
+  Full-map coverage remains subject to a completeness and identity review.
+- B3's lower endpoint is kept separate from B1 until its connection is confirmed.
+- Some centerlines are hidden by labels/icons and require review.
+- Cable and magic-carpet corridors are contextual only; L7 extends to the image edge.
+- New full-map segments are direction-pending and excluded from routing.
+- Unnumbered connectors are separate segments, not silently assigned to a trail.
+- A no-route result means the pilot lacks an annotated path, not that the actual
+  resort is inaccessible.
 
-The source panorama is used to preserve functional spatial layout: relative Trail shapes, transport corridors, stations, junctions, and major landmarks. Terrain painting, trees, buildings, facility icons, logos, labels, typography, textures, and other decorative artwork must be redrawn independently. The final public asset is an original Panorama Map and retains the non-navigation disclaimer.
+The former side-by-side calibration server and its manually scaled crop were
+retired in favor of the shared-coordinate overlay. Old claims that all 33 trails
+were calibrated are not accepted as proof of fidelity.
