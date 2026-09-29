@@ -7,4 +7,5 @@ The identical `public/design-preview/` copy was removed on 2026-09-24 so archive
 experiments no longer ship in every production build. The originals remain here
 for historical reference.
 
-Current work: [`docs/mvp-rebuild.md`](../../docs/mvp-rebuild.md).
+Current delivery: [M0–M5](../../docs/MILESTONES.md).
+Map acceptance: [Fulong atlas contract](../../docs/fulong-atlas-acceptance.md).

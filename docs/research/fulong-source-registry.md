@@ -1,41 +1,48 @@
-# 富龙来源登记
+# Fulong source registry
 
-更新：2026-09-28。
+Updated: 2026-09-29 (English consolidation; sources not reverified this turn).
 
-这份文档只记录当前仍会影响产品判断的来源层级和使用边界。具体坐标、
-分段和用户修正见[校准契约](fulong-reference-calibration.md)与
-[描摹验收记录](../trace-pilot-review.md)；不要在这里复制几何数据。
+This registry records source tiers and permitted-use boundaries that affect
+product decisions. Coordinates, segments and user corrections live in the
+[calibration contract](fulong-reference-calibration.md) and
+[trace review](../trace-pilot-review.md), not in a duplicate geometry table.
 
-## 来源层级
+## Source tiers
 
-| 层级 | 来源 | 可支持的判断 |
+| Tier | Sources | Supported use |
 | --- | --- | --- |
-| A | 富龙官方渠道、当季公告和运营通知 | 当季开放、关闭、设施变更和官方命名 |
-| B | 政府/文旅机构材料 | 雪场身份、建设规模和有日期的升级信息 |
-| C | 崇礼滑雪、Skiresort、Skimap 等专业或商业地图 | 名称、相对结构和索道交叉核对；不能单独证明当前运营 |
-| D | OpenStreetMap/OpenSkiMap、用户照片和视频 | 地理 sanity check 与现场外观线索；必须保留对象/发布日期 |
+| A | Official Fulong channels, seasonal notices and operating announcements | Season-specific opening/closure, facility changes and official naming |
+| B | Government and tourism bodies | Resort identity, construction scope and dated upgrades |
+| C | Chonglihuaxue, Skiresort, Skimap and other specialist/commercial maps | Names, relative layout and transport cross-checks; not current operations by themselves |
+| D | OpenStreetMap/OpenSkiMap, user photos and videos | Geographic plausibility and appearance leads; retain object/publication dates |
 
-当前候选描摹的主要结构参考是用户提供的高清全图。公开商业全景和索道
-目录用于交叉检查，不替代用户确认或官方当季证据。
+The user-supplied high-resolution panorama is the principal structural reference.
+Commercial panoramas and lift directories provide cross-checks, not substitutes
+for user review or official evidence for the applicable season.
 
-## 使用规则
+## Use rules
 
-- 把地图、参数表、开雪公告和视频视为不同季节/范围的 `SourceSnapshot`；
-  不把 33 条参数记录、39 条建成雪道和某一日开放清单合并成一个数量。
-- 每个用户可见字段都要保留来源、季节和验证状态；冲突、缺失和过期值要
-  明确显示。
-- 运营公告只更新 `OperatingSnapshot`，不能重写 `Trail Catalog`。
-- 公开可访问不等于允许复制。高清原图和官方视觉资产仅作本地参考，除非
- 另有明确授权，不进入生产构建或发布包。
-- 用户修正可以作为候选结构变更记录，但“去年开放”“可能取消”等报告在
- 取得独立当季来源前仍标为 user-reported。
+- Maps, parameter tables, opening notices and videos are separate Source
+  Snapshots with distinct seasons/scopes. Do not conflate the legacy 33
+  parameter records, a source's 39-built-trails claim and a daily operating list.
+- Every displayed field retains source, season and verification state.
+  Conflicting, missing and stale values remain explicit.
+- Operating notices update Operating Snapshots, not the Trail Catalog.
+- Public accessibility does not grant reproduction rights. High-resolution
+  source images and official visual assets remain local references unless
+  separately authorized for distribution.
+- User corrections support candidate structural changes. Reports such as
+  “opened last year” or “possibly removed” remain user-reported until independently
+  supported for the relevant season.
 
-## 现有参考链接
+## Retained research links
 
-- [崇礼滑雪富龙参数与全景](https://www.chonglihuaxue.cn/info.asp?id=167)
-- [Skiresort 富龙雪道图](https://www.skiresort.com/en/ski-resort/fulong/trail-map/)
-- [Skiresort 富龙索道目录](https://www.skiresort.info/ski-resort/fulong/ski-lifts/)
-- [Skimap 富龙历史档案](https://skimap.org/skiareas/view/13871)
-- [OpenSkiMap 项目说明](https://wiki.openstreetmap.org/wiki/OpenSkiMap)
+- [Chonglihuaxue Fulong parameters and panorama](https://www.chonglihuaxue.cn/info.asp?id=167)
+- [Skiresort Fulong trail map](https://www.skiresort.com/en/ski-resort/fulong/trail-map/)
+- [Skiresort Fulong lift directory](https://www.skiresort.info/ski-resort/fulong/ski-lifts/)
+- [Skimap Fulong historical archive](https://skimap.org/skiareas/view/13871)
+- [OpenSkiMap project description](https://wiki.openstreetmap.org/wiki/OpenSkiMap)
 
-链接用于研究和交叉核对，不代表其内容已被当前雪季验证。
+These retained references are research leads, not verification for the current
+season. M0 opening-date research, including Xiaohongshu/Agent Reach feasibility,
+is still pending and must record its own evidence.

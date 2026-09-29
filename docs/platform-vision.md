@@ -1,136 +1,68 @@
-# Ski Trail Atlas 平台愿景与产品边界
+# Chongli resort intelligence: product boundaries
 
-更新：2026-09-28。
+Updated: 2026-09-29. Delivery sequence: [M0–M5](MILESTONES.md).
 
-## 长期目标
+## Product and audience
 
-Ski Trail Atlas 最终不是单一雪道图页面，而是一个以雪场为单位的信息整合
-平台，未来可以承载网页端和微信小程序端：
+Ski Trail Atlas is a Chongli-wide information website. The homepage introduces
+Chongli resorts and each resort's season-specific opening outlook. Fulong is
+the first complete atlas/template; other Chongli resorts follow through shared
+data contracts. Other regions are later scope.
 
-- 查看雪场全图、雪道和索道；
-- 基于审核后的拓扑生成结构化路线图；
-- 查看逐道文字、视频和来源证据；
-- 聚合每日资讯、运营通知、活动、课程、价格和季节变化；
-- 在不混淆来源和时效的前提下，帮助用户做滑雪前的信息判断。
+Before a trip, visitors should be able to compare opening outlooks, enter a
+resort, find a trail, inspect its map position and evidence, watch a relevant
+video, consult a qualified Route Plan and read dated resort updates.
+Experienced skiers need recognizable maps and explicit differences between
+source information and user reports. Reviewers need provenance, conflict
+handling, freshness and retraction controls.
 
-富龙是第一个完整样板，不是最终产品边界。后续雪场必须通过统一的
-`Resort` / `Trail` / `Source` / `Information Item` 契约接入，不能复制一套
-富龙专用逻辑。
+This is a cumulative product direction, not a promise that every capability
+ships in M0. Directory coverage is separate from deep resort coverage.
+Current implementation and WIP are recorded in the
+[project checkpoint](agents/codex-handoff.md), not duplicated here.
 
-## 当前已经完成的部分
+## Evidence and safety boundaries
 
-当前仓库已具备：
+- A source-faithful map preserves relative layout, not GPS/survey accuracy.
+- Opening estimates are separate from official announcements and observed
+  operations. A countdown reaching zero does not prove a resort is open.
+- Published trail information and videos retain evidence, season, match scope
+  and explicit missing/conflicting/stale states.
+- Routes use reviewed directed topology; they do not promise safety, live
+  access, travel time or suitability for a skier's ability.
+- Social posts and collected articles are candidates until reviewed. Public
+  access does not imply permission to republish text, images or videos.
 
-- 富龙参考图驱动的结构版全图；
-- 生产 Pages 根路径和本地高清校准工作台；
-- 雪道、节点、索道和候选路线的基础数据模型；
-- 来源快照、字段 Claim 和验证状态的初版编译边界；
-- 旧详情页、地图点选、搜索和示意路线的回归测试；
-- 面向富龙地图 MVP 的验收门槛和路线图。
+## Platform and client boundaries
 
-这些内容证明“地图优先的富龙样板”可以继续建设，但不等于平台已经具备
-资讯采集、编辑审核、跨雪场扩展或小程序发布能力。
+Keep one published domain contract for Resort Packages, trails, maps,
+transports, route graphs, evidence and Resort Feeds.
 
-## 首个真正可交付的产品闭环
+- **Catalog:** resort/trail identities, transports, places and season attributes.
+- **Map:** reference contracts, original linework, nodes, facilities and interaction.
+- **Routing:** reviewed directed topology and qualified Route Plans.
+- **Evidence:** Source Snapshots, Claims, Video Matches and review state.
+- **Content:** Information Items, Editorial State and Resort Feeds.
+- **Collection:** Source Channels, Collection Runs and candidates.
+- **Publication:** versioned snapshots, validation, rollback and client reads.
+- **Clients:** render published data; collection and editorial decisions remain
+  outside client-specific UI logic.
 
-首个内容闭环应限定为：
+These are responsibilities, not a requirement to create eight packages.
+Prove reuse with a small second-resort slice before M2 closes, then complete a
+second resort in M5 without copying Fulong business logic.
 
-1. 用户进入富龙；
-2. 在地图或搜索中找到一条雪道；
-3. 查看结构、文字、来源和视频匹配状态；
-4. 选择明确的起点和终点，查看有证据的路线示意；
-5. 查看按季节和来源标记的富龙资讯；
-6. 能区分已核验、待审核、过期、冲突和仅供参考的内容。
+## Client strategy and deferred decisions
 
-以下能力不应在第一阶段伪装成已完成：
+The Web application on GitHub Pages is the first delivery surface.
+A future WeChat Mini Program may consume the same contract after content/API,
+sharing, authentication and operating requirements are understood. It is not
+currently committed and must not create a second source of business rules.
 
-- 实时开放状态或安全建议；
-- GPS 级现场导航；
-- 自动判断所有雪道方向；
-- 自动把小红书或微信公众号内容当作事实；
-- 未经授权转载原文、图片、视频或高清雪场原图；
-- 直接承诺网页和微信小程序同时达到同等功能。
+Do not prematurely choose a backend/database/scheduler vendor, collection
+technology, cross-platform framework, accounts, favorites, subscriptions,
+notifications, monetization or advertising. Make those decisions against the
+relevant milestone's evidence and preserve significant outcomes in ADRs.
 
-## 用户与核心场景
-
-### 滑雪前用户
-
-- 按雪道编号、名称或区域查找；
-- 判断某条雪道大致难度和连接关系；
-- 查看可信来源、更新时间和视频匹配范围；
-- 了解近期运营、活动和课程信息。
-
-### 熟悉雪场的滑雪者
-
-- 快速检查一张完整地图；
-- 对照雪道、索道、餐厅和区域节点；
-- 规划一条结构上可解释的路线；
-- 发现用户报告与官方信息之间的差异。
-
-### 内容审核者
-
-- 查看来源快照和抓取记录；
-- 处理重复、冲突、过期和缺失字段；
-- 确认视频是逐道、区域级还是雪场级；
-- 决定一条资讯是否进入 Resort Feed。
-
-## 客户端策略
-
-当前客户端顺序：
-
-1. **Web / GitHub Pages**：继续作为地图和内容模型的第一验证面；
-2. **可复用服务层**：先稳定数据契约、发布快照和来源审核；
-3. **微信小程序**：在 API、内容审核、登录/分享和运营流程明确后再决定
-   是否实现，以及实现到什么深度。
-
-小程序不是第二套业务逻辑。它应消费与 Web 相同的已发布数据，拥有适合
-移动端的地图、搜索、详情和资讯界面；采集、审核、来源策略和路线规则仍
-属于平台层。
-
-## 平台模块边界
-
-```text
-Source Channels
-      ↓
-Collection Runs → Candidate Content → Editorial Review
-      ↓                    ↓
-Source Snapshots      Published Resort Feed
-
-Resort Package → Map / Trail / Transport / Route Graph
-      ↓                    ↓
-Web Client  ← Published Domain Contract → 未来小程序
-```
-
-模块边界：
-
-- `map`: 参考图、线稿、节点、设施和地图交互；
-- `catalog`: 雪场、雪道、索道、地点和季节属性；
-- `routing`: 审核后的有向路线图；
-- `evidence`: Source Snapshot、Claim、Video Match；
-- `content`: Information Item、Resort Feed、Editorial State；
-- `collection`: Source Channel、Collection Run 和候选内容；
-- `publication`: 版本化发布快照、回滚和客户端读取；
-- `clients`: Web 与未来小程序，不直接抓取外部来源。
-
-## 最小成功标准
-
-平台级 MVP 至少需要：
-
-- 一个富龙 Platform Package；
-- 一个可读的发布数据契约；
-- 一条完整的地图 → 详情 → 视频证据 → 路线闭环；
-- 一个带来源和审核状态的 Resort Feed；
-- 一次可重复的内容采集运行记录；
-- 清楚的版权、转载和失效策略；
-- 第二个雪场可以新增数据包，而不是复制页面代码。
-
-## 尚未决定、不要提前写死的事项
-
-- 微信小程序原生实现、WebView、跨端框架或仅保留 Web；
-- 后端、数据库和任务调度的具体供应商；
-- 是否需要账号、收藏、订阅和推送；
-- 小红书/微信公众号的自动化采集方式；
-- 商业化、广告和品牌合作策略。
-
-这些问题应通过 `/grill-with-docs`、`/to-spec` 或 `/wayfinder` 逐项决策，
-而不是在地图 MVP 代码中隐式决定。
+The [content ingestion contract](content-ingestion.md) and ADRs 0006/0007
+define future collection/client boundaries without claiming they exist today.

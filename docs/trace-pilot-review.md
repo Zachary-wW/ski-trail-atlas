@@ -6,7 +6,12 @@ content-MVP continuation; route direction and publication evidence remain pendin
 The user subsequently authorized a linework-only Pages homepage. Publishing
 this structural preview does not verify travel directions or complete the content MVP.
 
-## What was checked automatically
+## Historical automated checks
+
+These results belong to the correction sequence below, not the current dirty
+worktree. Current validation and unfinished work are recorded in the
+[project checkpoint](agents/codex-handoff.md). Structural continuation approval
+does not satisfy the complete M1 atlas gate in [M0–M5](MILESTONES.md).
 
 - `npm run typecheck` — passed.
 - `npm run test:content` — 6 files, 51 tests passed after the seventh correction.
@@ -173,8 +178,9 @@ right-side link is now excluded pending direction review.
   Reference features remain gray/dashed. Selection and route highlight stay
   separate from difficulty/operational status.
 - Transports render over trails with white casing, purple dashes, square known
-  stations and explicit “索道” / “魔毯” labels. Carpet labels are staggered to
-  prevent F5/F6 overlap. Unknown cable subtypes/stations remain unknown.
+  stations and explicit “索道” (cable lift) / “魔毯” (magic carpet) labels.
+  Carpet labels are staggered to prevent F5/F6 overlap. Unknown cable
+  subtypes/stations remain unknown.
 
 Fourth-round totals: 63 segments, 35 code groups, 3 reference features, 9 transport
 records; 49 segments excluded from directed routing. Three new content
@@ -197,6 +203,7 @@ The user's new red-line crop and the native WEBP are the calibration evidence.
   straight; A7 bows right through approximately `(2033,959)` before returning
   downhill. It no longer follows the L5 corridor or starts from B11.
 - B11 retains its own node/curve. A house symbol and “房屋隔断 · 不直连”
+  (“building separation; no direct connection”)
   make the local gap visible. No direct link bridges it. Indirect connectivity
   via the previously confirmed B11–L2 corridor is not a bridge across the house.
 - C1 is split at `(2084,302)` for an unnumbered ground corridor to the
@@ -205,7 +212,8 @@ The user's new red-line crop and the native WEBP are the calibration evidence.
   there too. The western trail junction's coordinates remain unchanged and
   its name no longer claims to be L3's terminal. L7's off-image bottom is unknown.
 - L5's path explicitly passes through `(2005,553)`, with a structured
-  intermediate station and a red ring labelled “L5 中途站 · 可下客”.
+  intermediate station and a red ring labelled “L5 中途站 · 可下客”
+  (“L5 intermediate station; alighting allowed”).
   Boarding permission and ground exits are unknown, and no routing edge was added.
 
 Current totals: 65 segments, 35 code groups, 3 reference features, 9 transport
@@ -230,6 +238,7 @@ coordinates alone were therefore an insufficient display test.
 - Use 3px non-scaling strokes for trails, connectors, selection and route
   highlights. Selection remains visible through color and the selected label.
 - Remove wide white trail bands and transport casings. Default “透视叠加”
+  (“see-through overlay”)
   uses translucent lines and label plates, with a faint continuous cable guide;
   station outlines/text stay readable. A checkbox restores solid linework.
 - Put transport labels after all linework, rather than inside each cable's
