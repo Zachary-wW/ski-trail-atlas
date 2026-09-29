@@ -108,7 +108,7 @@ export default function FulongTracePrototype({ published = false }: FulongTraceP
     <div className={`trace-workbench trace-full-map ${seeThrough ? "is-see-through" : ""}`}>
       <a className="skip-link" href="#fulong-map-content">跳转到地图</a>
       <header className="trace-topbar">
-        <a href={import.meta.env.BASE_URL} className="trace-brand">SKI TRAIL ATLAS <span>{published ? "富龙地图 MVP" : "制图工作台"}</span></a>
+        <a href={import.meta.env.BASE_URL} className="trace-brand" aria-label={published ? "返回崇礼门户" : "返回崇礼门户，退出制图工作台"}>SKI TRAIL ATLAS <span>{published ? "富龙地图 MVP" : "制图工作台"}</span></a>
         <span className="trace-local"><i /> {published ? "富龙 MVP · 结构版" : "本地样板 · 未核验"}</span>
       </header>
       <main id="fulong-map-content" tabIndex={-1}>

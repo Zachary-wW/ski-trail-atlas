@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
 
 test("selects and highlights Trails through the Panorama Map", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   await expect(map).toBeVisible();
   await expect(map.getByRole("link", { name: "A1 · 蓝调" })).toHaveAttribute("aria-current", "page");
+  await map.getByRole("button", { name: "Reset map" }).click();
 
   await map.getByRole("link", { name: "B1 · 摇滚" }).locator(".trail-label").click();
 
@@ -18,12 +19,13 @@ test("selects and highlights Trails through the Panorama Map", async ({ page }) 
 });
 
 test("supports keyboard zoom and pan plus pointer panning", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   const viewport = map.locator(".panorama-viewport");
   const svg = viewport.locator(".panorama-map-canvas");
 
+  await map.getByRole("button", { name: "Reset map" }).click();
   await expect(svg).toHaveAttribute("viewBox", "0 0 1000 650");
 
   await viewport.focus();
@@ -54,7 +56,7 @@ test("supports keyboard zoom and pan plus pointer panning", async ({ page }) => 
 });
 
 test("shows season, verification date, evidence, and a non-navigation disclaimer", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   await expect(map.getByText("2025–2026", { exact: true })).toBeVisible();
@@ -70,7 +72,7 @@ test("shows season, verification date, evidence, and a non-navigation disclaimer
 });
 
 test("renders the evidence-backed major Uphill Transport skeleton and topology anchors", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   for (const code of ["L3", "L2", "L5", "L1", "L7"]) {
@@ -90,7 +92,7 @@ test("renders the evidence-backed major Uphill Transport skeleton and topology a
 });
 
 test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   const c8 = map.getByRole("link", { name: "C8 · 约德尔" });
@@ -98,6 +100,7 @@ test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", a
 
   await expect(c8).toHaveAttribute("data-layout-fidelity", "reference-calibrated");
   await expect(l3).toHaveAttribute("data-layout-fidelity", "reference-calibrated");
+  await map.getByRole("button", { name: "Reset map" }).click();
 
   await c8.locator(".trail-label").click();
   await expect(page).toHaveURL(/\/trails\/fulong-c8$/);
@@ -107,7 +110,7 @@ test("keeps the C8 plus L3 tracer slice reference-calibrated and interactive", a
 
 
 test("uses the reference layout for every published Trail and major Uphill Transport while keeping map-only lines inert", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   await expect(map.locator('[data-trail-id][data-layout-fidelity="reference-calibrated"]')).toHaveCount(33);
@@ -123,7 +126,7 @@ test("uses the reference layout for every published Trail and major Uphill Trans
 });
 
 test("uses the source panorama as the visual layout truth with a light interactive overlay", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
   const raster = map.locator('[data-reference-raster="fulong-source-panorama"]');
@@ -141,6 +144,7 @@ test("uses the source panorama as the visual layout truth with a light interacti
   );
   expect(unselectedOpacity).toBe(0);
 
+  await map.getByRole("button", { name: "Reset map" }).click();
   await unselected.locator(".trail-label").click();
   const selectedOpacity = await map.getByRole("link", { name: "B1 · 摇滚" }).locator(".trail-line").evaluate((element) =>
     Number.parseFloat(getComputedStyle(element).opacity),
@@ -151,7 +155,7 @@ test("uses the source panorama as the visual layout truth with a light interacti
 
 test("keeps visible reference-calibrated Trail and transport labels from materially overlapping", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const labels = page.getByRole("region", { name: "Fulong Panorama Map" }).locator(".trail-label, .lift-label");
   const boxes = await labels.evaluateAll((elements) => elements.flatMap((element) => {
@@ -176,7 +180,7 @@ test("keeps visible reference-calibrated Trail and transport labels from materia
 
 test("keeps compact controls above a dominant map with a non-overlapping desktop right inspector", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const search = page.getByRole("searchbox", { name: "Search trails" });
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });
@@ -199,7 +203,7 @@ test("keeps compact controls above a dominant map with a non-overlapping desktop
 
 test("keeps mobile query-first without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const search = page.getByRole("searchbox", { name: "Search trails" });
   const map = page.getByRole("region", { name: "Fulong Panorama Map" });

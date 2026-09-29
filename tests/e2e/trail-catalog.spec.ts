@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("defaults to English and can switch the interface to Chinese", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   await expect(page.getByRole("searchbox", { name: "Search trails" })).toHaveAttribute(
     "placeholder",
@@ -19,7 +19,7 @@ test("defaults to English and can switch the interface to Chinese", async ({ pag
 });
 
 test("searches the Fulong Trail Catalog by Trail name and code", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const searchSurface = page.locator(".catalog-section");
   const search = page.getByRole("searchbox", { name: "Search trails" });
@@ -38,7 +38,7 @@ test("searches the Fulong Trail Catalog by Trail name and code", async ({ page }
 });
 
 test("opens the selected Trail on its stable direct URL", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   await page.getByRole("searchbox", { name: "Search trails" }).fill("B1");
   await page.locator(".catalog-section").getByRole("link", { name: "B1 · 摇滚" }).click();
@@ -64,7 +64,7 @@ test("preserves mixed and park difficulty labels from the source", async ({ page
 });
 
 test("shows an explicit empty state for an unknown Trail query", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   await page.getByRole("searchbox", { name: "Search trails" }).fill("not-a-real-trail");
 

@@ -3,7 +3,22 @@ import { readFileSync, existsSync } from "node:fs";
 
 const base = "/ski-trail-atlas/";
 
-test("Pages root serves the full map without private raster or calibration controls", async ({ page }) => {
+test("visitor enters and leaves the Fulong map through the Chongli portal", async ({ page }) => {
+  await page.goto(base);
+
+  await expect(page.getByRole("heading", { level: 1, name: "崇礼滑雪指南" })).toBeVisible();
+  await expect(page.getByText("开板信息待核验", { exact: true })).toBeVisible();
+
+  await page.getByRole("link", { name: "进入富龙雪道地图" }).click();
+  await expect(page).toHaveURL(`${base}resorts/fulong/map`);
+  await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
+
+  await page.getByRole("link", { name: "返回崇礼门户" }).click();
+  await expect(page).toHaveURL(base);
+  await expect(page.getByRole("heading", { level: 1, name: "崇礼滑雪指南" })).toBeVisible();
+});
+
+test("published Fulong entrances serve the full map without private raster or calibration controls", async ({ page }) => {
   const requests: string[] = [];
   const errors: string[] = [];
   page.on("request", (request) => requests.push(request.url()));
@@ -12,7 +27,7 @@ test("Pages root serves the full map without private raster or calibration contr
     if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`);
   });
 
-  for (const suffix of ["", "?prototype=fulong-trace", "?prototype=east-trace"]) {
+  for (const suffix of ["resorts/fulong/map", "?prototype=fulong-trace", "?prototype=east-trace"]) {
     await page.goto(`${base}${suffix}`);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("整张图，找到你的下一条雪道。");
     await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
@@ -33,7 +48,7 @@ test("Pages root serves the full map without private raster or calibration contr
 });
 
 test("public map retains selection, shared geometry, and qualified route demonstration", async ({ page }) => {
-  await page.goto(base);
+  await page.goto(`${base}resorts/fulong/map`);
   await page.getByRole("button", { name: "中央 / 公园", exact: true }).click();
   await page.locator(".trace-trail-picker").getByRole("button", { name: "B11", exact: true }).click();
   await expect(page.locator(".trace-selection-heading strong")).toHaveText("B11");
@@ -50,12 +65,20 @@ test("public map retains selection, shared geometry, and qualified route demonst
   await expect(page.locator(".trace-segment.is-route")).toHaveCount(0);
 });
 
-test("legacy trail URLs, Pages 404 redirect, and unknown trails still resolve correctly", async ({ page }) => {
+test("Pages deep links and unknown routes resolve without falling back to Fulong", async ({ page }) => {
   // Vite preview has SPA fallback; substitute the actual shipped 404 document
   // to exercise Pages' deep-link flow instead of relying on that fallback.
   await page.route(`**${base}trails/**`, async (route) => {
     await route.fulfill({ status: 404, contentType: "text/html", body: readFileSync("dist/404.html", "utf8") });
   });
+  await page.route(`**${base}resorts/**`, async (route) => {
+    await route.fulfill({ status: 404, contentType: "text/html", body: readFileSync("dist/404.html", "utf8") });
+  });
+
+  await page.goto(`${base}resorts/fulong/map`);
+  await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
+  await expect(page).toHaveURL(new RegExp(`${base}resorts/fulong/map$`));
+
   await page.goto(`${base}trails/fulong-b1`);
   await expect(page.getByRole("heading", { name: "B1 · 摇滚" })).toBeVisible();
   await expect(page).toHaveURL(new RegExp(`${base}trails/fulong-b1$`));
@@ -63,15 +86,28 @@ test("legacy trail URLs, Pages 404 redirect, and unknown trails still resolve co
   await expect(page.getByRole("heading", { name: "D1 · 咏叹" })).toBeVisible();
   await page.goto(`${base}trails/not-a-real-trail`);
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+  await page.goto(`${base}resorts/not-a-real-resort/map`);
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toHaveCount(0);
   await page.locator(".home-link").click();
   await expect(page.getByRole("heading", { name: "A1 · 蓝调" })).toBeVisible();
   await page.goto(base);
-  await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "崇礼滑雪指南" })).toBeVisible();
 });
 
-test("public map is usable on mobile and supports keyboard zoom", async ({ page }) => {
+test("portal and public map are usable at 390px with a keyboard", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(base);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+  const entry = page.getByRole("link", { name: "进入富龙雪道地图" });
+  const entryBox = await entry.boundingBox();
+  expect(entryBox).not.toBeNull();
+  expect(entryBox!.height).toBeGreaterThanOrEqual(44);
+  await entry.focus();
+  await expect(entry).toBeFocused();
+  await page.keyboard.press("Enter");
+
   await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("button", { name: "东侧 B 区", exact: true }).click();

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("plans and highlights a schematic route across Trails and Uphill Transport", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   await page.getByRole("button", { name: "Plan route" }).click();
   const planner = page.getByRole("region", { name: "Route planner" });
@@ -36,7 +36,7 @@ test("plans and highlights a schematic route across Trails and Uphill Transport"
 
 
 test("fails closed in the browser for a destination outside the published topology", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   await page.getByRole("button", { name: "Plan route" }).click();
   const planner = page.getByRole("region", { name: "Route planner" });
@@ -57,7 +57,7 @@ test("fails closed in the browser for a destination outside the published topolo
 });
 
 test("switches the Route Planner to Chinese with the rest of the interface", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
   await page.getByRole("button", { name: "切换到中文" }).click();
   await page.getByRole("button", { name: "规划路线" }).click();
 
@@ -69,7 +69,7 @@ test("switches the Route Planner to Chinese with the rest of the interface", asy
 
 test("keeps the route controls usable at 390px without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
   await page.getByRole("button", { name: "Plan route" }).click();
 
   const planner = page.getByRole("region", { name: "Route planner" });

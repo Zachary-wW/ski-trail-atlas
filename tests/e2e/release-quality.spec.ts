@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { publication } from "../../src/data/publication";
 
 test("all 33 published Trails are searchable and have stable direct routes", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
   const searchSurface = page.locator(".catalog-section");
   const search = page.getByRole("searchbox", { name: "Search trails" });
 
@@ -26,7 +26,7 @@ test("all 33 published Trails are searchable and have stable direct routes", asy
 
 test("provides a skip link, a single top-level heading, and readable core text", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.goto("/");
+  await page.goto("/trails/fulong-a1");
 
   const h1 = page.getByRole("heading", { level: 1 });
   await expect(h1).toHaveCount(1);

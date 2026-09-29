@@ -1,0 +1,315 @@
+.portal-shell {
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(205, 235, 221, 0.75), transparent 31rem),
+    linear-gradient(160deg, #f8f6ee 0%, #eef2ea 55%, #e1ebe4 100%);
+  color: #15352e;
+}
+
+.portal-topbar {
+  min-height: 76px;
+  padding: 16px clamp(20px, 5vw, 76px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid rgba(21, 53, 46, 0.16);
+}
+
+.portal-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  color: #15352e;
+  text-decoration: none;
+}
+
+.portal-brand span {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.portal-brand small,
+.portal-season {
+  color: #557169;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.portal-season {
+  padding: 8px 12px;
+  border: 1px solid rgba(21, 53, 46, 0.22);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.portal-main {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(58px, 9vw, 122px) 0 clamp(58px, 8vw, 96px);
+}
+
+.portal-hero {
+  position: relative;
+  max-width: 810px;
+  padding-bottom: clamp(54px, 8vw, 96px);
+}
+
+.portal-hero::after {
+  position: absolute;
+  right: min(-28vw, -220px);
+  bottom: 22px;
+  width: min(54vw, 620px);
+  height: min(20vw, 230px);
+  border-top: 1px solid rgba(21, 53, 46, 0.24);
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-8deg);
+  content: "";
+}
+
+.portal-eyebrow {
+  margin: 0 0 18px;
+  color: #527168;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.portal-hero h1 {
+  max-width: 720px;
+  margin: 0;
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: clamp(54px, 9vw, 108px);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+.portal-lede {
+  max-width: 590px;
+  margin: 28px 0 0;
+  color: #49645d;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.7;
+}
+
+.portal-directory {
+  position: relative;
+  z-index: 1;
+}
+
+.portal-section-heading {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.portal-section-heading h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.03em;
+}
+
+.portal-section-heading > p {
+  max-width: 360px;
+  margin: 0 0 3px;
+  color: #5b716b;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: right;
+}
+
+.resort-card {
+  min-height: 340px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.7fr);
+  border: 1px solid rgba(21, 53, 46, 0.22);
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(250, 251, 246, 0.86);
+  box-shadow: 0 24px 70px rgba(36, 66, 57, 0.1);
+}
+
+.resort-card-copy {
+  padding: clamp(30px, 5vw, 64px);
+}
+
+.resort-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #557169;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.outlook-state {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #e6eee4;
+  color: #425d55;
+  letter-spacing: 0.04em;
+}
+
+.resort-card h3 {
+  margin: 25px 0 14px;
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+
+.resort-card-copy > p {
+  max-width: 590px;
+  margin: 0;
+  color: #536a64;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.resort-capabilities {
+  margin: 38px 0 0;
+  display: flex;
+  gap: 46px;
+}
+
+.resort-capabilities div {
+  display: grid;
+  gap: 5px;
+}
+
+.resort-capabilities dt {
+  color: #71847e;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.resort-capabilities dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.resort-entry {
+  min-height: 100%;
+  padding: 36px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  background: #183d34;
+  color: #f6faef;
+  text-decoration: none;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.resort-entry span {
+  max-width: 180px;
+  font-size: clamp(24px, 3vw, 38px);
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.resort-entry svg {
+  width: 36px;
+  flex: 0 0 36px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.resort-entry:hover {
+  background: #d7ff58;
+  color: #173c33;
+}
+
+.portal-brand:focus-visible,
+.resort-entry:focus-visible {
+  outline: 3px solid #c2503c;
+  outline-offset: 4px;
+}
+
+.portal-footer {
+  padding: 24px clamp(20px, 5vw, 76px);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid rgba(21, 53, 46, 0.16);
+  color: #637a73;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 700px) {
+  .portal-topbar {
+    align-items: flex-start;
+  }
+
+  .portal-brand {
+    display: grid;
+    gap: 4px;
+  }
+
+  .portal-main {
+    width: min(100% - 32px, 1180px);
+    padding-top: 58px;
+  }
+
+  .portal-hero h1 {
+    font-size: clamp(48px, 16vw, 68px);
+  }
+
+  .portal-hero::after {
+    display: none;
+  }
+
+  .portal-section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .portal-section-heading > p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .resort-card {
+    grid-template-columns: 1fr;
+    border-radius: 16px;
+  }
+
+  .resort-card-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .resort-capabilities {
+    gap: 30px;
+  }
+
+  .resort-entry {
+    min-height: 168px;
+    padding: 28px;
+  }
+
+  .portal-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resort-entry {
+    transition: none;
+  }
+}
