@@ -13,6 +13,13 @@ test("visitor enters and leaves the Fulong map through the Chongli portal", asyn
   await expect(page).toHaveURL(`${base}resorts/fulong/map`);
   await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
 
+  await page.reload();
+  await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole("heading", { level: 1, name: "崇礼滑雪指南" })).toBeVisible();
+  await page.goForward();
+  await expect(page.getByRole("region", { name: "富龙全图结构地图" })).toBeVisible();
+
   await page.getByRole("link", { name: "返回崇礼门户" }).click();
   await expect(page).toHaveURL(base);
   await expect(page.getByRole("heading", { level: 1, name: "崇礼滑雪指南" })).toBeVisible();

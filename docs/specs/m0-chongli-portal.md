@@ -99,7 +99,7 @@ normal entry in development and production.
   English repository documentation does not mandate an English-only public UI.
 - Preserve the private reference asset boundary and existing geometry.
 
-### Proposed behavior requiring confirmation
+### Approved opening-outlook behavior
 
 Use the 2026–2027 season for the first editorial review, subject to actual source
 availability. Store the selected season explicitly rather than deriving it from

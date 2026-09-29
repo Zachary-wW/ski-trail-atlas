@@ -106,9 +106,13 @@ to make a feature commit clean.
 - A local desktop visual inspection confirmed the portal hierarchy and single
   Fulong entrance. Automated Pages coverage exercises 390 px layout, keyboard
   entry, map keyboard controls and horizontal-overflow checks.
-- Documentation checks on 2026-09-29: all 26 repository Markdown files scanned;
-  42 relative Markdown links resolved with zero missing targets; `git diff
+- Documentation checks on 2026-09-29: all 28 repository Markdown files scanned;
+  44 relative Markdown links resolved with zero missing targets; `git diff
   --check` passed. External links were not fetched or validated.
+- The two-axis review against Issue #3 found no implementation defect. Its
+  missing reload/back/forward regression and one stale “proposed” heading were
+  corrected before the final Pages run. A suggested metadata helper remains a
+  low-priority judgement call; T1 keeps the page-local effects.
 - The remaining Chinese Markdown text consists only of five historical UI
   quotation lines with English explanations in the trace review. Old milestone
   numbering/retired filenames remain only in explicit migration/history notes.
