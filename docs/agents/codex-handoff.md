@@ -1,7 +1,8 @@
 # Current project checkpoint
 
-Updated: 2026-09-29. M0 T1 implementation and social-source tooling review are
-complete in the working tree. No merge to `main` or deployment was performed.
+Updated: 2026-09-29. M0 T1 and the social-source tooling review are committed
+and pushed on the feature branch; Issue #3 is closed with acceptance evidence.
+No merge to `main` or deployment was performed.
 
 ## Resume first
 
@@ -12,8 +13,8 @@ complete in the working tree. No merge to `main` or deployment was performed.
 - Local `main`: `5908c52f180817d712d56542cb2ba148edcc4fb1`, unchanged.
 - Working tree: dirty; preserve the source/test WIP listed below and the new
   documentation changes. HEAD alone does not contain this checkpoint.
-- Active milestone: **M0 — Chongli portal**. T1 is implemented and verified;
-  T2 and T3 are the next dependency-unblocked product slices after T1 closes.
+- Active milestone: **M0 — Chongli portal**. T1 is delivered; T2 and T3 are
+  dependency-unblocked and are the next candidate product slices.
 - Scope: [approved M0–M5 sequence](../MILESTONES.md).
 - Published spec/tasks: [M0 portal](../specs/m0-chongli-portal.md), parent
   [#2](https://github.com/Zachary-wW/ski-trail-atlas/issues/2), tasks
@@ -131,10 +132,9 @@ research complete.
 
 ## Next action and resume condition
 
-The next action is to review/close Issue #3 against the candidate commit, then
-choose either T2 (opening outlook data/clock) or T3 (second-resort isolation),
-which can proceed independently once T1 is closed. T4 remains blocked on both.
-Keep the preserved routing/publication WIP out of T1 commits.
+Choose either T2 (opening outlook data/clock) or T3 (second-resort isolation);
+they can proceed independently. T4 remains blocked on both. Keep the preserved
+routing/publication WIP isolated from the selected M0 slice.
 
 For a bug interruption, follow the loop in the milestone index and the
 [checkpoint template](handoff-template.md). A portable `handoff` artifact is
